@@ -1,0 +1,73 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|d:\\tonghop\\work\\thangtran\\uav_timelapse\\uav_timelapse\\form_main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|solutionrelative:uav_timelapse\\form_main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\uav_timelapse\\form_main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|solutionrelative:uav_timelapse\\form_main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\uav_timelapse\\transmissiontrame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EAAC6E1-D62B-42FA-8B72-36A36F3EA653}|UAV_Timelapse\\UAV_Timelapse.csproj|solutionrelative:uav_timelapse\\transmissiontrame.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TransmissionTrame.cs",
+              "DocumentMoniker": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\TransmissionTrame.cs",
+              "RelativeDocumentMoniker": "UAV_Timelapse\\TransmissionTrame.cs",
+              "ToolTip": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\TransmissionTrame.cs*",
+              "RelativeToolTip": "UAV_Timelapse\\TransmissionTrame.cs*",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T07:27:20.843Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Form_main.cs",
+              "DocumentMoniker": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\Form_main.cs",
+              "RelativeDocumentMoniker": "UAV_Timelapse\\Form_main.cs",
+              "ToolTip": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\Form_main.cs",
+              "RelativeToolTip": "UAV_Timelapse\\Form_main.cs",
+              "ViewState": "AQIAAAcAAAAAAAAAAADwvxIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T07:15:24.84Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Form_main.cs [Design]",
+              "DocumentMoniker": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\Form_main.cs",
+              "RelativeDocumentMoniker": "UAV_Timelapse\\Form_main.cs",
+              "ToolTip": "D:\\TongHop\\Work\\ThangTran\\UAV_Timelapse\\UAV_Timelapse\\Form_main.cs [Design]",
+              "RelativeToolTip": "UAV_Timelapse\\Form_main.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T06:38:56.544Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
