@@ -1,13 +1,4 @@
-# Visual Studio 
 .vs/ 
-*.user 
-*.suo 
-*.rsuser 
-ECHO is on.
-# Build outputs 
-[Bb]in/ 
-[Oo]bj/ 
-*.exe 
-*.pdb 
-*.cache 
-*.log 
+bin/ 
+obj/ 
+*.user

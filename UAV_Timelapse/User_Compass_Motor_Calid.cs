@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace UAV_Timelapse
 {
-    public partial class Form_Main : Form
+    public partial class User_Compass_Motor_Calid : UserControl
     {
-        public Form_Main()
+        public User_Compass_Motor_Calid()
         {
             InitializeComponent();
-        }
-
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
         }
     }
 }

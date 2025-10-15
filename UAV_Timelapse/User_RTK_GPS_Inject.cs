@@ -10,16 +10,12 @@ using System.Windows.Forms;
 
 namespace UAV_Timelapse
 {
-    public partial class Form_Main : Form
+    public partial class User_RTK_GPS_Inject : UserControl
     {
-        public Form_Main()
+        public User_RTK_GPS_Inject()
         {
             InitializeComponent();
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
     }
 }

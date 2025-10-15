@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,23 +56,35 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransmissionTrame.cs" />
-    <Compile Include="User_Camera_Gimbal.cs">
+    <Compile Include="User_CAN_GPS_Order.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="User_Camera_Gimbal.Designer.cs">
-      <DependentUpon>User_Camera_Gimbal.cs</DependentUpon>
+    <Compile Include="User_CAN_GPS_Order.Designer.cs">
+      <DependentUpon>User_CAN_GPS_Order.cs</DependentUpon>
     </Compile>
-    <Compile Include="User_Motor_Test.cs">
+    <Compile Include="User_Compass_Motor_Calid.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="User_Motor_Test.Designer.cs">
-      <DependentUpon>User_Motor_Test.cs</DependentUpon>
+    <Compile Include="User_Compass_Motor_Calid.Designer.cs">
+      <DependentUpon>User_Compass_Motor_Calid.cs</DependentUpon>
     </Compile>
-    <Compile Include="User_Optical_Flow_and_OSD.cs">
+    <Compile Include="User_Joystick.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="User_Optical_Flow_and_OSD.Designer.cs">
-      <DependentUpon>User_Optical_Flow_and_OSD.cs</DependentUpon>
+    <Compile Include="User_Joystick.Designer.cs">
+      <DependentUpon>User_Joystick.cs</DependentUpon>
+    </Compile>
+    <Compile Include="User_Range_Finder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_Range_Finder.Designer.cs">
+      <DependentUpon>User_Range_Finder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="User_RTK_GPS_Inject.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_RTK_GPS_Inject.Designer.cs">
+      <DependentUpon>User_RTK_GPS_Inject.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form_main.resx">
       <DependentUpon>Form_main.cs</DependentUpon>
@@ -85,14 +98,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="User_Camera_Gimbal.resx">
-      <DependentUpon>User_Camera_Gimbal.cs</DependentUpon>
+    <EmbeddedResource Include="User_CAN_GPS_Order.resx">
+      <DependentUpon>User_CAN_GPS_Order.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="User_Motor_Test.resx">
-      <DependentUpon>User_Motor_Test.cs</DependentUpon>
+    <EmbeddedResource Include="User_Compass_Motor_Calid.resx">
+      <DependentUpon>User_Compass_Motor_Calid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="User_Optical_Flow_and_OSD.resx">
-      <DependentUpon>User_Optical_Flow_and_OSD.cs</DependentUpon>
+    <EmbeddedResource Include="User_Joystick.resx">
+      <DependentUpon>User_Joystick.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User_Range_Finder.resx">
+      <DependentUpon>User_Range_Finder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User_RTK_GPS_Inject.resx">
+      <DependentUpon>User_RTK_GPS_Inject.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
