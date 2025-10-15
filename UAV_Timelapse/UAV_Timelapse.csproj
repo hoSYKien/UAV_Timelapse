@@ -55,6 +55,24 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransmissionTrame.cs" />
+    <Compile Include="User_Camera_Gimbal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_Camera_Gimbal.Designer.cs">
+      <DependentUpon>User_Camera_Gimbal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="User_Motor_Test.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_Motor_Test.Designer.cs">
+      <DependentUpon>User_Motor_Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="User_Optical_Flow_and_OSD.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_Optical_Flow_and_OSD.Designer.cs">
+      <DependentUpon>User_Optical_Flow_and_OSD.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form_main.resx">
       <DependentUpon>Form_main.cs</DependentUpon>
     </EmbeddedResource>
@@ -67,6 +85,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="User_Camera_Gimbal.resx">
+      <DependentUpon>User_Camera_Gimbal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User_Motor_Test.resx">
+      <DependentUpon>User_Motor_Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User_Optical_Flow_and_OSD.resx">
+      <DependentUpon>User_Optical_Flow_and_OSD.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
