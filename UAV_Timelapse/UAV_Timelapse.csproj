@@ -81,6 +81,12 @@
     <Compile Include="Form_main.Designer.cs">
       <DependentUpon>Form_main.cs</DependentUpon>
     </Compile>
+    <Compile Include="HudControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HudControl.Designer.cs">
+      <DependentUpon>HudControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransmissionFrame.cs" />

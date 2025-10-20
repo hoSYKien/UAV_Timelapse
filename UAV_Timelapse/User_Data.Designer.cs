@@ -30,13 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.lblDist2MAV = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.lblGroundSpeed = new System.Windows.Forms.Label();
-            this.lblYaw = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,23 +38,29 @@
             this.lblVerticalSpeed = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblAltitude = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.lblDist2MAV = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lblGroundSpeed = new System.Windows.Forms.Label();
+            this.lblYaw = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.pnl_data3d = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
-            this.panel6 = new System.Windows.Forms.Panel();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
-            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.panel6);
-            this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.pnl_data3d);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
@@ -68,77 +68,16 @@
             this.panel1.Size = new System.Drawing.Size(306, 569);
             this.panel1.TabIndex = 0;
             // 
-            // panel5
+            // panel6
             // 
-            this.panel5.BackColor = System.Drawing.Color.White;
-            this.panel5.Controls.Add(this.lblDist2MAV);
-            this.panel5.Controls.Add(this.label7);
-            this.panel5.Controls.Add(this.label11);
-            this.panel5.Controls.Add(this.lblGroundSpeed);
-            this.panel5.Controls.Add(this.lblYaw);
-            this.panel5.Controls.Add(this.label9);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(158, 300);
-            this.panel5.TabIndex = 2;
-            // 
-            // lblDist2MAV
-            // 
-            this.lblDist2MAV.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDist2MAV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.lblDist2MAV.Location = new System.Drawing.Point(29, 210);
-            this.lblDist2MAV.Name = "lblDist2MAV";
-            this.lblDist2MAV.Size = new System.Drawing.Size(91, 42);
-            this.lblDist2MAV.TabIndex = 11;
-            this.lblDist2MAV.Text = "0.00";
-            // 
-            // label7
-            // 
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(3, 28);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(149, 20);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "GroundSpeed (m/s)";
-            // 
-            // label11
-            // 
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(32, 190);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(90, 20);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "DistToMAV";
-            // 
-            // lblGroundSpeed
-            // 
-            this.lblGroundSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGroundSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblGroundSpeed.Location = new System.Drawing.Point(29, 48);
-            this.lblGroundSpeed.Name = "lblGroundSpeed";
-            this.lblGroundSpeed.Size = new System.Drawing.Size(91, 42);
-            this.lblGroundSpeed.TabIndex = 7;
-            this.lblGroundSpeed.Text = "0.00";
-            // 
-            // lblYaw
-            // 
-            this.lblYaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYaw.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblYaw.Location = new System.Drawing.Point(29, 133);
-            this.lblYaw.Name = "lblYaw";
-            this.lblYaw.Size = new System.Drawing.Size(91, 42);
-            this.lblYaw.TabIndex = 9;
-            this.lblYaw.Text = "0.00";
-            // 
-            // label9
-            // 
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(41, 113);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(81, 20);
-            this.label9.TabIndex = 8;
-            this.label9.Text = "Yaw (deg)";
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel6.Controls.Add(this.panel4);
+            this.panel6.Controls.Add(this.panel5);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 267);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(306, 302);
+            this.panel6.TabIndex = 1;
             // 
             // panel4
             // 
@@ -212,16 +151,88 @@
             this.lblAltitude.TabIndex = 1;
             this.lblAltitude.Text = "0.00";
             // 
-            // panel3
+            // panel5
             // 
-            this.panel3.BackColor = System.Drawing.Color.White;
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Margin = new System.Windows.Forms.Padding(2);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(306, 267);
-            this.panel3.TabIndex = 0;
+            this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.Controls.Add(this.lblDist2MAV);
+            this.panel5.Controls.Add(this.label7);
+            this.panel5.Controls.Add(this.label11);
+            this.panel5.Controls.Add(this.lblGroundSpeed);
+            this.panel5.Controls.Add(this.lblYaw);
+            this.panel5.Controls.Add(this.label9);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(158, 300);
+            this.panel5.TabIndex = 2;
+            // 
+            // lblDist2MAV
+            // 
+            this.lblDist2MAV.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDist2MAV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.lblDist2MAV.Location = new System.Drawing.Point(29, 210);
+            this.lblDist2MAV.Name = "lblDist2MAV";
+            this.lblDist2MAV.Size = new System.Drawing.Size(91, 42);
+            this.lblDist2MAV.TabIndex = 11;
+            this.lblDist2MAV.Text = "0.00";
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(3, 28);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(149, 20);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "GroundSpeed (m/s)";
+            // 
+            // label11
+            // 
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(32, 190);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 20);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "DistToMAV";
+            // 
+            // lblGroundSpeed
+            // 
+            this.lblGroundSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGroundSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.lblGroundSpeed.Location = new System.Drawing.Point(29, 48);
+            this.lblGroundSpeed.Name = "lblGroundSpeed";
+            this.lblGroundSpeed.Size = new System.Drawing.Size(91, 42);
+            this.lblGroundSpeed.TabIndex = 7;
+            this.lblGroundSpeed.Text = "0.00";
+            // 
+            // lblYaw
+            // 
+            this.lblYaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblYaw.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.lblYaw.Location = new System.Drawing.Point(29, 133);
+            this.lblYaw.Name = "lblYaw";
+            this.lblYaw.Size = new System.Drawing.Size(91, 42);
+            this.lblYaw.TabIndex = 9;
+            this.lblYaw.Text = "0.00";
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(41, 113);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(81, 20);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "Yaw (deg)";
+            // 
+            // pnl_data3d
+            // 
+            this.pnl_data3d.BackColor = System.Drawing.Color.White;
+            this.pnl_data3d.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnl_data3d.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnl_data3d.Location = new System.Drawing.Point(0, 0);
+            this.pnl_data3d.Margin = new System.Windows.Forms.Padding(2);
+            this.pnl_data3d.Name = "pnl_data3d";
+            this.pnl_data3d.Size = new System.Drawing.Size(306, 267);
+            this.pnl_data3d.TabIndex = 0;
             // 
             // panel2
             // 
@@ -232,10 +243,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(864, 569);
             this.panel2.TabIndex = 1;
-            // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // webView21
             // 
@@ -250,16 +257,9 @@
             this.webView21.TabIndex = 0;
             this.webView21.ZoomFactor = 1D;
             // 
-            // panel6
+            // timer1
             // 
-            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel6.Controls.Add(this.panel4);
-            this.panel6.Controls.Add(this.panel5);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 267);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(306, 302);
-            this.panel6.TabIndex = 1;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // User_Data
             // 
@@ -271,11 +271,11 @@
             this.Size = new System.Drawing.Size(1170, 569);
             this.Load += new System.EventHandler(this.User_Data_Load);
             this.panel1.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
-            this.panel6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -283,7 +283,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel pnl_data3d;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblGroundSpeed;
         private System.Windows.Forms.Label label7;

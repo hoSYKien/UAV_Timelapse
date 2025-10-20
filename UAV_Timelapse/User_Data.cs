@@ -8,6 +8,10 @@ namespace UAV_Timelapse
     {
         private AutoScaler _scaler;
 
+        //===========hud==========
+        private HudControl _hud;
+        // bit 7 của base_mode = ARMED (chuẩn MAVLink)
+        private const byte MODE_FLAG_ARMED = 0x80;
         public User_Data()
         {
             InitializeComponent();
@@ -26,11 +30,27 @@ namespace UAV_Timelapse
 
             // Áp dụng scale khi kích thước thay đổi
             this.Resize += (s, e) => _scaler.Apply();
+
+            //======================hud======================
+            // ADD: Bật double-buffer cho panel hiển thị 3D để giảm flicker (không bắt buộc)
+            pnl_data3d.GetType().GetProperty("DoubleBuffered",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                ?.SetValue(pnl_data3d, true, null);
+
+            // ADD: Khởi tạo HUD và nhúng vào pnl_data3d
+            _hud = new HudControl { Dock = DockStyle.Fill };
+            pnl_data3d.Controls.Add(_hud);
+
+            // (tuỳ chọn) nếu chưa đặt Interval cho timer1
+            if (timer1.Interval == 100) timer1.Interval = 50; // ~20Hz cho mượt
+
+            //===============================================
+
             timer1.Start();
 
 
         }
-        
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             lblAltitude.Text = (TransmissionFrame.Gpi_RelAlt / 1000.0).ToString("0.00");
@@ -49,6 +69,49 @@ namespace UAV_Timelapse
                 ? TransmissionFrame.Vfr_Climb
                 : -(TransmissionFrame.Gpi_Vz / 100.0);
             lblVerticalSpeed.Text = vs.ToString("0.00");
+
+            //======================hud==========================
+            // ===== ADD: Cập nhật HUD từ TransmissionFrame =====
+
+            // Dùng lại các biến bạn đã tính ngay ở trên
+            float alt_m = (float)(TransmissionFrame.Gpi_RelAlt / 1000.0);
+            if (alt_m == 0f) alt_m = TransmissionFrame.Vfr_Alt; // fallback
+
+            double yaw360 = yawDeg;
+            if (yaw360 < 0) yaw360 += 360.0;
+
+            // Armed flag từ base_mode
+            bool armed = (TransmissionFrame.Hb_base_mode & MODE_FLAG_ARMED) != 0;
+
+            // Gán vào HUD
+            _hud.RollDeg = (float)(TransmissionFrame.Att_Roll * 180.0 / Math.PI);
+            _hud.PitchDeg = (float)(TransmissionFrame.Att_Pitch * 180.0 / Math.PI);
+            _hud.YawDeg = (float)yaw360;
+            _hud.Groundspeed = (float)gs;
+            _hud.Airspeed = TransmissionFrame.Vfr_Airspeed;
+            _hud.Altitude = alt_m;
+            _hud.Climb = (float)vs;
+            _hud.ThrottlePct = (int)TransmissionFrame.Vfr_Throttle;
+
+            _hud.Armed = armed;
+            _hud.ModeText = ((MAVLink.MAV_MODE_FLAG)TransmissionFrame.Hb_base_mode).ToString();
+            _hud.GpsText = (TransmissionFrame.Gpi_Hdg == ushort.MaxValue) ? "No GPS" : "OK";
+
+            // Pin: ưu tiên SYS_STATUS nếu có
+            if (TransmissionFrame.Sys_Voltage_battery > 0)
+            {
+                var v = TransmissionFrame.Sys_Voltage_battery / 1000.0; // mV -> V
+                var r = TransmissionFrame.Sys_Battery_remaining;
+                _hud.BattText = $"Bat {v:0.00}V {r}%";
+            }
+            else
+            {
+                _hud.BattText = $"Bat {TransmissionFrame.Vfr_Throttle}%";
+            }
+
+            // Vẽ lại
+            _hud.Invalidate();
+            //==========================
         }
 
         private async void User_Data_Load(object sender, EventArgs e)
