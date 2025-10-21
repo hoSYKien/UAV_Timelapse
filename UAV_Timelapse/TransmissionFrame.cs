@@ -118,5 +118,6 @@ namespace UAV_Timelapse
         // ===== (Tuỳ chọn) EKF_STATUS_REPORT (nếu bạn cần hiển thị) =====
         // public static uint Ekf_Flags;
         // public static float Ekf_VelRatio, Ekf_PosHorizRatio, Ekf_PosVertRatio, Ekf_CompassRatio, Ekf_TerrainAlt, Ekf_ConstPosMode, Ekf_PredHorizPosError, Ekf_PredVertPosError;
+
     }
 }

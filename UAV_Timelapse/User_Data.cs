@@ -60,8 +60,6 @@ namespace UAV_Timelapse
                 : Math.Sqrt(Math.Pow(TransmissionFrame.Gpi_Vx / 100.0, 2) + Math.Pow(TransmissionFrame.Gpi_Vy / 100.0, 2));
             lblGroundSpeed.Text = gs.ToString("0.00");
 
-            lblDist2WP.Text = TransmissionFrame.Nav_WpDist.ToString();
-
             double yawDeg = TransmissionFrame.Att_Yaw * 180.0 / Math.PI;
             lblYaw.Text = yawDeg.ToString("0");
 
@@ -69,6 +67,11 @@ namespace UAV_Timelapse
                 ? TransmissionFrame.Vfr_Climb
                 : -(TransmissionFrame.Gpi_Vz / 100.0);
             lblVerticalSpeed.Text = vs.ToString("0.00");
+
+            float rollDeg = (float)(TransmissionFrame.Att_Roll * 180.0 / Math.PI);
+            lblRoll.Text = rollDeg.ToString("0.00");
+            float pitchDeg = (float)(TransmissionFrame.Att_Pitch * 180.0 / Math.PI);
+            lblPitch.Text = pitchDeg.ToString("0.00");
 
             //======================hud==========================
             // ===== ADD: Cập nhật HUD từ TransmissionFrame =====
@@ -116,8 +119,22 @@ namespace UAV_Timelapse
 
         private async void User_Data_Load(object sender, EventArgs e)
         {
-            await webView21.EnsureCoreWebView2Async();           // OK vì đã async
+            await webView21.EnsureCoreWebView2Async();
+
+            webView21.CoreWebView2.PermissionRequested += (s, ev) =>
+            {
+                if (ev.PermissionKind ==
+                    Microsoft.Web.WebView2.Core.CoreWebView2PermissionKind.Geolocation)
+                    ev.State = Microsoft.Web.WebView2.Core.CoreWebView2PermissionState.Allow;
+            };
+
             webView21.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+
+            webView21.CoreWebView2.NavigationCompleted += async (s, ev) =>
+            {
+                if (ev.IsSuccess && webView21.CoreWebView2 != null)
+                    await webView21.CoreWebView2.ExecuteScriptAsync("requestCurrentLocation();");
+            };
 
             var htmlFilePath = Path.Combine(Application.StartupPath, "map.html");
             if (File.Exists(htmlFilePath))
@@ -126,13 +143,30 @@ namespace UAV_Timelapse
 
         private void CoreWebView2_WebMessageReceived(object sender, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
         {
-            string msg = e.WebMessageAsJson;
-            dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(msg);
-            double lat = data.lat;
-            double lng = data.lng;
+            void Handle()
+            {
+                dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(e.WebMessageAsJson);
+                string type = data.type ?? "";
 
-            MessageBox.Show($"Bạn đã nhấn tọa độ:\nLat: {lat}, Lng: {lng}");
+                if (type == "currentLocation" || type == "watch")
+                {
+                    double lat = data.lat, lng = data.lng, acc = data.acc;
+                    // cập nhật label nếu muốn
+                    //lblLat.Text = lat.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
+                    //lblLng.Text = lng.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
+                    //lblAcc.Text = $"±{acc:0} m";
+
+                }
+                else if (type == "geoError")
+                {
+                    MessageBox.Show((string)data.message, "Geolocation");
+                }
+                // else: click map (lat/lng không có type) -> xử lý nếu cần
+            }
+
+            if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
         }
+
     }
 }
 

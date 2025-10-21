@@ -65,6 +65,7 @@
             this.btnOptional = new System.Windows.Forms.Button();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnInstallFirmware = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnData)).BeginInit();
@@ -81,19 +82,21 @@
             this.PanelOptional.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.panel5);
             this.panel1.Controls.Add(this.panel7);
             this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.panel6);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(945, 67);
             this.panel1.TabIndex = 0;
@@ -103,7 +106,7 @@
             this.panel5.Controls.Add(this.btnData);
             this.panel5.Controls.Add(this.label1);
             this.panel5.Location = new System.Drawing.Point(9, 2);
-            this.panel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel5.Margin = new System.Windows.Forms.Padding(2);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(52, 65);
             this.panel5.TabIndex = 7;
@@ -113,7 +116,7 @@
             this.btnData.BackColor = System.Drawing.Color.White;
             this.btnData.Image = ((System.Drawing.Image)(resources.GetObject("btnData.Image")));
             this.btnData.Location = new System.Drawing.Point(3, 2);
-            this.btnData.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnData.Margin = new System.Windows.Forms.Padding(2);
             this.btnData.Name = "btnData";
             this.btnData.Size = new System.Drawing.Size(46, 43);
             this.btnData.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -136,7 +139,7 @@
             this.panel7.Controls.Add(this.pictureBox2);
             this.panel7.Controls.Add(this.label3);
             this.panel7.Location = new System.Drawing.Point(122, 2);
-            this.panel7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel7.Margin = new System.Windows.Forms.Padding(2);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(52, 65);
             this.panel7.TabIndex = 9;
@@ -146,7 +149,7 @@
             this.pictureBox2.BackColor = System.Drawing.Color.White;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(3, 2);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(46, 43);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -172,7 +175,7 @@
             this.panel3.Controls.Add(this.comboBoxPorts);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel3.Location = new System.Drawing.Point(670, 0);
-            this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(273, 65);
             this.panel3.TabIndex = 6;
@@ -180,7 +183,7 @@
             // btnRefresh
             // 
             this.btnRefresh.Location = new System.Drawing.Point(7, 42);
-            this.btnRefresh.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(2);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(56, 19);
             this.btnRefresh.TabIndex = 10;
@@ -194,7 +197,7 @@
             this.panel8.Controls.Add(this.btnConnect);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel8.Location = new System.Drawing.Point(221, 0);
-            this.panel8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel8.Margin = new System.Windows.Forms.Padding(2);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(52, 65);
             this.panel8.TabIndex = 9;
@@ -214,7 +217,7 @@
             this.btnConnect.BackColor = System.Drawing.Color.White;
             this.btnConnect.Image = ((System.Drawing.Image)(resources.GetObject("btnConnect.Image")));
             this.btnConnect.Location = new System.Drawing.Point(3, 2);
-            this.btnConnect.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnConnect.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(46, 45);
             this.btnConnect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -226,7 +229,7 @@
             // 
             this.comboBox3.FormattingEnabled = true;
             this.comboBox3.Location = new System.Drawing.Point(68, 41);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBox3.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(152, 21);
             this.comboBox3.TabIndex = 4;
@@ -240,7 +243,7 @@
             "230400",
             "460800"});
             this.comboBoxBaudrate.Location = new System.Drawing.Point(128, 11);
-            this.comboBoxBaudrate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxBaudrate.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxBaudrate.Name = "comboBoxBaudrate";
             this.comboBoxBaudrate.Size = new System.Drawing.Size(92, 21);
             this.comboBoxBaudrate.TabIndex = 3;
@@ -249,7 +252,7 @@
             // 
             this.comboBoxPorts.FormattingEnabled = true;
             this.comboBoxPorts.Location = new System.Drawing.Point(32, 11);
-            this.comboBoxPorts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxPorts.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxPorts.Name = "comboBoxPorts";
             this.comboBoxPorts.Size = new System.Drawing.Size(92, 21);
             this.comboBoxPorts.TabIndex = 2;
@@ -259,7 +262,7 @@
             this.panel6.Controls.Add(this.pictureBox3);
             this.panel6.Controls.Add(this.label2);
             this.panel6.Location = new System.Drawing.Point(65, 2);
-            this.panel6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel6.Margin = new System.Windows.Forms.Padding(2);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(52, 65);
             this.panel6.TabIndex = 8;
@@ -269,7 +272,7 @@
             this.pictureBox3.BackColor = System.Drawing.Color.White;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
             this.pictureBox3.Location = new System.Drawing.Point(2, 2);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(49, 43);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -292,7 +295,7 @@
             this.panel2.Controls.Add(this.panelSetup);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 67);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(945, 455);
             this.panel2.TabIndex = 1;
@@ -302,7 +305,7 @@
             this.panelMain.Controls.Add(this.textBoxTelemetry);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(166, 0);
-            this.panelMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panelMain.Margin = new System.Windows.Forms.Padding(2);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(779, 455);
             this.panelMain.TabIndex = 2;
@@ -311,7 +314,7 @@
             // 
             this.textBoxTelemetry.Font = new System.Drawing.Font("Consolas", 12F);
             this.textBoxTelemetry.Location = new System.Drawing.Point(14, 21);
-            this.textBoxTelemetry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxTelemetry.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxTelemetry.Multiline = true;
             this.textBoxTelemetry.Name = "textBoxTelemetry";
             this.textBoxTelemetry.ReadOnly = true;
@@ -331,7 +334,7 @@
             this.panelSetup.Controls.Add(this.flowLayoutPanel3);
             this.panelSetup.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSetup.Location = new System.Drawing.Point(0, 0);
-            this.panelSetup.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panelSetup.Margin = new System.Windows.Forms.Padding(2);
             this.panelSetup.Name = "panelSetup";
             this.panelSetup.Size = new System.Drawing.Size(166, 455);
             this.panelSetup.TabIndex = 0;
@@ -340,7 +343,7 @@
             // 
             this.flowLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel4.Location = new System.Drawing.Point(0, 455);
-            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
             this.flowLayoutPanel4.Size = new System.Drawing.Size(149, 81);
             this.flowLayoutPanel4.TabIndex = 0;
@@ -357,7 +360,7 @@
             this.PanelOptional.Controls.Add(this.btnMotorTest);
             this.PanelOptional.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelOptional.Location = new System.Drawing.Point(0, 81);
-            this.PanelOptional.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PanelOptional.Margin = new System.Windows.Forms.Padding(2);
             this.PanelOptional.Name = "PanelOptional";
             this.PanelOptional.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.PanelOptional.Size = new System.Drawing.Size(149, 374);
@@ -367,7 +370,7 @@
             // 
             this.btnRTK_GPS.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnRTK_GPS.Location = new System.Drawing.Point(8, 2);
-            this.btnRTK_GPS.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRTK_GPS.Margin = new System.Windows.Forms.Padding(2);
             this.btnRTK_GPS.Name = "btnRTK_GPS";
             this.btnRTK_GPS.Size = new System.Drawing.Size(139, 39);
             this.btnRTK_GPS.TabIndex = 1;
@@ -379,7 +382,7 @@
             // 
             this.btnCAN_GPS.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnCAN_GPS.Location = new System.Drawing.Point(8, 45);
-            this.btnCAN_GPS.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCAN_GPS.Margin = new System.Windows.Forms.Padding(2);
             this.btnCAN_GPS.Name = "btnCAN_GPS";
             this.btnCAN_GPS.Size = new System.Drawing.Size(139, 39);
             this.btnCAN_GPS.TabIndex = 2;
@@ -391,7 +394,7 @@
             // 
             this.btnJoystick.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnJoystick.Location = new System.Drawing.Point(8, 88);
-            this.btnJoystick.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnJoystick.Margin = new System.Windows.Forms.Padding(2);
             this.btnJoystick.Name = "btnJoystick";
             this.btnJoystick.Size = new System.Drawing.Size(139, 39);
             this.btnJoystick.TabIndex = 3;
@@ -403,7 +406,7 @@
             // 
             this.btnComp_Motor.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnComp_Motor.Location = new System.Drawing.Point(8, 131);
-            this.btnComp_Motor.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnComp_Motor.Margin = new System.Windows.Forms.Padding(2);
             this.btnComp_Motor.Name = "btnComp_Motor";
             this.btnComp_Motor.Size = new System.Drawing.Size(139, 39);
             this.btnComp_Motor.TabIndex = 4;
@@ -415,7 +418,7 @@
             // 
             this.btnRangerFinder.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnRangerFinder.Location = new System.Drawing.Point(8, 174);
-            this.btnRangerFinder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRangerFinder.Margin = new System.Windows.Forms.Padding(2);
             this.btnRangerFinder.Name = "btnRangerFinder";
             this.btnRangerFinder.Size = new System.Drawing.Size(139, 39);
             this.btnRangerFinder.TabIndex = 5;
@@ -427,7 +430,7 @@
             // 
             this.btnOpticalFlow_OSD.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnOpticalFlow_OSD.Location = new System.Drawing.Point(8, 217);
-            this.btnOpticalFlow_OSD.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnOpticalFlow_OSD.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpticalFlow_OSD.Name = "btnOpticalFlow_OSD";
             this.btnOpticalFlow_OSD.Size = new System.Drawing.Size(139, 39);
             this.btnOpticalFlow_OSD.TabIndex = 6;
@@ -439,7 +442,7 @@
             // 
             this.btnCamGimbal.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnCamGimbal.Location = new System.Drawing.Point(8, 260);
-            this.btnCamGimbal.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCamGimbal.Margin = new System.Windows.Forms.Padding(2);
             this.btnCamGimbal.Name = "btnCamGimbal";
             this.btnCamGimbal.Size = new System.Drawing.Size(139, 48);
             this.btnCamGimbal.TabIndex = 7;
@@ -451,7 +454,7 @@
             // 
             this.btnMotorTest.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnMotorTest.Location = new System.Drawing.Point(8, 312);
-            this.btnMotorTest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnMotorTest.Margin = new System.Windows.Forms.Padding(2);
             this.btnMotorTest.Name = "btnMotorTest";
             this.btnMotorTest.Size = new System.Drawing.Size(139, 48);
             this.btnMotorTest.TabIndex = 9;
@@ -464,7 +467,7 @@
             this.flowLayoutPanel1.Controls.Add(this.btnOptional);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 40);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(149, 41);
             this.flowLayoutPanel1.TabIndex = 0;
@@ -473,7 +476,7 @@
             // 
             this.btnOptional.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnOptional.Location = new System.Drawing.Point(2, 2);
-            this.btnOptional.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnOptional.Margin = new System.Windows.Forms.Padding(2);
             this.btnOptional.Name = "btnOptional";
             this.btnOptional.Size = new System.Drawing.Size(164, 34);
             this.btnOptional.TabIndex = 0;
@@ -486,7 +489,7 @@
             this.flowLayoutPanel3.Controls.Add(this.btnInstallFirmware);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(149, 40);
             this.flowLayoutPanel3.TabIndex = 1;
@@ -495,13 +498,24 @@
             // 
             this.btnInstallFirmware.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.btnInstallFirmware.Location = new System.Drawing.Point(2, 2);
-            this.btnInstallFirmware.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnInstallFirmware.Margin = new System.Windows.Forms.Padding(2);
             this.btnInstallFirmware.Name = "btnInstallFirmware";
             this.btnInstallFirmware.Size = new System.Drawing.Size(164, 34);
             this.btnInstallFirmware.TabIndex = 0;
             this.btnInstallFirmware.Text = "Install Firmware";
             this.btnInstallFirmware.UseVisualStyleBackColor = false;
             this.btnInstallFirmware.Click += new System.EventHandler(this.btnInstallFirmware_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
+            this.pictureBox1.Image = global::UAV_Timelapse.Properties.Resources.VIETPILOT;
+            this.pictureBox1.Location = new System.Drawing.Point(412, 1);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(119, 62);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
             // 
             // Form_Main
             // 
@@ -511,7 +525,7 @@
             this.ClientSize = new System.Drawing.Size(945, 522);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form_Main";
             this.Text = "VIETPILOT";
             this.panel1.ResumeLayout(false);
@@ -535,6 +549,7 @@
             this.PanelOptional.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -577,6 +592,7 @@
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBoxTelemetry;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
