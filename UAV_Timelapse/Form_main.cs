@@ -18,6 +18,8 @@ namespace UAV_Timelapse
         bool checkBtnOption = true;
         bool checkBtnData = true;
 
+        private AutoScaler _scaler;
+
         // ====== GCS/FCU IDs ======
         private readonly byte GcsSysId = 255;
         private readonly byte GcsCompId = (byte)MAVLink.MAV_COMPONENT.MAV_COMP_ID_MISSIONPLANNER;
@@ -56,12 +58,28 @@ namespace UAV_Timelapse
         User_Motor_Test user_Motor_Test = new User_Motor_Test();
         User_Install_Firmware user_Install_Firmware = new User_Install_Firmware();
         User_Data user_Data = new User_Data();
+        User_Frame_Type user_Frame_Type = new User_Frame_Type();
+        User_Accel_Calibration user_Accel_Calibration = new User_Accel_Calibration();
+        User_Compass user_Compass = new User_Compass();
         /*------------------------------------------*/
 
         public Form_Main()
         {
             InitializeComponent();
+            // Khuyến nghị: tắt autoscale mặc định để tránh “double scale”
             this.AutoScaleMode = AutoScaleMode.None;
+
+            // Nếu User_Data nằm trong panelMain → để Fill
+            this.Dock = DockStyle.Fill;
+
+            // Khởi tạo scaler
+            _scaler = new AutoScaler(this);
+
+            // Chụp layout gốc sau khi control đã tạo xong
+            this.Load += (s, e) => _scaler.Capture();
+
+            // Áp dụng scale khi kích thước thay đổi
+            this.Resize += (s, e) => _scaler.Apply();
             serialPort1 = new SerialPort();
             serialPort1.DataReceived += SerialPort1_DataReceived;
             RefreshPorts();
@@ -218,26 +236,6 @@ namespace UAV_Timelapse
                 TransmissionFrame.Imu_Temperature = im.temperature;   // °C
             }
 
-
-            textBoxTelemetry.Text =
-                $"=== Velocity ===\r\n" +
-                $"Vx: {vx:F2} m/s, Vy: {vy:F2} m/s, Vz: {vz:F2} m/s\r\n" +
-                $"GroundSpeed: {h.groundspeed:F1} m/s\r\n\r\n" +
-
-                $"=== Attitude ===\r\n" +
-                $"Roll: {roll:F1}°, Pitch: {pitch:F1}°, Yaw: {yaw:F1}°\r\n" +
-                $"RollSpeed: {rollSpeed:F1}°/s, PitchSpeed: {pitchSpeed:F1}°/s, YawSpeed: {yawSpeed:F1}°/s\r\n\r\n" +
-
-                $"=== Angular Rate (IMU) ===\r\n" +
-                $"Gx: {gx:F1}°/s, Gy: {gy:F1}°/s, Gz: {gz:F1}°/s\r\n\r\n" +
-
-                $"=== Acceleration ===\r\n" +
-                $"Ax: {ax:F2} m/s², Ay: {ay:F2} m/s², Az: {az:F2} m/s²\r\n\r\n" +
-
-                $"Altitude: {g.relative_alt / 1000.0:F1} m\r\n" +
-                $"Battery: {h.throttle:F0}%\r\n" +
-                $"GPS: lat={g.lat / 1e7:F6}, lon={g.lon / 1e7:F6}\r\n" +
-                $"Mode: {(MAVLink.MAV_MODE_FLAG)hb.base_mode}";
         }
 
         private void RefreshPorts()
@@ -334,7 +332,7 @@ namespace UAV_Timelapse
             else
             {
                 panelSetup.Visible = true;
-                int target = 180; // width mục tiêu
+                int target = btnInstallFirmware.Width + 5; // width mục tiêu
                 for (int w = panelSetup.Width; w < target; w += 20)
                 {
                     panelSetup.Width = w;
@@ -554,6 +552,21 @@ namespace UAV_Timelapse
             comboBoxPorts.Items.AddRange(SerialPort.GetPortNames());
             if (comboBoxPorts.Items.Count > 0)
                 comboBoxPorts.SelectedIndex = 0;
+        }
+
+        private void btnFrameType_Click(object sender, EventArgs e)
+        {
+            addUserControl(user_Frame_Type);
+        }
+
+        private void btnAccelCalibration_Click(object sender, EventArgs e)
+        {
+            addUserControl(user_Accel_Calibration);
+        }
+
+        private void btnCompass_Click(object sender, EventArgs e)
+        {
+            addUserControl(user_Compass);
         }
 
         private void SendPacket(MAVLINK_MSG_ID id, object payload)

@@ -166,7 +166,6 @@ namespace UAV_Timelapse
 
             if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
         }
-
     }
 }
 
