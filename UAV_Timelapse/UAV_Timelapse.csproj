@@ -148,7 +148,9 @@
     <Compile Include="User_Compass_Motor_Calid.Designer.cs">
       <DependentUpon>User_Compass_Motor_Calid.cs</DependentUpon>
     </Compile>
-    <Compile Include="User_Data.cs" />
+    <Compile Include="User_Data.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="User_Data.Designer.cs">
       <DependentUpon>User_Data.cs</DependentUpon>
     </Compile>

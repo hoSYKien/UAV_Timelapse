@@ -10,20 +10,6 @@ using Newtonsoft.Json;
 
 namespace UAV_Timelapse
 {
-    public class MissionItem
-    {
-        public int STT { get; set; }
-        public string Command { get; set; } = "WAYPOINT";
-        public double Delay { get; set; }
-        public double P2 { get; set; }
-        public double P3 { get; set; }
-        public double P4 { get; set; }
-        public double Lat { get; set; }
-        public double Long { get; set; }
-        public double Alt { get; set; } = 100;
-        public string Frame { get; set; } = "Relative";
-    }
-
     public partial class User_Data : UserControl
     {
         private AutoScaler _scaler;
@@ -64,6 +50,7 @@ namespace UAV_Timelapse
             //===== DataGridView cấu hình nhanh
             SetupMissionGrid();
         }
+
 
         private void SetupMissionGrid()
         {
@@ -268,5 +255,19 @@ namespace UAV_Timelapse
             if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
         }
 
+
+    }
+    public class MissionItem
+    {
+        public int STT { get; set; }
+        public string Command { get; set; } = "WAYPOINT";
+        public double Delay { get; set; }
+        public double P2 { get; set; }
+        public double P3 { get; set; }
+        public double P4 { get; set; }
+        public double Lat { get; set; }
+        public double Long { get; set; }
+        public double Alt { get; set; } = 100;
+        public string Frame { get; set; } = "Relative";
     }
 }
