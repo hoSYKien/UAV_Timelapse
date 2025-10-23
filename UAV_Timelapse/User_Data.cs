@@ -1,54 +1,147 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json;
 
 namespace UAV_Timelapse
 {
+    public class MissionItem
+    {
+        public int STT { get; set; }
+        public string Command { get; set; } = "WAYPOINT";
+        public double Delay { get; set; }
+        public double P2 { get; set; }
+        public double P3 { get; set; }
+        public double P4 { get; set; }
+        public double Lat { get; set; }
+        public double Long { get; set; }
+        public double Alt { get; set; } = 100;
+        public string Frame { get; set; } = "Relative";
+    }
+
     public partial class User_Data : UserControl
     {
         private AutoScaler _scaler;
 
         //===========hud==========
         private HudControl _hud;
-        // bit 7 của base_mode = ARMED (chuẩn MAVLink)
         private const byte MODE_FLAG_ARMED = 0x80;
+
+        //=== Mission data binding
+        private readonly BindingList<MissionItem> _items = new BindingList<MissionItem>();
+
+        //=== DataGridView (tạo bằng code để tránh lỗi CS0103)
+        private readonly DataGridView dgvMission = new DataGridView();
+
         public User_Data()
         {
             InitializeComponent();
 
-            // Khuyến nghị: tắt autoscale mặc định để tránh “double scale”
             this.AutoScaleMode = AutoScaleMode.None;
-
-            // Nếu User_Data nằm trong panelMain → để Fill
             this.Dock = DockStyle.Fill;
 
-            // Khởi tạo scaler
+            // Scaler
             _scaler = new AutoScaler(this);
-
-            // Chụp layout gốc sau khi control đã tạo xong
             this.Load += (s, e) => _scaler.Capture();
-
-            // Áp dụng scale khi kích thước thay đổi
             this.Resize += (s, e) => _scaler.Apply();
 
-            //======================hud======================
-            // ADD: Bật double-buffer cho panel hiển thị 3D để giảm flicker (không bắt buộc)
+            // HUD
             pnl_data3d.GetType().GetProperty("DoubleBuffered",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                 ?.SetValue(pnl_data3d, true, null);
 
-            // ADD: Khởi tạo HUD và nhúng vào pnl_data3d
             _hud = new HudControl { Dock = DockStyle.Fill };
             pnl_data3d.Controls.Add(_hud);
 
-            // (tuỳ chọn) nếu chưa đặt Interval cho timer1
-            if (timer1.Interval == 100) timer1.Interval = 50; // ~20Hz cho mượt
-
-            //===============================================
-
+            if (timer1.Interval == 100) timer1.Interval = 50;
             timer1.Start();
 
+            //===== DataGridView cấu hình nhanh
+            SetupMissionGrid();
+        }
 
+        private void SetupMissionGrid()
+        {
+            dgvMission.Dock = DockStyle.Bottom;
+            dgvMission.Height = 220;
+            dgvMission.AutoGenerateColumns = false;
+            dgvMission.AllowUserToAddRows = false;
+            dgvMission.AllowUserToDeleteRows = true;
+            dgvMission.RowHeadersVisible = false;
+
+            // Cột
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "STT",
+                DataPropertyName = "STT",
+                Width = 45,
+                ReadOnly = true
+            });
+
+            var colCmd = new DataGridViewComboBoxColumn
+            {
+                HeaderText = "Command",
+                DataPropertyName = "Command",
+                Width = 110,
+                FlatStyle = FlatStyle.Flat
+            };
+            colCmd.Items.AddRange("WAYPOINT", "TAKEOFF", "LAND", "RTL", "LOITER_TIME");
+            dgvMission.Columns.Add(colCmd);
+
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Delay", DataPropertyName = "Delay", Width = 60 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "P2", DataPropertyName = "P2", Width = 55 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "P3", DataPropertyName = "P3", Width = 55 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "P4", DataPropertyName = "P4", Width = 55 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Lat", DataPropertyName = "Lat", Width = 120 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Long", DataPropertyName = "Long", Width = 120 });
+            dgvMission.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Alt", DataPropertyName = "Alt", Width = 60 });
+
+            var colFrame = new DataGridViewComboBoxColumn
+            {
+                HeaderText = "Frame",
+                DataPropertyName = "Frame",
+                Width = 90,
+                FlatStyle = FlatStyle.Flat
+            };
+            colFrame.Items.AddRange("Relative", "Absolute", "Terrain");
+            dgvMission.Columns.Add(colFrame);
+
+            dgvMission.DataSource = _items;
+
+            // Khi chỉnh lưới -> đẩy ngược lên map
+            dgvMission.CellValueChanged += (s, e) => PushGridToMap();
+            dgvMission.RowsRemoved += (s, e) => RenumberAndPush();
+            dgvMission.UserAddedRow += (s, e) => RenumberAndPush();
+            dgvMission.CurrentCellDirtyStateChanged += (s, e) =>
+            {
+                if (dgvMission.IsCurrentCellDirty)
+                {
+                    dgvMission.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                }
+            };
+
+            this.Controls.Add(dgvMission);
+        }
+
+        private void RenumberAndPush()
+        {
+            for (int i = 0; i < _items.Count; i++) _items[i].STT = i + 1;
+            dgvMission.Refresh();
+            PushGridToMap();
+        }
+
+        private void PushGridToMap()
+        {
+            if (webView21?.CoreWebView2 == null) return;
+            var payload = _items.Select(r => new { lat = r.Lat, lon = r.Long, alt = r.Alt });
+            var msg = System.Text.Json.JsonSerializer.Serialize(new { type = "SET_WAYPOINTS", payload });
+
+            webView21.CoreWebView2.PostWebMessageAsJson(msg);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -73,20 +166,13 @@ namespace UAV_Timelapse
             float pitchDeg = (float)(TransmissionFrame.Att_Pitch * 180.0 / Math.PI);
             lblPitch.Text = pitchDeg.ToString("0.00");
 
-            //======================hud==========================
-            // ===== ADD: Cập nhật HUD từ TransmissionFrame =====
-
-            // Dùng lại các biến bạn đã tính ngay ở trên
+            // HUD
             float alt_m = (float)(TransmissionFrame.Gpi_RelAlt / 1000.0);
-            if (alt_m == 0f) alt_m = TransmissionFrame.Vfr_Alt; // fallback
+            if (alt_m == 0f) alt_m = TransmissionFrame.Vfr_Alt;
 
-            double yaw360 = yawDeg;
-            if (yaw360 < 0) yaw360 += 360.0;
-
-            // Armed flag từ base_mode
+            double yaw360 = yawDeg; if (yaw360 < 0) yaw360 += 360.0;
             bool armed = (TransmissionFrame.Hb_base_mode & MODE_FLAG_ARMED) != 0;
 
-            // Gán vào HUD
             _hud.RollDeg = (float)(TransmissionFrame.Att_Roll * 180.0 / Math.PI);
             _hud.PitchDeg = (float)(TransmissionFrame.Att_Pitch * 180.0 / Math.PI);
             _hud.YawDeg = (float)yaw360;
@@ -100,10 +186,9 @@ namespace UAV_Timelapse
             _hud.ModeText = ((MAVLink.MAV_MODE_FLAG)TransmissionFrame.Hb_base_mode).ToString();
             _hud.GpsText = (TransmissionFrame.Gpi_Hdg == ushort.MaxValue) ? "No GPS" : "OK";
 
-            // Pin: ưu tiên SYS_STATUS nếu có
             if (TransmissionFrame.Sys_Voltage_battery > 0)
             {
-                var v = TransmissionFrame.Sys_Voltage_battery / 1000.0; // mV -> V
+                var v = TransmissionFrame.Sys_Voltage_battery / 1000.0;
                 var r = TransmissionFrame.Sys_Battery_remaining;
                 _hud.BattText = $"Bat {v:0.00}V {r}%";
             }
@@ -112,61 +197,76 @@ namespace UAV_Timelapse
                 _hud.BattText = $"Bat {TransmissionFrame.Vfr_Throttle}%";
             }
 
-            // Vẽ lại
             _hud.Invalidate();
-            //==========================
         }
 
         private async void User_Data_Load(object sender, EventArgs e)
         {
-            await webView21.EnsureCoreWebView2Async();
+            // Khởi tạo WebView2
+            await webView21.EnsureCoreWebView2Async(null);
 
+            // Quyền geolocation nếu dùng
             webView21.CoreWebView2.PermissionRequested += (s, ev) =>
             {
-                if (ev.PermissionKind ==
-                    Microsoft.Web.WebView2.Core.CoreWebView2PermissionKind.Geolocation)
-                    ev.State = Microsoft.Web.WebView2.Core.CoreWebView2PermissionState.Allow;
+                if (ev.PermissionKind == CoreWebView2PermissionKind.Geolocation)
+                    ev.State = CoreWebView2PermissionState.Allow;
             };
 
+            // Một handler duy nhất cho mọi message từ HTML
             webView21.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
 
-            webView21.CoreWebView2.NavigationCompleted += async (s, ev) =>
-            {
-                if (ev.IsSuccess && webView21.CoreWebView2 != null)
-                    await webView21.CoreWebView2.ExecuteScriptAsync("requestCurrentLocation();");
-            };
-
+            // Nạp map.html
             var htmlFilePath = Path.Combine(Application.StartupPath, "map.html");
             if (File.Exists(htmlFilePath))
                 webView21.Source = new Uri(htmlFilePath);
         }
 
-        private void CoreWebView2_WebMessageReceived(object sender, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
+        private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             void Handle()
             {
-                dynamic data = Newtonsoft.Json.JsonConvert.DeserializeObject(e.WebMessageAsJson);
-                string type = data.type ?? "";
-
-                if (type == "currentLocation" || type == "watch")
+                using (var doc = System.Text.Json.JsonDocument.Parse(e.WebMessageAsJson))
                 {
-                    double lat = data.lat, lng = data.lng, acc = data.acc;
-                    // cập nhật label nếu muốn
-                    //lblLat.Text = lat.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
-                    //lblLng.Text = lng.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
-                    //lblAcc.Text = $"±{acc:0} m";
+                    var root = doc.RootElement;
 
+                    string type = root.TryGetProperty("type", out var t) ? (t.GetString() ?? "") : "";
+
+                    if (string.Equals(type, "MISSION_CHANGED", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var payload = root.GetProperty("payload");
+                        var arr = payload.GetProperty("waypoints").EnumerateArray();
+
+                        _items.RaiseListChangedEvents = false;
+                        _items.Clear();
+                        int i = 1;
+                        foreach (var it in arr)
+                        {
+                            _items.Add(new MissionItem
+                            {
+                                STT = i++,
+                                Lat = it.GetProperty("lat").GetDouble(),
+                                Long = it.GetProperty("lon").GetDouble(),
+                                Alt = it.GetProperty("alt").GetDouble(),
+                                Command = "WAYPOINT",
+                                Frame = "Relative"
+                            });
+                        }
+                        _items.RaiseListChangedEvents = true;
+                        dgvMission.Refresh();
+                    }
+                    else if (type == "currentLocation" || type == "watch")
+                    {
+                        // xử lý nếu cần
+                    }
+                    else if (type == "geoError")
+                    {
+                        string msg = root.TryGetProperty("message", out var m) ? (m.GetString() ?? "Geo error") : "Geo error";
+                        MessageBox.Show(msg, "Geolocation");
+                    }
                 }
-                else if (type == "geoError")
-                {
-                    MessageBox.Show((string)data.message, "Geolocation");
-                }
-                // else: click map (lat/lng không có type) -> xử lý nếu cần
             }
-
             if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
         }
+
     }
 }
-
-

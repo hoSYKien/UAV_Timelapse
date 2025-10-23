@@ -284,9 +284,10 @@ namespace UAV_Timelapse
         
         private void btnOptional_Click(object sender, EventArgs e)
         {
+            int tmp = PanelOptional.Height;
             if(checkBtnOption)
             {
-                for(int i = 430; i > 0; i-=20)
+                for(int i = tmp; i > 0; i-=20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
@@ -296,7 +297,7 @@ namespace UAV_Timelapse
             else
             {
                 PanelOptional.Visible = true;
-                for (int i = 0; i <= 430; i+=20)
+                for (int i = 0; i <= tmp; i+=20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
@@ -316,8 +317,8 @@ namespace UAV_Timelapse
 
         private void btnData_Click(object sender, EventArgs e)
         {
-            if (checkBtnData)
-            {
+            //if (checkBtnData)
+            //{
                 // Thu panelSetup về 0 width
                 for (int w = panelSetup.Width; w > 0; w -= 20)
                 {
@@ -328,19 +329,11 @@ namespace UAV_Timelapse
                 checkBtnData = false;
 
                 addUserControl(user_Data);
-            }
-            else
-            {
-                panelSetup.Visible = true;
-                int target = btnInstallFirmware.Width + 5; // width mục tiêu
-                for (int w = panelSetup.Width; w < target; w += 20)
-                {
-                    panelSetup.Width = w;
-                    panelSetup.Refresh();
-                }
-                panelSetup.Width = target;
-                checkBtnData = true;
-            }
+            //}
+            //else
+            //{
+                
+            //}
         }
 
 
@@ -567,6 +560,21 @@ namespace UAV_Timelapse
         private void btnCompass_Click(object sender, EventArgs e)
         {
             addUserControl(user_Compass);
+        }
+
+        private void btnSetUp_Click(object sender, EventArgs e)
+        {
+            panelSetup.Visible = true;
+            int target = btnInstallFirmware.Width + 5; // width mục tiêu
+            for (int w = panelSetup.Width; w < target; w += 40)
+            {
+                panelSetup.Width = w;
+                panelSetup.Refresh();
+            }
+            panelSetup.Width = target;
+            checkBtnData = true;
+
+            addUserControl(user_Install_Firmware);
         }
 
         private void SendPacket(MAVLINK_MSG_ID id, object payload)

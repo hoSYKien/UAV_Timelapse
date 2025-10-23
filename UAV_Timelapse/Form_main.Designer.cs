@@ -46,12 +46,17 @@
             this.comboBoxBaudrate = new System.Windows.Forms.ComboBox();
             this.comboBoxPorts = new System.Windows.Forms.ComboBox();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.btnSetUp = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelSetup = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnFrameType = new System.Windows.Forms.Button();
+            this.btnAccelCalibration = new System.Windows.Forms.Button();
+            this.btnCompass = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.button1 = new System.Windows.Forms.Button();
             this.PanelOptional = new System.Windows.Forms.FlowLayoutPanel();
             this.btnRTK_GPS = new System.Windows.Forms.Button();
             this.btnCAN_GPS = new System.Windows.Forms.Button();
@@ -65,11 +70,6 @@
             this.btnOptional = new System.Windows.Forms.Button();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnInstallFirmware = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnFrameType = new System.Windows.Forms.Button();
-            this.btnAccelCalibration = new System.Windows.Forms.Button();
-            this.btnCompass = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
@@ -80,14 +80,14 @@
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnConnect)).BeginInit();
             this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetUp)).BeginInit();
             this.panel2.SuspendLayout();
             this.panelSetup.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel4.SuspendLayout();
             this.PanelOptional.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -111,7 +111,7 @@
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBox1.Image = global::UAV_Timelapse.Properties.Resources.VIETPILOT;
             this.pictureBox1.Location = new System.Drawing.Point(587, -2);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(159, 76);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -273,7 +273,7 @@
             // 
             // panel6
             // 
-            this.panel6.Controls.Add(this.pictureBox3);
+            this.panel6.Controls.Add(this.btnSetUp);
             this.panel6.Controls.Add(this.label2);
             this.panel6.Location = new System.Drawing.Point(87, 2);
             this.panel6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -281,17 +281,18 @@
             this.panel6.Size = new System.Drawing.Size(69, 80);
             this.panel6.TabIndex = 8;
             // 
-            // pictureBox3
+            // btnSetUp
             // 
-            this.pictureBox3.BackColor = System.Drawing.Color.White;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(3, 2);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(65, 53);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox3.TabIndex = 2;
-            this.pictureBox3.TabStop = false;
+            this.btnSetUp.BackColor = System.Drawing.Color.White;
+            this.btnSetUp.Image = ((System.Drawing.Image)(resources.GetObject("btnSetUp.Image")));
+            this.btnSetUp.Location = new System.Drawing.Point(3, 2);
+            this.btnSetUp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnSetUp.Name = "btnSetUp";
+            this.btnSetUp.Size = new System.Drawing.Size(65, 53);
+            this.btnSetUp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnSetUp.TabIndex = 2;
+            this.btnSetUp.TabStop = false;
+            this.btnSetUp.Click += new System.EventHandler(this.btnSetUp_Click);
             // 
             // label2
             // 
@@ -316,10 +317,10 @@
             // panelMain
             // 
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMain.Location = new System.Drawing.Point(222, 0);
+            this.panelMain.Location = new System.Drawing.Point(197, 0);
             this.panelMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(1320, 789);
+            this.panelMain.Size = new System.Drawing.Size(1345, 789);
             this.panelMain.TabIndex = 2;
             // 
             // panelSetup
@@ -336,8 +337,56 @@
             this.panelSetup.Location = new System.Drawing.Point(0, 0);
             this.panelSetup.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelSetup.Name = "panelSetup";
-            this.panelSetup.Size = new System.Drawing.Size(222, 789);
+            this.panelSetup.Size = new System.Drawing.Size(197, 789);
             this.panelSetup.TabIndex = 0;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.btnFrameType);
+            this.flowLayoutPanel2.Controls.Add(this.btnAccelCalibration);
+            this.flowLayoutPanel2.Controls.Add(this.btnCompass);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 569);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(197, 164);
+            this.flowLayoutPanel2.TabIndex = 0;
+            // 
+            // btnFrameType
+            // 
+            this.btnFrameType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnFrameType.Location = new System.Drawing.Point(25, 2);
+            this.btnFrameType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnFrameType.Name = "btnFrameType";
+            this.btnFrameType.Size = new System.Drawing.Size(169, 48);
+            this.btnFrameType.TabIndex = 10;
+            this.btnFrameType.Text = "Frame Type";
+            this.btnFrameType.UseVisualStyleBackColor = false;
+            this.btnFrameType.Click += new System.EventHandler(this.btnFrameType_Click);
+            // 
+            // btnAccelCalibration
+            // 
+            this.btnAccelCalibration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnAccelCalibration.Location = new System.Drawing.Point(25, 54);
+            this.btnAccelCalibration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnAccelCalibration.Name = "btnAccelCalibration";
+            this.btnAccelCalibration.Size = new System.Drawing.Size(169, 48);
+            this.btnAccelCalibration.TabIndex = 11;
+            this.btnAccelCalibration.Text = "Accel Calibration";
+            this.btnAccelCalibration.UseVisualStyleBackColor = false;
+            this.btnAccelCalibration.Click += new System.EventHandler(this.btnAccelCalibration_Click);
+            // 
+            // btnCompass
+            // 
+            this.btnCompass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnCompass.Location = new System.Drawing.Point(25, 106);
+            this.btnCompass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnCompass.Name = "btnCompass";
+            this.btnCompass.Size = new System.Drawing.Size(169, 48);
+            this.btnCompass.TabIndex = 12;
+            this.btnCompass.Text = "Compass";
+            this.btnCompass.UseVisualStyleBackColor = false;
+            this.btnCompass.Click += new System.EventHandler(this.btnCompass_Click);
             // 
             // flowLayoutPanel4
             // 
@@ -346,8 +395,19 @@
             this.flowLayoutPanel4.Location = new System.Drawing.Point(0, 519);
             this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(222, 50);
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(197, 50);
             this.flowLayoutPanel4.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.button1.Location = new System.Drawing.Point(3, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(194, 42);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Mandatory Hardware";
+            this.button1.UseVisualStyleBackColor = false;
             // 
             // PanelOptional
             // 
@@ -364,13 +424,13 @@
             this.PanelOptional.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.PanelOptional.Name = "PanelOptional";
             this.PanelOptional.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.PanelOptional.Size = new System.Drawing.Size(222, 420);
+            this.PanelOptional.Size = new System.Drawing.Size(197, 420);
             this.PanelOptional.TabIndex = 0;
             // 
             // btnRTK_GPS
             // 
             this.btnRTK_GPS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnRTK_GPS.Location = new System.Drawing.Point(50, 2);
+            this.btnRTK_GPS.Location = new System.Drawing.Point(25, 2);
             this.btnRTK_GPS.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRTK_GPS.Name = "btnRTK_GPS";
             this.btnRTK_GPS.Size = new System.Drawing.Size(169, 48);
@@ -382,7 +442,7 @@
             // btnCAN_GPS
             // 
             this.btnCAN_GPS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnCAN_GPS.Location = new System.Drawing.Point(50, 54);
+            this.btnCAN_GPS.Location = new System.Drawing.Point(25, 54);
             this.btnCAN_GPS.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCAN_GPS.Name = "btnCAN_GPS";
             this.btnCAN_GPS.Size = new System.Drawing.Size(169, 48);
@@ -394,7 +454,7 @@
             // btnJoystick
             // 
             this.btnJoystick.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnJoystick.Location = new System.Drawing.Point(50, 106);
+            this.btnJoystick.Location = new System.Drawing.Point(25, 106);
             this.btnJoystick.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnJoystick.Name = "btnJoystick";
             this.btnJoystick.Size = new System.Drawing.Size(169, 48);
@@ -406,7 +466,7 @@
             // btnComp_Motor
             // 
             this.btnComp_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnComp_Motor.Location = new System.Drawing.Point(50, 158);
+            this.btnComp_Motor.Location = new System.Drawing.Point(25, 158);
             this.btnComp_Motor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnComp_Motor.Name = "btnComp_Motor";
             this.btnComp_Motor.Size = new System.Drawing.Size(169, 48);
@@ -418,7 +478,7 @@
             // btnRangerFinder
             // 
             this.btnRangerFinder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnRangerFinder.Location = new System.Drawing.Point(50, 210);
+            this.btnRangerFinder.Location = new System.Drawing.Point(25, 210);
             this.btnRangerFinder.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRangerFinder.Name = "btnRangerFinder";
             this.btnRangerFinder.Size = new System.Drawing.Size(169, 48);
@@ -430,7 +490,7 @@
             // btnOpticalFlow_OSD
             // 
             this.btnOpticalFlow_OSD.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnOpticalFlow_OSD.Location = new System.Drawing.Point(50, 262);
+            this.btnOpticalFlow_OSD.Location = new System.Drawing.Point(25, 262);
             this.btnOpticalFlow_OSD.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnOpticalFlow_OSD.Name = "btnOpticalFlow_OSD";
             this.btnOpticalFlow_OSD.Size = new System.Drawing.Size(169, 48);
@@ -442,7 +502,7 @@
             // btnCamGimbal
             // 
             this.btnCamGimbal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnCamGimbal.Location = new System.Drawing.Point(50, 314);
+            this.btnCamGimbal.Location = new System.Drawing.Point(25, 314);
             this.btnCamGimbal.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCamGimbal.Name = "btnCamGimbal";
             this.btnCamGimbal.Size = new System.Drawing.Size(169, 48);
@@ -454,7 +514,7 @@
             // btnMotorTest
             // 
             this.btnMotorTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnMotorTest.Location = new System.Drawing.Point(50, 366);
+            this.btnMotorTest.Location = new System.Drawing.Point(25, 366);
             this.btnMotorTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnMotorTest.Name = "btnMotorTest";
             this.btnMotorTest.Size = new System.Drawing.Size(169, 48);
@@ -470,7 +530,7 @@
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 49);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(222, 50);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(197, 50);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // btnOptional
@@ -492,7 +552,7 @@
             this.flowLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(222, 49);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(197, 49);
             this.flowLayoutPanel3.TabIndex = 1;
             // 
             // btnInstallFirmware
@@ -506,65 +566,6 @@
             this.btnInstallFirmware.Text = "Install Firmware";
             this.btnInstallFirmware.UseVisualStyleBackColor = false;
             this.btnInstallFirmware.Click += new System.EventHandler(this.btnInstallFirmware_Click);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.button1.Location = new System.Drawing.Point(3, 2);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(194, 42);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Optional Hardware";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Controls.Add(this.btnFrameType);
-            this.flowLayoutPanel2.Controls.Add(this.btnAccelCalibration);
-            this.flowLayoutPanel2.Controls.Add(this.btnCompass);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 569);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(222, 164);
-            this.flowLayoutPanel2.TabIndex = 0;
-            // 
-            // btnFrameType
-            // 
-            this.btnFrameType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnFrameType.Location = new System.Drawing.Point(50, 2);
-            this.btnFrameType.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnFrameType.Name = "btnFrameType";
-            this.btnFrameType.Size = new System.Drawing.Size(169, 48);
-            this.btnFrameType.TabIndex = 10;
-            this.btnFrameType.Text = "Frame Type";
-            this.btnFrameType.UseVisualStyleBackColor = false;
-            this.btnFrameType.Click += new System.EventHandler(this.btnFrameType_Click);
-            // 
-            // btnAccelCalibration
-            // 
-            this.btnAccelCalibration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnAccelCalibration.Location = new System.Drawing.Point(50, 54);
-            this.btnAccelCalibration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnAccelCalibration.Name = "btnAccelCalibration";
-            this.btnAccelCalibration.Size = new System.Drawing.Size(169, 48);
-            this.btnAccelCalibration.TabIndex = 11;
-            this.btnAccelCalibration.Text = "Accel Calibration";
-            this.btnAccelCalibration.UseVisualStyleBackColor = false;
-            this.btnAccelCalibration.Click += new System.EventHandler(this.btnAccelCalibration_Click);
-            // 
-            // btnCompass
-            // 
-            this.btnCompass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnCompass.Location = new System.Drawing.Point(50, 106);
-            this.btnCompass.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnCompass.Name = "btnCompass";
-            this.btnCompass.Size = new System.Drawing.Size(169, 48);
-            this.btnCompass.TabIndex = 12;
-            this.btnCompass.Text = "Compass";
-            this.btnCompass.UseVisualStyleBackColor = false;
-            this.btnCompass.Click += new System.EventHandler(this.btnCompass_Click);
             // 
             // Form_Main
             // 
@@ -591,14 +592,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.btnConnect)).EndInit();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSetUp)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panelSetup.ResumeLayout(false);
+            this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel4.ResumeLayout(false);
             this.PanelOptional.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -606,7 +607,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox btnSetUp;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox btnData;
         private System.Windows.Forms.Label label3;
