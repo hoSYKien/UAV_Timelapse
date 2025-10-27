@@ -84,28 +84,31 @@ namespace UAV_Timelapse
         private void picUndefined_Click(object sender, EventArgs e)
         {
             SelectFrame(picUndefined);
-
+            //grbFrameType enable false
         }
 
         private void picQuad_Click(object sender, EventArgs e)
         {
             SelectFrame(picQuad);
-
+            //rbtY6B enable false
         }
 
         private void picHexa_Click(object sender, EventArgs e)
         {
             SelectFrame(picHexa);
+            //rbt V VTail H Y6B enable false
         }
 
         private void picOcta_Click(object sender, EventArgs e)
         {
             SelectFrame(picOcta);
+            //rbt Y6B enable false
         }
 
         private void picX8_Click(object sender, EventArgs e)
         {
             SelectFrame(picX8);
+            //rbtH 
         }
 
         private void picX6_Click(object sender, EventArgs e)

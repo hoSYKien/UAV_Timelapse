@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static MAVLink;
 namespace UAV_Timelapse
@@ -62,6 +58,7 @@ namespace UAV_Timelapse
         User_Frame_Type user_Frame_Type = new User_Frame_Type();
         User_Accel_Calibration user_Accel_Calibration = new User_Accel_Calibration();
         User_Compass user_Compass = new User_Compass();
+        User_Radio_Calibration user_Radio_Calibration = new User_Radio_Calibration();
         /*------------------------------------------*/
 
         public Form_Main()
@@ -297,7 +294,7 @@ namespace UAV_Timelapse
         {
 
         }
-        
+
         private void btnOptional_Click(object sender, EventArgs e)
         {
             //int tmp = PanelOptional.Height;
@@ -317,7 +314,7 @@ namespace UAV_Timelapse
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
-                
+
                 checkBtnOption = true;
             }
         }
@@ -335,69 +332,69 @@ namespace UAV_Timelapse
         {
             //if (checkBtnData)
             //{
-                // Thu panelSetup về 0 width
-                for (int w = panelSetup.Width; w > 0; w -= 20)
-                {
-                    panelSetup.Width = w;
-                    panelSetup.Refresh();
-                }
-                panelSetup.Visible = false;
-                checkBtnData = false;
+            // Thu panelSetup về 0 width
+            for (int w = panelSetup.Width; w > 0; w -= 20)
+            {
+                panelSetup.Width = w;
+                panelSetup.Refresh();
+            }
+            panelSetup.Visible = false;
+            checkBtnData = false;
 
-                addUserControl(user_Data);
+            addUserControl(user_Data);
             //}
             //else
             //{
-                
+
             //}
         }
 
 
         private void btnRTK_GPS_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(userRTK);
         }
 
         private void btnCAN_GPS_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(userCan);
         }
-        
+
         private void btnJoystick_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(user_Joystick);
         }
 
         private void btnComp_Motor_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(userComp);
         }
 
         private void btnRangerFinder_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(user_Range_Finder);
         }
 
         private void btnOpticalFlow_OSD_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(user_Optical_Flow_And_OSD);
         }
-            
+
         private void btnCamGimbal_Click(object sender, EventArgs e)
         {
-            
-            addUserControl (user_Camera_Gimbal);
+
+            addUserControl(user_Camera_Gimbal);
         }
 
         private void btnMotorTest_Click(object sender, EventArgs e)
         {
-            
+
             addUserControl(user_Motor_Test);
         }
 
@@ -579,7 +576,10 @@ namespace UAV_Timelapse
         {
             addUserControl(user_Compass);
         }
-
+        private void btnRadioCalib_Click(object sender, EventArgs e)
+        {
+            addUserControl(user_Radio_Calibration);
+        }
         private void btnSetUp_Click(object sender, EventArgs e)
         {
             panelSetup.Visible = true;
@@ -595,12 +595,42 @@ namespace UAV_Timelapse
             addUserControl(user_Install_Firmware);
         }
 
+
+
         private void SendPacket(MAVLINK_MSG_ID id, object payload)
         {
             if (!serialPort1.IsOpen) return;
             // Overload trong MAVLink.dll của bạn: (id, payload, bool sign=false)
             byte[] pkt = mavlink.GenerateMAVLinkPacket20(id, payload);
             serialPort1.Write(pkt, 0, pkt.Length);
+        }
+        private static ushort ClampUs(int v)
+        {
+            if (v < 0) return 0;          // 0 = kênh không hợp lệ/không dùng (ArduPilot có thể gửi 0)
+            if (v < 1000) return 1000;
+            if (v > 2000) return 2000;
+            return (ushort)v;
+        }
+
+        private void UpdateRcFromChannels(MAVLink.mavlink_rc_channels_t m)
+        {
+            TransmissionFrame.Rc_Ch1 = ClampUs(m.chan1_raw);
+            TransmissionFrame.Rc_Ch2 = ClampUs(m.chan2_raw);
+            TransmissionFrame.Rc_Ch3 = ClampUs(m.chan3_raw);
+            TransmissionFrame.Rc_Ch4 = ClampUs(m.chan4_raw);
+            TransmissionFrame.Rc_Ch5 = ClampUs(m.chan5_raw);
+            TransmissionFrame.Rc_Ch6 = ClampUs(m.chan6_raw);
+            TransmissionFrame.Rc_Ch7 = ClampUs(m.chan7_raw);
+            TransmissionFrame.Rc_Ch8 = ClampUs(m.chan8_raw);
+            TransmissionFrame.Rc_Ch9 = ClampUs(m.chan9_raw);
+            TransmissionFrame.Rc_Ch10 = ClampUs(m.chan10_raw);
+            TransmissionFrame.Rc_Ch11 = ClampUs(m.chan11_raw);
+            TransmissionFrame.Rc_Ch12 = ClampUs(m.chan12_raw);
+            TransmissionFrame.Rc_Ch13 = ClampUs(m.chan13_raw);
+            TransmissionFrame.Rc_Ch14 = ClampUs(m.chan14_raw);
+            TransmissionFrame.Rc_Ch15 = ClampUs(m.chan15_raw);
+            TransmissionFrame.Rc_Ch16 = ClampUs(m.chan16_raw);
+            TransmissionFrame.Rc_RSSI = m.rssi; // 0..255
         }
     }
 }
