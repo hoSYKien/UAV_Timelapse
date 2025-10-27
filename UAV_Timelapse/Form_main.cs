@@ -44,6 +44,7 @@ namespace UAV_Timelapse
         private MAVLink.mavlink_heartbeat_t? heartbeat;
         private MAVLink.mavlink_attitude_t? attitude;
         private MAVLink.mavlink_highres_imu_t? imu;
+        private MAVLink.mavlink_gps_raw_int_t? gpsRaw;  // thêm
 
         // Buffer toàn cục để xử lý packet chưa đầy
         private List<byte> mavlinkBuffer = new List<byte>();
@@ -125,6 +126,10 @@ namespace UAV_Timelapse
                                 case MAVLink.MAVLINK_MSG_ID.HIGHRES_IMU:
                                     imu = (MAVLink.mavlink_highres_imu_t)msg.data;
                                     break;
+                                case MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT:
+                                    gpsRaw = (MAVLink.mavlink_gps_raw_int_t)msg.data; // lưu lại để UpdateTelemetryDisplay dùng
+                                    break;
+
                             }
                         }
                     }
@@ -146,97 +151,108 @@ namespace UAV_Timelapse
 
         private void UpdateTelemetryDisplay()
         {
-            if (hud == null || globalPos == null || heartbeat == null)
-                return;
+            // ===== GPS_RAW_INT (nếu có) =====
+            if (gpsRaw.HasValue)
+            {
+                var gr = gpsRaw.Value;
 
-            var h = hud.Value;
-            var g = globalPos.Value;
-            var hb = heartbeat.Value;
+                // raw giữ nguyên đơn vị MAVLink
+                TransmissionFrame.Gps_FixType = gr.fix_type;
+                TransmissionFrame.Gps_SatellitesVisible = gr.satellites_visible;
+                TransmissionFrame.Gps_Eph = gr.eph;   // cm
+                TransmissionFrame.Gps_Epv = gr.epv;   // cm
+                TransmissionFrame.Gps_Vel = gr.vel;   // cm/s
+                TransmissionFrame.Gps_Cog = gr.cog;   // cdeg
+                TransmissionFrame.Gps_Lat = gr.lat;   // 1e-7 deg
+                TransmissionFrame.Gps_Lon = gr.lon;   // 1e-7 deg
+                TransmissionFrame.Gps_Alt = gr.alt;   // mm
 
+                // đổi đơn vị (tuỳ chọn, dễ hiển thị)
+                TransmissionFrame.Gps_LatDeg = gr.lat * 1e-7;
+                TransmissionFrame.Gps_LonDeg = gr.lon * 1e-7;
+                TransmissionFrame.Gps_Alt_m = gr.alt / 1000.0;          // mm -> m
+                TransmissionFrame.Gps_Spd_mps = gr.vel / 100.0;           // cm/s -> m/s
+                TransmissionFrame.Gps_Cog_deg = (gr.cog == 65535) ? -1.0  // unknown
+                                             : (gr.cog / 100.0);          // cdeg -> deg
+            }
 
+            // ===== GLOBAL_POSITION_INT + các khối khác chỉ cập nhật khi có =====
+            if (globalPos.HasValue)
+            {
+                var g = globalPos.Value;
 
-            // Vận tốc từ globalPos (cm/s -> m/s)
-            double vx = g.vx / 100.0;
-            double vy = g.vy / 100.0;
-            double vz = g.vz / 100.0;
+                // raw
+                TransmissionFrame.Gpi_Lat = g.lat;
+                TransmissionFrame.Gpi_Lon = g.lon;
+                TransmissionFrame.Gpi_Alt = g.alt;
+                TransmissionFrame.Gpi_RelAlt = g.relative_alt;
+                TransmissionFrame.Gpi_Vx = g.vx;
+                TransmissionFrame.Gpi_Vy = g.vy;
+                TransmissionFrame.Gpi_Vz = g.vz;
+                TransmissionFrame.Gpi_Hdg = g.hdg;
 
-            // Góc từ attitude (rad -> deg)
-            double roll = (attitude?.roll ?? 0) * 180.0 / Math.PI;
-            double pitch = (attitude?.pitch ?? 0) * 180.0 / Math.PI;
-            double yaw = (attitude?.yaw ?? 0) * 180.0 / Math.PI;
+                // đổi đơn vị
+                TransmissionFrame.Gpi_LatDeg = g.lat * 1e-7;
+                TransmissionFrame.Gpi_LonDeg = g.lon * 1e-7;
+                TransmissionFrame.Gpi_Alt_m = g.alt / 1000.0;           // mm -> m
+                TransmissionFrame.Gpi_RelAlt_m = g.relative_alt / 1000.0;  // mm -> m
+                TransmissionFrame.Gpi_Vx_mps = g.vx / 100.0;             // cm/s -> m/s
+                TransmissionFrame.Gpi_Vy_mps = g.vy / 100.0;
+                TransmissionFrame.Gpi_Vz_mps = g.vz / 100.0;
+                TransmissionFrame.Gpi_Hdg_deg = (g.hdg == 65535) ? -1.0 : (g.hdg / 100.0);
+            }
 
-            // Vận tốc góc (rad/s -> deg/s)
-            double rollSpeed = (attitude?.rollspeed ?? 0) * 180.0 / Math.PI;
-            double pitchSpeed = (attitude?.pitchspeed ?? 0) * 180.0 / Math.PI;
-            double yawSpeed = (attitude?.yawspeed ?? 0) * 180.0 / Math.PI;
+            if (heartbeat.HasValue)
+            {
+                var hb = heartbeat.Value;
+                TransmissionFrame.Hb_type = hb.type;
+                TransmissionFrame.Hb_autopilot = hb.autopilot;
+                TransmissionFrame.Hb_base_mode = hb.base_mode;
+                TransmissionFrame.Hb_custom_mode = hb.custom_mode;
+                TransmissionFrame.Hb_system_status = hb.system_status;
+            }
 
-            // Gia tốc tuyến tính từ HIGHRES_IMU (m/s²)
-            double ax = imu?.xacc ?? 0;
-            double ay = imu?.yacc ?? 0;
-            double az = imu?.zacc ?? 0;
+            if (hud.HasValue)
+            {
+                var h = hud.Value;
+                TransmissionFrame.Vfr_Airspeed = h.airspeed;
+                TransmissionFrame.Vfr_Groundspeed = h.groundspeed;
+                TransmissionFrame.Vfr_Heading = (short)h.heading;
+                TransmissionFrame.Vfr_Throttle = (ushort)h.throttle;
+                TransmissionFrame.Vfr_Alt = h.alt;
+                TransmissionFrame.Vfr_Climb = h.climb;
+            }
 
-            // Vận tốc góc từ HIGHRES_IMU (rad/s -> deg/s)
-            double gx = (imu?.xgyro ?? 0) * 180.0 / Math.PI;
-            double gy = (imu?.ygyro ?? 0) * 180.0 / Math.PI;
-            double gz = (imu?.zgyro ?? 0) * 180.0 / Math.PI;
-
-            // ===== HEARTBEAT =====
-            TransmissionFrame.Hb_type = hb.type;
-            TransmissionFrame.Hb_autopilot = hb.autopilot;
-            TransmissionFrame.Hb_base_mode = hb.base_mode;
-            TransmissionFrame.Hb_custom_mode = hb.custom_mode;
-            TransmissionFrame.Hb_system_status = hb.system_status;
-
-            // ===== GLOBAL_POSITION_INT =====
-            TransmissionFrame.Gpi_Lat = g.lat;          // 1e-7 deg
-            TransmissionFrame.Gpi_Lon = g.lon;          // 1e-7 deg
-            TransmissionFrame.Gpi_Alt = g.alt;          // mm AMSL
-            TransmissionFrame.Gpi_RelAlt = g.relative_alt; // mm
-            TransmissionFrame.Gpi_Vx = g.vx;           // cm/s (NED)
-            TransmissionFrame.Gpi_Vy = g.vy;           // cm/s
-            TransmissionFrame.Gpi_Vz = g.vz;           // cm/s
-            TransmissionFrame.Gpi_Hdg = g.hdg;          // cdeg
-
-            // ===== VFR_HUD =====
-            TransmissionFrame.Vfr_Airspeed = h.airspeed;    // m/s
-            TransmissionFrame.Vfr_Groundspeed = h.groundspeed; // m/s
-            TransmissionFrame.Vfr_Heading = (short)h.heading;   // deg
-            TransmissionFrame.Vfr_Throttle = (ushort)h.throttle; // %
-            TransmissionFrame.Vfr_Alt = h.alt;         // m AMSL (theo VFR_HUD)
-            TransmissionFrame.Vfr_Climb = h.climb;       // m/s
-
-            // ===== ATTITUDE (nếu có) =====
             if (attitude.HasValue)
             {
                 var at = attitude.Value;
-                TransmissionFrame.Att_Roll = at.roll;       // rad
-                TransmissionFrame.Att_Pitch = at.pitch;      // rad
-                TransmissionFrame.Att_Yaw = at.yaw;        // rad
-                TransmissionFrame.Att_Rollspeed = at.rollspeed;  // rad/s
-                TransmissionFrame.Att_Pitchspeed = at.pitchspeed; // rad/s
-                TransmissionFrame.Att_Yawspeed = at.yawspeed;   // rad/s
+                TransmissionFrame.Att_Roll = at.roll;
+                TransmissionFrame.Att_Pitch = at.pitch;
+                TransmissionFrame.Att_Yaw = at.yaw;
+                TransmissionFrame.Att_Rollspeed = at.rollspeed;
+                TransmissionFrame.Att_Pitchspeed = at.pitchspeed;
+                TransmissionFrame.Att_Yawspeed = at.yawspeed;
             }
 
-            // ===== HIGHRES_IMU (nếu có) =====
             if (imu.HasValue)
             {
                 var im = imu.Value;
-                TransmissionFrame.Imu_Xacc = im.xacc;          // m/s^2
+                TransmissionFrame.Imu_Xacc = im.xacc;
                 TransmissionFrame.Imu_Yacc = im.yacc;
                 TransmissionFrame.Imu_Zacc = im.zacc;
-                TransmissionFrame.Imu_Xgyro = im.xgyro;         // rad/s
+                TransmissionFrame.Imu_Xgyro = im.xgyro;
                 TransmissionFrame.Imu_Ygyro = im.ygyro;
                 TransmissionFrame.Imu_Zgyro = im.zgyro;
-                TransmissionFrame.Imu_Xmag = im.xmag;          // Gauss
+                TransmissionFrame.Imu_Xmag = im.xmag;
                 TransmissionFrame.Imu_Ymag = im.ymag;
                 TransmissionFrame.Imu_Zmag = im.zmag;
-                TransmissionFrame.Imu_AbsPressure = im.abs_pressure;  // mbar
-                TransmissionFrame.Imu_DiffPressure = im.diff_pressure; // mbar
-                TransmissionFrame.Imu_PressureAlt = im.pressure_alt;  // m
-                TransmissionFrame.Imu_Temperature = im.temperature;   // °C
+                TransmissionFrame.Imu_AbsPressure = im.abs_pressure;
+                TransmissionFrame.Imu_DiffPressure = im.diff_pressure;
+                TransmissionFrame.Imu_PressureAlt = im.pressure_alt;
+                TransmissionFrame.Imu_Temperature = im.temperature;
             }
-
         }
+
 
         private void RefreshPorts()
         {
@@ -284,10 +300,10 @@ namespace UAV_Timelapse
         
         private void btnOptional_Click(object sender, EventArgs e)
         {
-            int tmp = PanelOptional.Height;
+            //int tmp = PanelOptional.Height;
             if(checkBtnOption)
             {
-                for(int i = tmp; i > 0; i-=20)
+                for(int i = 420; i > 0; i-=20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
@@ -297,7 +313,7 @@ namespace UAV_Timelapse
             else
             {
                 PanelOptional.Visible = true;
-                for (int i = 0; i <= tmp; i+=20)
+                for (int i = 0; i <= 420; i+=20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
@@ -428,6 +444,8 @@ namespace UAV_Timelapse
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GLOBAL_POSITION_INT, 10);
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.VFR_HUD, 10);
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.HIGHRES_IMU, 50);
+            SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT, 10); // ID 24
+            SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS2_RAW, 10);    // ID 124
 
         }
 

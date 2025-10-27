@@ -118,6 +118,22 @@ namespace UAV_Timelapse
         // ===== (Tuỳ chọn) EKF_STATUS_REPORT (nếu bạn cần hiển thị) =====
         // public static uint Ekf_Flags;
         // public static float Ekf_VelRatio, Ekf_PosHorizRatio, Ekf_PosVertRatio, Ekf_CompassRatio, Ekf_TerrainAlt, Ekf_ConstPosMode, Ekf_PredHorizPosError, Ekf_PredVertPosError;
+        // ===== Derived from GLOBAL_POSITION_INT (đổi đơn vị) =====
+        public static double Gpi_LatDeg;    // deg
+        public static double Gpi_LonDeg;    // deg
+        public static double Gpi_Alt_m;     // m AMSL
+        public static double Gpi_RelAlt_m;  // m AGL
+        public static double Gpi_Vx_mps;    // m/s (North)
+        public static double Gpi_Vy_mps;    // m/s (East)
+        public static double Gpi_Vz_mps;    // m/s (Down)
+        public static double Gpi_Hdg_deg;   // deg (0..359) hoặc -1 nếu unknown
+
+        // ===== Derived from GPS_RAW_INT (đổi đơn vị) =====
+        public static double Gps_LatDeg;    // deg
+        public static double Gps_LonDeg;    // deg
+        public static double Gps_Alt_m;     // m AMSL
+        public static double Gps_Spd_mps;   // m/s
+        public static double Gps_Cog_deg;   // deg (0..359) hoặc -1 nếu unknown
 
     }
 }
