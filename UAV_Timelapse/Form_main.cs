@@ -41,6 +41,7 @@ namespace UAV_Timelapse
         private MAVLink.mavlink_attitude_t? attitude;
         private MAVLink.mavlink_highres_imu_t? imu;
         private MAVLink.mavlink_gps_raw_int_t? gpsRaw;  // thêm
+        private MAVLink.mavlink_rc_channels_t? rcCh;
 
         // Buffer toàn cục để xử lý packet chưa đầy
         private List<byte> mavlinkBuffer = new List<byte>();
@@ -59,6 +60,7 @@ namespace UAV_Timelapse
         User_Accel_Calibration user_Accel_Calibration = new User_Accel_Calibration();
         User_Compass user_Compass = new User_Compass();
         User_Radio_Calibration user_Radio_Calibration = new User_Radio_Calibration();
+        User_Servo_Output user_Servo_Output = new User_Servo_Output();
         /*------------------------------------------*/
 
         public Form_Main()
@@ -126,7 +128,10 @@ namespace UAV_Timelapse
                                 case MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT:
                                     gpsRaw = (MAVLink.mavlink_gps_raw_int_t)msg.data; // lưu lại để UpdateTelemetryDisplay dùng
                                     break;
-
+                                case MAVLink.MAVLINK_MSG_ID.RC_CHANNELS:           // msg_id = 65
+                                    rcCh = (MAVLink.mavlink_rc_channels_t)msg.data;
+                                    UpdateRcFromChannels(rcCh.Value);
+                                    break;
                             }
                         }
                     }
@@ -443,6 +448,7 @@ namespace UAV_Timelapse
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.HIGHRES_IMU, 50);
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT, 10); // ID 24
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS2_RAW, 10);    // ID 124
+            SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.RC_CHANNELS, 20); // 20 Hz
 
         }
 
@@ -610,6 +616,11 @@ namespace UAV_Timelapse
             if (v < 1000) return 1000;
             if (v > 2000) return 2000;
             return (ushort)v;
+        }
+
+        private void btnServoOutput_Click(object sender, EventArgs e)
+        {
+            addUserControl(user_Servo_Output);
         }
 
         private void UpdateRcFromChannels(MAVLink.mavlink_rc_channels_t m)
