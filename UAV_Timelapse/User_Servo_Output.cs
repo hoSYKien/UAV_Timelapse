@@ -16,6 +16,5 @@ namespace UAV_Timelapse
         {
             InitializeComponent();
         }
-
     }
 }
