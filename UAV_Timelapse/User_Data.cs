@@ -343,6 +343,12 @@ namespace UAV_Timelapse
             }
             if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form_Uploader form_Uploader = new Form_Uploader();
+            form_Uploader.ShowDialog();
+        }
     }
 
     public class MissionItem

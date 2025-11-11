@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>VIETPILOT - Survey Grid Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toolbar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255,255,255,.95);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+            font-family: system-ui,sans-serif;
+        }
+
+            .toolbar button, .toolbar label {
+                padding: 6px 10px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background: #fff;
+                cursor: pointer;
+                font-size: 12px;
+            }
+
+                .toolbar button:hover, .toolbar label:hover {
+                    background: #f2f2f2;
+                }
+
+            .toolbar input[type=file] {
+                display: none;
+            }
+
+        .hint {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .panel {
+            position: absolute;
+            top: 70px;
+            left: 10px;
+            z-index: 900;
+            background: rgba(255,255,255,.98);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.2);
+            font-family: system-ui,sans-serif;
+            max-width: 520px;
+            line-height: 1.4;
+            font-size: 13px;
+        }
+
+            .panel h3 {
+                margin: 0 0 6px;
+                font-size: 14px;
+            }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6,auto);
+            gap: 6px;
+            align-items: center;
+        }
+
+            .grid input {
+                width: 84px;
+            }
+
+        .legend {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            z-index: 1000;
+            background: rgba(0,0,0,.6);
+            color: #fff;
+            font-size: 12px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            max-width: 520px;
+            line-height: 1.4;
+            font-family: system-ui,sans-serif;
+        }
+
+        .wp-icon {
+            background: #2ecc71;
+            color: #fff;
+            border-radius: 16px;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.3);
+        }
+
+        .home-icon {
+            background: #27ae60;
+            color: #fff;
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-weight: 700;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,.3);
+        }
+
+        .plus-icon {
+            background: #000;
+            color: #fff;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 14px;
+            border: 2px solid #ffd400;
+            box-shadow: 0 2px 5px rgba(0,0,0,.4);
+        }
+
+        .ctx {
+            position: absolute;
+            z-index: 1200;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.25);
+            overflow: hidden;
+            display: none;
+            min-width: 180px;
+            font-family: system-ui,sans-serif;
+        }
+
+            .ctx button {
+                display: block;
+                width: 100%;
+                padding: 8px 12px;
+                border: none;
+                background: #fff;
+                text-align: left;
+                cursor: pointer;
+            }
+
+                .ctx button:hover {
+                    background: #f5f5f5;
+                }
+
+        .poly-vertex {
+            background: #e74c3c;
+            border: 2px solid #fff;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 1px 4px rgba(0,0,0,.3);
+        }
+
+        .btn-on {
+            background: #ffd400 !important;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="btnClear">Clear</button>
+        <button id="btnSetHome">Set Home mode</button>
+        <button id="btnExport">Export .waypoints</button>
+        <label for="fileImport">Import .waypoints</label>
+        <input id="fileImport" type="file" accept=".waypoints,.txt" />
+        <button id="btnArea">Area mode</button>
+        <button id="btnAreaDone">Finish Area</button>
+        <button id="btnAreaClear">Clear Area</button>
+        <button id="btnMakeSurvey" style="font-weight:700">Make Survey Grid</button>
+        <button id="btnTogglePanel" title="Show/Hide Parameters">Parameters</button>
+        <span class="hint">Right-click map để mở menu nhanh.</span>
+    </div>
+
+    <div class="panel" id="panel">
+        <h3>Survey (Grid) Parameters</h3>
+        <div class="grid">
+            <label>Altitude (m)</label><input id="alt" type="number" value="100" step="1">
+            <label>Overlap %</label><input id="overlap" type="number" value="70" step="1">
+            <label>Sidelap %</label><input id="sidelap" type="number" value="65" step="1">
+            <label>Focal (mm)</label><input id="fmm" type="number" value="24" step="0.1">
+            <label>Sensor W (mm)</label><input id="sWmm" type="number" value="13.2" step="0.1">
+            <label>Sensor H (mm)</label><input id="sHmm" type="number" value="8.8" step="0.1">
+            <label>Image W (px)</label><input id="imgW" type="number" value="4000" step="1">
+            <label>Image H (px)</label><input id="imgH" type="number" value="3000" step="1">
+            <label>Grid angle (°)</label><input id="gridDeg" type="number" value="0" step="1">
+            <label><input type="checkbox" id="includeTakeoff" checked> Include TAKEOFF at Home</label>
+            <label><input type="checkbox" id="appendRTL" checked> Append RTL at end</label>
+
+            <label>Turnaround (m)</label><input id="turnaround" type="number" value="0" step="1">
+            <label>Start at Home</label>
+            <select id="startAtHome"><option value="yes">Yes</option><option value="no" selected>No</option></select>
+            <label>Cross-Hatch</label>
+            <select id="cross"><option value="no" selected>No</option><option value="yes">Yes</option></select>
+        </div>
+        <div class="hint" id="calcInfo">GSD, spacing, trigger distance will appear here…</div>
+    </div>
+
+    <div id="map"></div>
+    <div id="ctx" class="ctx"></div>
+    <div class="legend"><b>Use:</b> Click để thêm Waypoint. Right-click mở menu. <b>Area mode</b>: click vẽ đa giác, kéo để chỉnh; bấm <b>Finish Area</b> rồi <b>Make Survey Grid</b>.</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // ==== STATE ====
+        let map, waypoints = [], polyline = null, homeMarker = null, plusHandles = [];
+        let areaMode = false, areaVertices = [], areaPolygon = null, areaVertexMarkers = [], surveyPolylines = [];
+        let setHomeMode = false;
+        let homeLinks = []; // dashed links from Home to first & last WP
+        const DEFAULT_ALT = 100;
+
+        // ==== HELPERS ====
+        const $ = (id) => document.getElementById(id);
+        const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+        const toRad = (d) => d * Math.PI / 180;
+        function wpIcon(i) { return L.divIcon({ html: String(i + 1), className: 'wp-icon', iconSize: [28, 28], iconAnchor: [14, 14] }); }
+        function homeIcon() { return L.divIcon({ html: 'H', className: 'home-icon' }); }
+        function plusIcon() { return L.divIcon({ html: '+', className: 'plus-icon', iconSize: [22, 22], iconAnchor: [11, 11] }); }
+        function mkRot(t) { const c = Math.cos(t), s = Math.sin(t); return p => ({ x: p.x * c - p.y * s, y: p.x * s + p.y * c }); }
+        function makeLocalProj(lat0, lon0) {
+            const R = 6378137, kx = Math.PI / 180 * R * Math.cos(toRad(lat0)), ky = Math.PI / 180 * R;
+            return { fwd: (lat, lon) => ({ x: (lon - lon0) * kx, y: (lat - lat0) * ky }), inv: (x, y) => ({ lat: lat0 + y / ky, lon: lon0 + x / kx }) };
+        }
+        function getBBox(poly) { let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9; for (const p of poly) { if (p.x < minX) minX = p.x; if (p.y < minY) minY = p.y; if (p.x > maxX) maxX = p.x; if (p.y > maxY) maxY = p.y; } return { minX, minY, maxX, maxY }; }
+        function scanlineIntersections(poly, y) {
+            const xs = []; for (let i = 0; i < poly.length; i++) {
+                const a = poly[i], b = poly[(i + 1) % poly.length];
+                if ((a.y <= y && b.y > y) || (b.y <= y && a.y > y)) { const t = (y - a.y) / (b.y - a.y); xs.push(a.x + t * (b.x - a.x)); }
+            } return xs;
+        }
+        function downloadText(text, filename) { const blob = new Blob([text], { type: 'text/plain' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click(); URL.revokeObjectURL(a.href); }
+        const pause = () => new Promise(r => setTimeout(r, 0));
+
+        // ==== MAP ====
+        function initMap() {
+            map = L.map('map').setView([10.762622, 106.660172], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+
+            map.on('click', (e) => {
+                if (setHomeMode) { placeHome(e.latlng); setHomeMode = false; return; }
+                if (areaMode) { addAreaVertex(e.latlng); return; }
+                addWaypoint(e.latlng);
+            });
+            map.on('contextmenu', (e) => showMapContext(e));
+
+            on('btnClear', 'click', clearAll);
+            on('btnSetHome', 'click', () => { setHomeMode = true; hideCtx(); });
+            on('btnExport', 'click', exportWPL);
+            on('fileImport', 'change', importWPL);
+            on('btnArea', 'click', toggleAreaMode);
+            on('btnAreaDone', 'click', closeArea);
+            on('btnAreaClear', 'click', clearArea);
+            on('btnMakeSurvey', 'click', makeSurveyGrid);
+            on('btnTogglePanel', 'click', togglePanel);
+
+            // If panel was hidden previously, keep state (localStorage)
+            const saved = localStorage.getItem('vp_panel_hidden');
+            if (saved === '1') $('panel').classList.add('hidden');
+        }
+
+        // ==== WAYPOINTS ====
+        function addWaypoint(latlng, insertIndex = null, alt = DEFAULT_ALT) {
+            const idx = (insertIndex === null) ? waypoints.length : insertIndex;
+            const marker = L.marker(latlng, { draggable: true, icon: wpIcon(idx) }).addTo(map);
+            marker.on('drag', updatePolylines);
+            marker.on('dragend', () => { waypoints[idx].latlng = marker.getLatLng(); updatePolylines(); });
+            marker.on('contextmenu', (ev) => { ev.originalEvent.preventDefault(); deleteWaypoint(idx); });
+            const wp = { latlng, marker, alt };
+            if (insertIndex === null) waypoints.push(wp); else waypoints.splice(insertIndex, 0, wp);
+            renumber(); updatePolylines();
+        }
+        function deleteWaypoint(i) { if (!waypoints[i]) return; map.removeLayer(waypoints[i].marker); waypoints.splice(i, 1); renumber(); updatePolylines(); }
+        function renumber() { waypoints.forEach((w, i) => w.marker.setIcon(wpIcon(i))); }
+        function updatePolylines() {
+            const pts = waypoints.map(w => w.marker.getLatLng());
+            if (!polyline) polyline = L.polyline(pts, { color: '#ffd400', weight: 5 }).addTo(map);
+            else polyline.setLatLngs(pts);
+
+            plusHandles.forEach(h => map.removeLayer(h)); plusHandles = [];
+            for (let i = 0; i < pts.length - 1; i++) {
+                const a = pts[i], b = pts[i + 1];
+                const mid = L.latLng((a.lat + b.lat) / 2, (a.lng + b.lng) / 2);
+                const h = L.marker(mid, { icon: plusIcon(), interactive: true }).addTo(map);
+                h.on('click', () => addWaypoint(mid, i + 1)); plusHandles.push(h);
+            }
+
+            // update home dashed links whenever path changes
+            updateHomeLinks();
+        }
+        function clearAll() {
+            waypoints.forEach(w => map.removeLayer(w.marker));
+            waypoints = [];
+            plusHandles.forEach(h => map.removeLayer(h)); plusHandles = [];
+            if (polyline) { map.removeLayer(polyline); polyline = null; }
+            clearArea();
+            clearHomeLinks();
+        }
+        function placeHome(latlng) {
+            if (homeMarker) map.removeLayer(homeMarker);
+            homeMarker = L.marker(latlng, { icon: homeIcon(), draggable: true }).addTo(map);
+            homeMarker.on('drag', () => updateHomeLinks());
+            homeMarker.on('dragend', () => updateHomeLinks());
+            updateHomeLinks();
+        }
+
+        // ==== HOME DASHED LINKS ====
+        function clearHomeLinks() {
+            homeLinks.forEach(l => map.removeLayer(l));
+            homeLinks = [];
+        }
+        function updateHomeLinks() {
+            clearHomeLinks();
+            if (!homeMarker || waypoints.length === 0) return;
+            const first = waypoints[0].marker.getLatLng();
+            const last = waypoints[waypoints.length - 1].marker.getLatLng();
+            const home = homeMarker.getLatLng();
+
+            const style = { color: '#27ae60', weight: 3, opacity: 0.9, dashArray: '6 8' };
+            // Home -> first
+            homeLinks.push(L.polyline([home, first], style).addTo(map));
+            // Home -> last
+            homeLinks.push(L.polyline([home, last], style).addTo(map));
+        }
+
+        // ==== CONTEXT MENU ====
+        function showMapContext(e) {
+            const ctx = $('ctx'); ctx.innerHTML = '';
+            const mk = (label, fn) => { const b = document.createElement('button'); b.textContent = label; b.onclick = () => { fn(); hideCtx(); }; ctx.appendChild(b); };
+            mk('Add Waypoint here', () => addWaypoint(e.latlng));
+            mk('Set Home here', () => placeHome(e.latlng));
+            mk('Clear All', () => clearAll());
+            ctx.style.display = 'block'; ctx.style.left = (e.containerPoint.x + 6) + 'px'; ctx.style.top = (e.containerPoint.y + 6) + 'px';
+        }
+        function hideCtx() { $('ctx').style.display = 'none'; }
+
+        // ==== AREA (draggable) ====
+        function toggleAreaMode() { areaMode = !areaMode; $('btnArea').classList.toggle('btn-on', areaMode); }
+        function addAreaVertex(latlng) {
+            const idx = areaVertices.length; areaVertices.push([latlng.lat, latlng.lng]);
+            const m = L.marker(latlng, { draggable: true, icon: L.divIcon({ className: 'poly-vertex', iconSize: [12, 12], iconAnchor: [6, 6] }) }).addTo(map);
+            m._vIdx = idx;
+            m.on('drag', (ev) => { const p = ev.target.getLatLng(); areaVertices[m._vIdx] = [p.lat, p.lng]; redrawAreaPolygon(); });
+            m.on('contextmenu', (ev) => { ev.originalEvent.preventDefault(); deleteAreaVertex(m._vIdx); });
+            areaVertexMarkers.push(m); redrawAreaPolygon();
+        }
+        function deleteAreaVertex(i) {
+            if (i < 0 || i >= areaVertices.length) return;
+            map.removeLayer(areaVertexMarkers[i]); areaVertexMarkers.splice(i, 1); areaVertices.splice(i, 1);
+            areaVertexMarkers.forEach((m, k) => m._vIdx = k); redrawAreaPolygon();
+        }
+        function redrawAreaPolygon() {
+            if (areaPolygon) { map.removeLayer(areaPolygon); areaPolygon = null; }
+            if (areaVertices.length >= 2) {
+                areaPolygon = L.polygon(areaVertices, { color: '#e74c3c', weight: 2, fillColor: '#e74c3c', fillOpacity: 0.12 }).addTo(map);
+            }
+        }
+        function closeArea() {
+            if (areaVertices.length < 3) { alert('Area cần ít nhất 3 đỉnh.'); return; }
+            redrawAreaPolygon(); areaMode = false; $('btnArea').classList.remove('btn-on');
+        }
+        function clearArea() {
+            areaVertices = [];
+            areaVertexMarkers.forEach(m => map.removeLayer(m)); areaVertexMarkers = [];
+            if (areaPolygon) { map.removeLayer(areaPolygon); areaPolygon = null; }
+            clearSurveyLines();
+        }
+        function clearSurveyLines() { surveyPolylines.forEach(p => map.removeLayer(p)); surveyPolylines = []; }
+
+        // ==== SURVEY GRID ====
+        async function makeSurveyGrid() {
+            if (!areaPolygon || areaVertices.length < 3) { alert('Vẽ vùng (Area) và bấm Finish Area trước khi tạo lưới.'); return; }
+
+            const alt = num('#alt'), overlap = clamp(num('#overlap'), 0, 95) / 100, sidelap = clamp(num('#sidelap'), 0, 95) / 100,
+                fmm = num('#fmm'), sWmm = num('#sWmm'), sHmm = num('#sHmm'),
+                imgW = Math.max(1, Math.round(num('#imgW'))), imgH = Math.max(1, Math.round(num('#imgH'))),
+                gridDeg = num('#gridDeg') || 0, turnaround = Math.max(0, num('#turnaround') || 0),
+                startAtHome = (document.querySelector('#startAtHome')?.value === 'yes'),
+                cross = (document.querySelector('#cross')?.value === 'yes');
+
+            if (![alt, fmm, sWmm, sHmm, imgW, imgH].every(v => Number.isFinite(v) && v > 0)) { alert('Tham số không hợp lệ.'); return; }
+
+            const center = areaPolygon.getBounds().getCenter();
+            const proj = makeLocalProj(center.lat, center.lng);
+            const polyXY = areaVertices.map(([la, lo]) => proj.fwd(la, lo));
+
+            const gsdW = (alt * (sWmm / 1000)) / ((fmm / 1000) * imgW);
+            const gsdH = (alt * (sHmm / 1000)) / ((fmm / 1000) * imgH);
+            const footprintW = gsdW * imgW, footprintH = gsdH * imgH;
+            let stepAlong = Math.max(0.5, footprintH * (1 - overlap));
+            let stepAcross = Math.max(0.5, footprintW * (1 - sidelap));
+            const MIN_SPACING = 5; if (stepAlong < MIN_SPACING) stepAlong = MIN_SPACING; if (stepAcross < MIN_SPACING) stepAcross = MIN_SPACING;
+
+            const ci = $('calcInfo'); if (ci) {
+                ci.textContent = `GSD≈${(gsdW * 100).toFixed(2)} cm/px, footprint≈${footprintW.toFixed(1)}×${footprintH.toFixed(1)} m, spacing along ${stepAlong.toFixed(1)} m / across ${stepAcross.toFixed(1)} m.`;
+            }
+
+            const theta = -toRad(gridDeg), rot = mkRot(theta), invRot = mkRot(-theta);
+            const polyR = polyXY.map(p => rot(p)); const bbox = getBBox(polyR);
+            const W = Math.abs(bbox.maxX - bbox.minX), H = Math.abs(bbox.maxY - bbox.minY);
+            if (Math.max(W, H) > 20000) { alert('Vùng quá lớn (>20 km).'); return; }
+
+            const lines = []; const MAX_SCANLINES = 2000; let yCount = 0;
+            for (let y = bbox.minY - turnaround; y <= bbox.maxY + turnaround; y += stepAcross) {
+                const xs = scanlineIntersections(polyR, y).sort((a, b) => a - b);
+                for (let k = 0; k < xs.length; k += 2) {
+                    const x1 = xs[k] - turnaround, x2 = xs[k + 1] + turnaround;
+                    if (x2 > x1) lines.push({ y, x1, x2 });
+                }
+                if (++yCount % 100 === 0) await pause();
+                if (lines.length > MAX_SCANLINES) { alert('Quá nhiều dải quét (>2000).'); break; }
+            }
+
+            const newWps = []; const MAX_POINTS = 20000; let dirRight = true; let lineIdx = 0;
+            for (const seg of lines) {
+                const { y, x1, x2 } = seg; const start = dirRight ? x1 : x2; const end = dirRight ? x2 : x1;
+                const span = Math.abs(x2 - x1); const nPts = Math.max(2, Math.floor(span / stepAlong) + 1);
+                for (let i = 0; i < nPts; i++) {
+                    const t = i / (nPts - 1); const x = start + (end - start) * t; const p = invRot({ x, y }); const ll = proj.inv(p.x, p.y);
+                    newWps.push({ lat: ll.lat, lon: ll.lon, alt }); if (newWps.length >= MAX_POINTS) break;
+                }
+                dirRight = !dirRight; if (++lineIdx % 50 === 0) await pause();
+                if (newWps.length >= MAX_POINTS) { alert('Số waypoint quá lớn (>20000).'); break; }
+            }
+
+            if (cross && newWps.length < MAX_POINTS) {
+                const rot2 = mkRot(-toRad(gridDeg + 90)), inv2 = mkRot(toRad(gridDeg + 90)), polyR2 = polyXY.map(p => rot2(p));
+                const bbox2 = getBBox(polyR2); let added = 0;
+                for (let y = bbox2.minY - turnaround; y <= bbox2.maxY + turnaround; y += stepAcross) {
+                    const xs = scanlineIntersections(polyR2, y).sort((a, b) => a - b);
+                    for (let k = 0; k < xs.length; k += 2) {
+                        const x1 = xs[k] - turnaround, x2 = xs[k + 1] + turnaround; if (x2 <= x1) continue;
+                        const span = Math.abs(x2 - x1); const nPts = Math.max(2, Math.floor(span / stepAlong) + 1);
+                        for (let i = 0; i < nPts; i++) {
+                            const t = i / (nPts - 1); const x = x1 + (x2 - x1) * t; const p = inv2({ x, y }); const ll = proj.inv(p.x, p.y);
+                            newWps.push({ lat: ll.lat, lon: ll.lon, alt }); if (newWps.length >= MAX_POINTS) break;
+                        }
+                        if (newWps.length >= MAX_POINTS) break;
+                    }
+                    if (++added % 80 === 0) await pause();
+                    if (newWps.length >= MAX_POINTS) { alert('Waypoint vượt giới hạn.'); break; }
+                }
+            }
+
+            clearSurveyLines();
+            if (newWps.length) {
+                const seg = L.polyline(newWps.map(p => [p.lat, p.lon]), { color: '#00aaff', weight: 3, opacity: 0.9 }).addTo(map);
+                surveyPolylines.push(seg);
+            }
+            waypoints.forEach(w => map.removeLayer(w.marker)); waypoints = [];
+            if (startAtHome && homeMarker) addWaypoint(homeMarker.getLatLng());
+            newWps.forEach(p => addWaypoint(L.latLng(p.lat, p.lon), null, alt));
+            if (startAtHome && homeMarker) addWaypoint(homeMarker.getLatLng());
+            if (waypoints[0]) map.flyTo(waypoints[0].marker.getLatLng(), 16);
+        }
+
+        function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+        function num(sel) { return parseFloat(document.querySelector(sel).value); }
+
+        // ==== WPL I/O ====
+        // ==== WPL I/O (with optional TAKEOFF + RTL) ====
+        function exportWPL() {
+            if (waypoints.length === 0) { alert('Chưa có waypoint để export.'); return; }
+
+            // Tùy chọn: lấy từ UI nếu bạn thêm checkbox; nếu chưa có checkbox, để mặc định true/true
+            const includeTakeoff = true;   // TODO: gắn với checkbox id="includeTakeoff" nếu bạn muốn
+            const appendRTL = true;   // TODO: gắn với checkbox id="appendRTL"
+
+            const header = 'QGC WPL 110';
+            const lines = [header];
+
+            // Helper để đẩy 1 dòng WPL
+            function pushItem(idx, current, frame, command, p1, p2, p3, p4, lat, lon, alt, autocontinue = 1) {
+                lines.push([idx, current, frame, command,
+                    (p1 ?? 0), (p2 ?? 0), (p3 ?? 0), (p4 ?? 0),
+                    (lat ?? 0).toFixed(7), (lon ?? 0).toFixed(7), (alt ?? DEFAULT_ALT), autocontinue].join('\t'));
+            }
+
+            // Chuẩn bị dữ liệu
+            const frame = 3; // GLOBAL_RELATIVE_ALT
+            const ALT = parseFloat(document.querySelector('#alt')?.value) || DEFAULT_ALT;
+
+            // Xác định Home để TAKEOFF (ưu tiên marker Home; nếu không có, dùng WP đầu)
+            const firstLL = waypoints[0].marker.getLatLng();
+            const homeLL = (homeMarker ? homeMarker.getLatLng() : firstLL);
+
+            let idx = 0;
+
+            // 1) (Tuỳ chọn) TAKEOFF ở Home: CMD 22, p1 là pitch (0 cho copter), z=ALT
+            if (includeTakeoff) {
+                // current=1 để bắt đầu từ đây; các dòng sau current=0
+                pushItem(idx++, 1, frame, 22, 0, 0, 0, 0, homeLL.lat, homeLL.lng, ALT, 1);
+            }
+
+            // 2) WAYPOINTS: CMD 16
+            waypoints.forEach((w, i) => {
+                const ll = w.marker.getLatLng();
+                const current = (includeTakeoff ? 0 : (i === 0 ? 1 : 0)); // nếu không có TAKEOFF, dòng WP đầu là current=1
+                // p1=hold time(s), p2=accept radius(m), p3=pass radius(m), p4=yaw deg — để 0 mặc định
+                pushItem(idx++, current, frame, 16, 0, 0, 0, 0, ll.lat, ll.lng, (w.alt ?? ALT), 1);
+            });
+
+            // 3) (Tuỳ chọn) RTL cuối mission: CMD 20 (không cần lat/lon/alt)
+            if (appendRTL) {
+                pushItem(idx++, 0, frame, 20, 0, 0, 0, 0, 0, 0, ALT, 1);
+            }
+
+            downloadText(lines.join('\n'), 'mission.waypoints');
+        }
+
+        async function importWPL(ev) {
+            const file = ev.target.files[0]; if (!file) return;
+            const text = await file.text();
+            const lines = text.split(/\r?\n/).map(s => s.trim()).filter(s => s && !s.startsWith('#'));
+            if (!lines[0] || !lines[0].includes('QGC WPL')) { alert('Invalid QGC WPL file'); return; }
+            clearAll();
+            for (let i = 1; i < lines.length; i++) {
+                const parts = lines[i].split(/\s+|\t+/); if (parts.length < 12) continue;
+                const lat = parseFloat(parts[8]), lon = parseFloat(parts[9]), alt = parseFloat(parts[10] || DEFAULT_ALT);
+                addWaypoint(L.latLng(lat, lon), null, alt);
+            }
+            if (waypoints[0]) map.flyTo(waypoints[0].marker.getLatLng(), 16);
+            ev.target.value = '';
+        }
+
+        // ==== PANEL TOGGLE ====
+        function togglePanel() {
+            const p = $('panel');
+            p.classList.toggle('hidden');
+            // persist state
+            localStorage.setItem('vp_panel_hidden', p.classList.contains('hidden') ? '1' : '0');
+            // ensure map resizes correctly after layout change
+            setTimeout(() => { map.invalidateSize(); }, 0);
+        }
+
+        window.onload = initMap;
+    </script>
+</body>
+</html>

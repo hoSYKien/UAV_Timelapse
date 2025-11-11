@@ -55,6 +55,7 @@
             this.pnl_data3d = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.panel8 = new System.Windows.Forms.Panel();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.panel9 = new System.Windows.Forms.Panel();
@@ -92,7 +93,7 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -102,10 +103,10 @@
             this.panel4.SuspendLayout();
             this.pnl_data3d.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.panel7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -397,20 +398,33 @@
             this.panel2.Size = new System.Drawing.Size(1153, 790);
             this.panel2.TabIndex = 1;
             // 
+            // webView21
+            // 
+            this.webView21.AllowExternalDrop = true;
+            this.webView21.BackColor = System.Drawing.Color.White;
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webView21.Location = new System.Drawing.Point(3, 0);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(1140, 613);
+            this.webView21.TabIndex = 10;
+            this.webView21.ZoomFactor = 1D;
+            // 
             // panel8
             // 
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel8.Location = new System.Drawing.Point(953, 0);
+            this.panel8.Location = new System.Drawing.Point(1143, 0);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(200, 606);
+            this.panel8.Size = new System.Drawing.Size(10, 613);
             this.panel8.TabIndex = 9;
             // 
             // splitter3
             // 
             this.splitter3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter3.Location = new System.Drawing.Point(3, 606);
+            this.splitter3.Location = new System.Drawing.Point(3, 613);
             this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(1150, 17);
+            this.splitter3.Size = new System.Drawing.Size(1150, 10);
             this.splitter3.TabIndex = 8;
             this.splitter3.TabStop = false;
             // 
@@ -581,6 +595,7 @@
             // 
             // panel7
             // 
+            this.panel7.Controls.Add(this.button2);
             this.panel7.Controls.Add(this.textBox1);
             this.panel7.Controls.Add(this.checkBox3);
             this.panel7.Controls.Add(this.label2);
@@ -729,18 +744,16 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // webView21
+            // button2
             // 
-            this.webView21.AllowExternalDrop = true;
-            this.webView21.BackColor = System.Drawing.Color.White;
-            this.webView21.CreationProperties = null;
-            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webView21.Location = new System.Drawing.Point(3, 0);
-            this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(950, 606);
-            this.webView21.TabIndex = 10;
-            this.webView21.ZoomFactor = 1D;
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.button2.Location = new System.Drawing.Point(928, 18);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(110, 28);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "Write FC";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // User_Data
             // 
@@ -760,11 +773,11 @@
             this.panel4.ResumeLayout(false);
             this.pnl_data3d.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -835,5 +848,6 @@
         private System.Windows.Forms.DataGridViewImageColumn dgrDist;
         private System.Windows.Forms.DataGridViewImageColumn dgrAZ;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
+        private System.Windows.Forms.Button button2;
     }
 }
