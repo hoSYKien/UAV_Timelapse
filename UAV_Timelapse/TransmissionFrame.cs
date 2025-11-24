@@ -51,6 +51,10 @@ namespace UAV_Timelapse
         public static short Gpi_Vz;
         public static ushort Gpi_Hdg;
 
+        // ---> Thêm 2 dòng này để dùng trực tiếp
+        public static double Gps_HDOP;              // = Gps_Eph / 100.0
+        public static double Gps_VDOP;              // = Gps_Epv / 100.0
+
         // ===== VFR_HUD =====
         // Đơn vị: airspeed m/s, groundspeed m/s, heading deg, throttle %, alt m, climb m/s
         public static float Vfr_Airspeed;
@@ -113,6 +117,9 @@ namespace UAV_Timelapse
         // ===== STATUSTEXT =====
         public static byte Statustext_Severity;    // MAV_SEVERITY
         public static string Statustext_Text;        // chuỗi cuối cùng nhận được
+        public static ushort Ack_Command;
+        public static byte Ack_Result;
+
 
         public static double DistToMav_m;
         // ===== (Tuỳ chọn) EKF_STATUS_REPORT (nếu bạn cần hiển thị) =====

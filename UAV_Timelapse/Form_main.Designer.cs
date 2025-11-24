@@ -56,6 +56,8 @@
             this.btnAccelCalibration = new System.Windows.Forms.Button();
             this.btnCompass = new System.Windows.Forms.Button();
             this.btnRadioCalib = new System.Windows.Forms.Button();
+            this.btnServoOutput = new System.Windows.Forms.Button();
+            this.btnParam = new System.Windows.Forms.Button();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.PanelOptional = new System.Windows.Forms.FlowLayoutPanel();
@@ -71,7 +73,6 @@
             this.btnOptional = new System.Windows.Forms.Button();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnInstallFirmware = new System.Windows.Forms.Button();
-            this.btnServoOutput = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
@@ -145,12 +146,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 48);
+            this.label1.Location = new System.Drawing.Point(6, 48);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(30, 13);
+            this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Data";
+            this.label1.Text = "Dữ Liệu";
             // 
             // panel7
             // 
@@ -177,12 +178,12 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 48);
+            this.label3.Location = new System.Drawing.Point(1, 48);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Config";
+            this.label3.Text = "Cấu Hình";
             // 
             // panel3
             // 
@@ -192,10 +193,10 @@
             this.panel3.Controls.Add(this.comboBoxBaudrate);
             this.panel3.Controls.Add(this.comboBoxPorts);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(753, 0);
+            this.panel3.Location = new System.Drawing.Point(722, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(273, 65);
+            this.panel3.Size = new System.Drawing.Size(304, 65);
             this.panel3.TabIndex = 6;
             // 
             // btnRefresh
@@ -214,27 +215,27 @@
             this.panel8.Controls.Add(this.label4);
             this.panel8.Controls.Add(this.btnConnect);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel8.Location = new System.Drawing.Point(221, 0);
+            this.panel8.Location = new System.Drawing.Point(224, 0);
             this.panel8.Margin = new System.Windows.Forms.Padding(2);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(52, 65);
+            this.panel8.Size = new System.Drawing.Size(80, 65);
             this.panel8.TabIndex = 9;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2, 50);
+            this.label4.Location = new System.Drawing.Point(6, 49);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 13);
+            this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 6;
-            this.label4.Text = "Connect";
+            this.label4.Text = "Ngắt Kết Nối";
             // 
             // btnConnect
             // 
             this.btnConnect.BackColor = System.Drawing.Color.White;
             this.btnConnect.Image = ((System.Drawing.Image)(resources.GetObject("btnConnect.Image")));
-            this.btnConnect.Location = new System.Drawing.Point(3, 2);
+            this.btnConnect.Location = new System.Drawing.Point(17, 2);
             this.btnConnect.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(46, 45);
@@ -301,12 +302,12 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 48);
+            this.label2.Location = new System.Drawing.Point(6, 48);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
+            this.label2.Size = new System.Drawing.Size(42, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Setup";
+            this.label2.Text = "Cài Đặt";
             // 
             // panel2
             // 
@@ -352,12 +353,13 @@
             this.flowLayoutPanel2.Controls.Add(this.btnCompass);
             this.flowLayoutPanel2.Controls.Add(this.btnRadioCalib);
             this.flowLayoutPanel2.Controls.Add(this.btnServoOutput);
+            this.flowLayoutPanel2.Controls.Add(this.btnParam);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 463);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(131, 223);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(131, 268);
             this.flowLayoutPanel2.TabIndex = 0;
             // 
             // btnFrameType
@@ -368,7 +370,7 @@
             this.btnFrameType.Name = "btnFrameType";
             this.btnFrameType.Size = new System.Drawing.Size(127, 39);
             this.btnFrameType.TabIndex = 10;
-            this.btnFrameType.Text = "Frame Type";
+            this.btnFrameType.Text = "Kiểu khung";
             this.btnFrameType.UseVisualStyleBackColor = false;
             this.btnFrameType.Click += new System.EventHandler(this.btnFrameType_Click);
             // 
@@ -380,7 +382,7 @@
             this.btnAccelCalibration.Name = "btnAccelCalibration";
             this.btnAccelCalibration.Size = new System.Drawing.Size(127, 39);
             this.btnAccelCalibration.TabIndex = 11;
-            this.btnAccelCalibration.Text = "Accel Calibration";
+            this.btnAccelCalibration.Text = "Hiệu chuẩn gia tốc kế";
             this.btnAccelCalibration.UseVisualStyleBackColor = false;
             this.btnAccelCalibration.Click += new System.EventHandler(this.btnAccelCalibration_Click);
             // 
@@ -392,7 +394,7 @@
             this.btnCompass.Name = "btnCompass";
             this.btnCompass.Size = new System.Drawing.Size(127, 39);
             this.btnCompass.TabIndex = 12;
-            this.btnCompass.Text = "Compass";
+            this.btnCompass.Text = "Hiệu chuẩn la bàn";
             this.btnCompass.UseVisualStyleBackColor = false;
             this.btnCompass.Click += new System.EventHandler(this.btnCompass_Click);
             // 
@@ -404,9 +406,33 @@
             this.btnRadioCalib.Name = "btnRadioCalib";
             this.btnRadioCalib.Size = new System.Drawing.Size(127, 39);
             this.btnRadioCalib.TabIndex = 13;
-            this.btnRadioCalib.Text = "Radio Calibration";
+            this.btnRadioCalib.Text = "Hiệu chuẩn TX";
             this.btnRadioCalib.UseVisualStyleBackColor = false;
             this.btnRadioCalib.Click += new System.EventHandler(this.btnRadioCalib_Click);
+            // 
+            // btnServoOutput
+            // 
+            this.btnServoOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnServoOutput.Location = new System.Drawing.Point(2, 174);
+            this.btnServoOutput.Margin = new System.Windows.Forms.Padding(2);
+            this.btnServoOutput.Name = "btnServoOutput";
+            this.btnServoOutput.Size = new System.Drawing.Size(127, 39);
+            this.btnServoOutput.TabIndex = 14;
+            this.btnServoOutput.Text = "Tín hiệu servo";
+            this.btnServoOutput.UseVisualStyleBackColor = false;
+            this.btnServoOutput.Click += new System.EventHandler(this.btnServoOutput_Click);
+            // 
+            // btnParam
+            // 
+            this.btnParam.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.btnParam.Location = new System.Drawing.Point(2, 217);
+            this.btnParam.Margin = new System.Windows.Forms.Padding(2);
+            this.btnParam.Name = "btnParam";
+            this.btnParam.Size = new System.Drawing.Size(127, 39);
+            this.btnParam.TabIndex = 15;
+            this.btnParam.Text = "Danh sách tham số đầy đủ";
+            this.btnParam.UseVisualStyleBackColor = false;
+            this.btnParam.Click += new System.EventHandler(this.btnParam_Click);
             // 
             // flowLayoutPanel4
             // 
@@ -426,7 +452,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(146, 34);
             this.button1.TabIndex = 1;
-            this.button1.Text = "Mandatory Hardware";
+            this.button1.Text = "Phần cứng bắt buộc";
             this.button1.UseVisualStyleBackColor = false;
             // 
             // PanelOptional
@@ -455,7 +481,7 @@
             this.btnRTK_GPS.Name = "btnRTK_GPS";
             this.btnRTK_GPS.Size = new System.Drawing.Size(127, 39);
             this.btnRTK_GPS.TabIndex = 1;
-            this.btnRTK_GPS.Text = "RTK/GPS Inject";
+            this.btnRTK_GPS.Text = "Nạp dữ liệu RTK/GPS";
             this.btnRTK_GPS.UseVisualStyleBackColor = false;
             this.btnRTK_GPS.Click += new System.EventHandler(this.btnRTK_GPS_Click);
             // 
@@ -467,7 +493,7 @@
             this.btnCAN_GPS.Name = "btnCAN_GPS";
             this.btnCAN_GPS.Size = new System.Drawing.Size(127, 39);
             this.btnCAN_GPS.TabIndex = 2;
-            this.btnCAN_GPS.Text = "CAN GPS Order";
+            this.btnCAN_GPS.Text = "Thứ tự GPS trên CAN";
             this.btnCAN_GPS.UseVisualStyleBackColor = false;
             this.btnCAN_GPS.Click += new System.EventHandler(this.btnCAN_GPS_Click);
             // 
@@ -479,7 +505,7 @@
             this.btnJoystick.Name = "btnJoystick";
             this.btnJoystick.Size = new System.Drawing.Size(127, 39);
             this.btnJoystick.TabIndex = 3;
-            this.btnJoystick.Text = "Joystick";
+            this.btnJoystick.Text = "Cấu hình joystick";
             this.btnJoystick.UseVisualStyleBackColor = false;
             this.btnJoystick.Click += new System.EventHandler(this.btnJoystick_Click);
             // 
@@ -489,40 +515,40 @@
             this.btnComp_Motor.Location = new System.Drawing.Point(2, 131);
             this.btnComp_Motor.Margin = new System.Windows.Forms.Padding(2);
             this.btnComp_Motor.Name = "btnComp_Motor";
-            this.btnComp_Motor.Size = new System.Drawing.Size(127, 39);
+            this.btnComp_Motor.Size = new System.Drawing.Size(127, 40);
             this.btnComp_Motor.TabIndex = 4;
-            this.btnComp_Motor.Text = "Compass/Motor Calid";
+            this.btnComp_Motor.Text = "Hiệu chuẩn la bàn động cơ";
             this.btnComp_Motor.UseVisualStyleBackColor = false;
             this.btnComp_Motor.Click += new System.EventHandler(this.btnComp_Motor_Click);
             // 
             // btnRangerFinder
             // 
             this.btnRangerFinder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnRangerFinder.Location = new System.Drawing.Point(2, 174);
+            this.btnRangerFinder.Location = new System.Drawing.Point(2, 175);
             this.btnRangerFinder.Margin = new System.Windows.Forms.Padding(2);
             this.btnRangerFinder.Name = "btnRangerFinder";
             this.btnRangerFinder.Size = new System.Drawing.Size(127, 39);
             this.btnRangerFinder.TabIndex = 5;
-            this.btnRangerFinder.Text = "Ranger Finder";
+            this.btnRangerFinder.Text = "Cảm biến đo khoảng cách";
             this.btnRangerFinder.UseVisualStyleBackColor = false;
             this.btnRangerFinder.Click += new System.EventHandler(this.btnRangerFinder_Click);
             // 
             // btnOpticalFlow_OSD
             // 
             this.btnOpticalFlow_OSD.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnOpticalFlow_OSD.Location = new System.Drawing.Point(2, 217);
+            this.btnOpticalFlow_OSD.Location = new System.Drawing.Point(2, 218);
             this.btnOpticalFlow_OSD.Margin = new System.Windows.Forms.Padding(2);
             this.btnOpticalFlow_OSD.Name = "btnOpticalFlow_OSD";
             this.btnOpticalFlow_OSD.Size = new System.Drawing.Size(127, 39);
             this.btnOpticalFlow_OSD.TabIndex = 6;
-            this.btnOpticalFlow_OSD.Text = "Optical Flow/OSD";
+            this.btnOpticalFlow_OSD.Text = "Optical Flow / OSD";
             this.btnOpticalFlow_OSD.UseVisualStyleBackColor = false;
             this.btnOpticalFlow_OSD.Click += new System.EventHandler(this.btnOpticalFlow_OSD_Click);
             // 
             // btnCamGimbal
             // 
             this.btnCamGimbal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnCamGimbal.Location = new System.Drawing.Point(2, 260);
+            this.btnCamGimbal.Location = new System.Drawing.Point(2, 261);
             this.btnCamGimbal.Margin = new System.Windows.Forms.Padding(2);
             this.btnCamGimbal.Name = "btnCamGimbal";
             this.btnCamGimbal.Size = new System.Drawing.Size(127, 39);
@@ -534,12 +560,12 @@
             // btnMotorTest
             // 
             this.btnMotorTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnMotorTest.Location = new System.Drawing.Point(2, 303);
+            this.btnMotorTest.Location = new System.Drawing.Point(2, 304);
             this.btnMotorTest.Margin = new System.Windows.Forms.Padding(2);
             this.btnMotorTest.Name = "btnMotorTest";
             this.btnMotorTest.Size = new System.Drawing.Size(127, 39);
             this.btnMotorTest.TabIndex = 9;
-            this.btnMotorTest.Text = "Motor Test";
+            this.btnMotorTest.Text = "Kiểm tra động cơ";
             this.btnMotorTest.UseVisualStyleBackColor = false;
             this.btnMotorTest.Click += new System.EventHandler(this.btnMotorTest_Click);
             // 
@@ -561,7 +587,7 @@
             this.btnOptional.Name = "btnOptional";
             this.btnOptional.Size = new System.Drawing.Size(146, 34);
             this.btnOptional.TabIndex = 0;
-            this.btnOptional.Text = "Optional Hardware";
+            this.btnOptional.Text = "Phần cứng tùy chọn";
             this.btnOptional.UseVisualStyleBackColor = false;
             this.btnOptional.Click += new System.EventHandler(this.btnOptional_Click);
             // 
@@ -583,21 +609,9 @@
             this.btnInstallFirmware.Name = "btnInstallFirmware";
             this.btnInstallFirmware.Size = new System.Drawing.Size(146, 34);
             this.btnInstallFirmware.TabIndex = 0;
-            this.btnInstallFirmware.Text = "Install Firmware";
+            this.btnInstallFirmware.Text = "Cài đặt firmware";
             this.btnInstallFirmware.UseVisualStyleBackColor = false;
             this.btnInstallFirmware.Click += new System.EventHandler(this.btnInstallFirmware_Click);
-            // 
-            // btnServoOutput
-            // 
-            this.btnServoOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnServoOutput.Location = new System.Drawing.Point(2, 174);
-            this.btnServoOutput.Margin = new System.Windows.Forms.Padding(2);
-            this.btnServoOutput.Name = "btnServoOutput";
-            this.btnServoOutput.Size = new System.Drawing.Size(127, 39);
-            this.btnServoOutput.TabIndex = 14;
-            this.btnServoOutput.Text = "Servo Output";
-            this.btnServoOutput.UseVisualStyleBackColor = false;
-            this.btnServoOutput.Click += new System.EventHandler(this.btnServoOutput_Click);
             // 
             // Form_Main
             // 
@@ -681,6 +695,7 @@
         private System.Windows.Forms.Button btnCompass;
         private System.Windows.Forms.Button btnRadioCalib;
         private System.Windows.Forms.Button btnServoOutput;
+        private System.Windows.Forms.Button btnParam;
     }
 }
 

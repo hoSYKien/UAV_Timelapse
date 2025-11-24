@@ -112,18 +112,18 @@
             this.groupBox1.Size = new System.Drawing.Size(501, 76);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Frame Class";
+            this.groupBox1.Text = "Kiểu khung";
             // 
             // lblUndefined
             // 
-            this.lblUndefined.AutoSize = true;
             this.lblUndefined.BackColor = System.Drawing.Color.Gainsboro;
             this.lblUndefined.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUndefined.Location = new System.Drawing.Point(12, 52);
+            this.lblUndefined.Location = new System.Drawing.Point(12, 39);
             this.lblUndefined.Name = "lblUndefined";
-            this.lblUndefined.Size = new System.Drawing.Size(47, 12);
+            this.lblUndefined.Size = new System.Drawing.Size(47, 25);
             this.lblUndefined.TabIndex = 8;
-            this.lblUndefined.Text = "Undefined";
+            this.lblUndefined.Text = "Chưa xác định";
+            this.lblUndefined.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // picTri
             // 
@@ -241,7 +241,7 @@
             this.grbFrameType.Size = new System.Drawing.Size(495, 355);
             this.grbFrameType.TabIndex = 1;
             this.grbFrameType.TabStop = false;
-            this.grbFrameType.Text = "Frame Type";
+            this.grbFrameType.Text = "Kiểu cấu hình khung";
             // 
             // pnlY6B
             // 
@@ -436,9 +436,10 @@
             // 
             this.label2.Location = new System.Drawing.Point(240, 303);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(128, 48);
+            this.label2.Size = new System.Drawing.Size(128, 46);
             this.label2.TabIndex = 17;
-            this.label2.Text = "NOTE: This is the Y6B and prop rotation changes from the old Y6A";
+            this.label2.Text = "Lưu ý: Đây là cấu hình Y6B, hướng quay cánh quạt đã được thay đổi so với cấu hình" +
+    " Y6A cũ";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label1
@@ -447,7 +448,8 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(128, 48);
             this.label1.TabIndex = 16;
-            this.label1.Text = "NOTE: X and H are NOT interchangable the prop rotation changes";
+            this.label1.Text = "Lưu ý: Cấu hình X và H không thể thay thế cho nhau, hướng quay cánh quạt là khác " +
+    "nhau";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // rbtVTail
@@ -531,7 +533,6 @@
             this.Name = "User_Frame_Type";
             this.Size = new System.Drawing.Size(818, 666);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTri)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picX6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picHeli)).EndInit();

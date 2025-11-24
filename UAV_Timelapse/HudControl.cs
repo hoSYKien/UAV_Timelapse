@@ -117,7 +117,8 @@ namespace UAV_Timelapse
             DrawHeading(g, new Rectangle(pfd.Left, pfd.Top - 26, pfd.Width, 22));
 
             // ====== Footer/status ======
-            DrawStatusBar(g, new Rectangle(pfd.Left, pfd.Bottom + 4, pfd.Width, 22));
+            //DrawStatusBar(g, new Rectangle(pfd.Left, pfd.Bottom + 4, pfd.Width, 22));
+            DrawStatusBar(g, new Rectangle(pfd.Left, pfd.Bottom - 22, pfd.Width, 22));
         }
 
         private void DrawBankScale(Graphics g, PointF c, float diameter)

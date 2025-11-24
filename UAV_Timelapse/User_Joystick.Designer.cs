@@ -138,7 +138,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "Enable";
+            this.button1.Text = "Bật";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -147,7 +147,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 3;
-            this.button2.Text = "Save";
+            this.button2.Text = "Lưu";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -155,9 +155,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(450, 13);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
+            this.label2.Size = new System.Drawing.Size(86, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Loaded Config ";
+            this.label2.Text = "Cấu hình đã nạp";
             // 
             // panel1
             // 
@@ -271,7 +271,7 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(76, 21);
             this.button8.TabIndex = 217;
-            this.button8.Text = "Auto Detect";
+            this.button8.Text = "Tự nhận trục";
             this.button8.UseVisualStyleBackColor = true;
             // 
             // comboBox7
@@ -324,7 +324,7 @@
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(76, 21);
             this.button9.TabIndex = 211;
-            this.button9.Text = "Auto Detect";
+            this.button9.Text = "Tự nhận trục";
             this.button9.UseVisualStyleBackColor = true;
             // 
             // comboBox8
@@ -377,7 +377,7 @@
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(76, 21);
             this.button10.TabIndex = 205;
-            this.button10.Text = "Auto Detect";
+            this.button10.Text = "Tự nhận trục";
             this.button10.UseVisualStyleBackColor = true;
             // 
             // comboBox9
@@ -430,7 +430,7 @@
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(76, 21);
             this.button11.TabIndex = 199;
-            this.button11.Text = "Auto Detect";
+            this.button11.Text = "Tự nhận trục";
             this.button11.UseVisualStyleBackColor = true;
             // 
             // comboBox10
@@ -483,7 +483,7 @@
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(76, 21);
             this.button12.TabIndex = 193;
-            this.button12.Text = "Auto Detect";
+            this.button12.Text = "Tự nhận trục";
             this.button12.UseVisualStyleBackColor = true;
             // 
             // comboBox11
@@ -536,7 +536,7 @@
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(76, 21);
             this.button13.TabIndex = 187;
-            this.button13.Text = "Auto Detect";
+            this.button13.Text = "Tự nhận trục";
             this.button13.UseVisualStyleBackColor = true;
             // 
             // comboBox12
@@ -589,7 +589,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(76, 21);
             this.button5.TabIndex = 181;
-            this.button5.Text = "Auto Detect";
+            this.button5.Text = "Tự nhận trục";
             this.button5.UseVisualStyleBackColor = true;
             // 
             // comboBox4
@@ -642,7 +642,7 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(76, 21);
             this.button6.TabIndex = 175;
-            this.button6.Text = "Auto Detect";
+            this.button6.Text = "Tự nhận trục";
             this.button6.UseVisualStyleBackColor = true;
             // 
             // comboBox5
@@ -695,7 +695,7 @@
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(76, 21);
             this.button7.TabIndex = 169;
-            this.button7.Text = "Auto Detect";
+            this.button7.Text = "Tự nhận trục";
             this.button7.UseVisualStyleBackColor = true;
             // 
             // comboBox6
@@ -748,7 +748,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(76, 21);
             this.button4.TabIndex = 163;
-            this.button4.Text = "Auto Detect";
+            this.button4.Text = "Tự nhận trục";
             this.button4.UseVisualStyleBackColor = true;
             // 
             // comboBox3
@@ -801,7 +801,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(76, 21);
             this.button3.TabIndex = 157;
-            this.button3.Text = "Auto Detect";
+            this.button3.Text = "Tự nhận trục";
             this.button3.UseVisualStyleBackColor = true;
             // 
             // comboBox2
@@ -854,7 +854,7 @@
             this.btn_AutoDetect1.Name = "btn_AutoDetect1";
             this.btn_AutoDetect1.Size = new System.Drawing.Size(76, 21);
             this.btn_AutoDetect1.TabIndex = 151;
-            this.btn_AutoDetect1.Text = "Auto Detect";
+            this.btn_AutoDetect1.Text = "Tự nhận trục";
             this.btn_AutoDetect1.UseVisualStyleBackColor = true;
             // 
             // cbb_CtlAxis
@@ -879,9 +879,9 @@
             this.label26.AutoSize = true;
             this.label26.Location = new System.Drawing.Point(89, 50);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(73, 13);
+            this.label26.Size = new System.Drawing.Size(82, 13);
             this.label26.TabIndex = 78;
-            this.label26.Text = "Controller Axis";
+            this.label26.Text = "Trục điều khiển";
             // 
             // label27
             // 
@@ -890,34 +890,34 @@
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(39, 13);
             this.label27.TabIndex = 79;
-            this.label27.Text = "Output";
+            this.label27.Text = "Đầu ra";
             // 
             // label28
             // 
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(330, 50);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(31, 13);
+            this.label28.Size = new System.Drawing.Size(48, 13);
             this.label28.TabIndex = 80;
-            this.label28.Text = "Expo";
+            this.label28.Text = "Độ cong";
             // 
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(448, 50);
+            this.label29.Location = new System.Drawing.Point(431, 50);
             this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(47, 13);
+            this.label29.Size = new System.Drawing.Size(56, 13);
             this.label29.TabIndex = 81;
-            this.label29.Text = "Reverse";
+            this.label29.Text = "Đảo chiều";
             // 
             // checkBox12
             // 
             this.checkBox12.AutoSize = true;
             this.checkBox12.Location = new System.Drawing.Point(501, 50);
             this.checkBox12.Name = "checkBox12";
-            this.checkBox12.Size = new System.Drawing.Size(97, 17);
+            this.checkBox12.Size = new System.Drawing.Size(122, 17);
             this.checkBox12.TabIndex = 82;
-            this.checkBox12.Text = "Manual Control";
+            this.checkBox12.Text = "Điều khiển thủ công";
             this.checkBox12.UseVisualStyleBackColor = true;
             // 
             // checkBox13
@@ -925,9 +925,9 @@
             this.checkBox13.AutoSize = true;
             this.checkBox13.Location = new System.Drawing.Point(501, 90);
             this.checkBox13.Name = "checkBox13";
-            this.checkBox13.Size = new System.Drawing.Size(64, 17);
+            this.checkBox13.Size = new System.Drawing.Size(111, 17);
             this.checkBox13.TabIndex = 83;
-            this.checkBox13.Text = "Elevons";
+            this.checkBox13.Text = "Cánh lai (Elevons)";
             this.checkBox13.UseVisualStyleBackColor = true;
             // 
             // User_Joystick

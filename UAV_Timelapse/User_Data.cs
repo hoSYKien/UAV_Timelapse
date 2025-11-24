@@ -20,6 +20,15 @@ namespace UAV_Timelapse
         private readonly BindingList<MissionItem> _items = new BindingList<MissionItem>();
 
         // LƯU Ý: KHÔNG tạo DataGridView mới. Dùng dataGridView2 + các cột dgr* đã có sẵn trong Designer.
+        public void SetArmed(bool armed)
+        {
+            void Apply()
+            {
+                _hud.Armed = armed;
+                _hud.Invalidate();
+            }
+            if (InvokeRequired) BeginInvoke((Action)Apply); else Apply();
+        }
 
         public User_Data()
         {
@@ -224,6 +233,13 @@ namespace UAV_Timelapse
             _hud.ModeText = ((MAVLink.MAV_MODE_FLAG)TransmissionFrame.Hb_base_mode).ToString();
             _hud.GpsText = (TransmissionFrame.Gpi_Hdg == ushort.MaxValue) ? "No GPS" : "OK";
 
+            // ===== GPS: HDOP & Sats =====
+            double hdop = TransmissionFrame.Gps_HDOP;                 // đã = eph/100.0
+            int sats = TransmissionFrame.Gps_SatellitesVisible;
+
+            lblHdop.Text = double.IsNaN(hdop) ? "--" : hdop.ToString("0.00");
+            lblSats.Text = sats.ToString();
+
             if (TransmissionFrame.Sys_Voltage_battery > 0)
             {
                 var v = TransmissionFrame.Sys_Voltage_battery / 1000.0;
@@ -358,4 +374,5 @@ namespace UAV_Timelapse
         public double Alt { get; set; } = 100;
         public string Frame { get; set; } = "Relative";
     }
+
 }

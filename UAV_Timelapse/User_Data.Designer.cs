@@ -55,6 +55,7 @@
             this.pnl_data3d = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.panel8 = new System.Windows.Forms.Panel();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.panel9 = new System.Windows.Forms.Panel();
@@ -92,7 +93,8 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.lblHdop = new System.Windows.Forms.Label();
+            this.lblSats = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -102,10 +104,10 @@
             this.panel4.SuspendLayout();
             this.pnl_data3d.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.panel7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -170,6 +172,8 @@
             // panel5
             // 
             this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.Controls.Add(this.lblSats);
+            this.panel5.Controls.Add(this.lblHdop);
             this.panel5.Controls.Add(this.label7);
             this.panel5.Controls.Add(this.lblGroundSpeed);
             this.panel5.Controls.Add(this.lblRoll);
@@ -397,6 +401,19 @@
             this.panel2.Size = new System.Drawing.Size(1153, 790);
             this.panel2.TabIndex = 1;
             // 
+            // webView21
+            // 
+            this.webView21.AllowExternalDrop = true;
+            this.webView21.BackColor = System.Drawing.Color.White;
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webView21.Location = new System.Drawing.Point(3, 0);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(950, 606);
+            this.webView21.TabIndex = 10;
+            this.webView21.ZoomFactor = 1D;
+            // 
             // panel8
             // 
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
@@ -604,7 +621,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(9, 25);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(67, 22);
+            this.textBox1.Size = new System.Drawing.Size(67, 20);
             this.textBox1.TabIndex = 1;
             // 
             // checkBox3
@@ -612,7 +629,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Location = new System.Drawing.Point(838, 24);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(84, 20);
+            this.checkBox3.Size = new System.Drawing.Size(69, 17);
             this.checkBox3.TabIndex = 12;
             this.checkBox3.Text = "MAVFTP";
             this.checkBox3.UseVisualStyleBackColor = true;
@@ -622,7 +639,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 6);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 16);
+            this.label2.Size = new System.Drawing.Size(61, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "WP Radius";
             // 
@@ -631,7 +648,7 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(765, 27);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(67, 20);
+            this.checkBox2.Size = new System.Drawing.Size(55, 17);
             this.checkBox2.TabIndex = 11;
             this.checkBox2.Text = "Spline";
             this.checkBox2.UseVisualStyleBackColor = true;
@@ -641,7 +658,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(91, 6);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(86, 16);
+            this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 2;
             this.label4.Text = "Loiter Radius";
             // 
@@ -649,14 +666,14 @@
             // 
             this.textBox4.Location = new System.Drawing.Point(681, 23);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(67, 22);
+            this.textBox4.Size = new System.Drawing.Size(67, 20);
             this.textBox4.TabIndex = 10;
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(101, 25);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(67, 22);
+            this.textBox2.Size = new System.Drawing.Size(67, 20);
             this.textBox2.TabIndex = 3;
             // 
             // label8
@@ -664,7 +681,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(687, 4);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(61, 16);
+            this.label8.Size = new System.Drawing.Size(50, 13);
             this.label8.TabIndex = 9;
             this.label8.Text = "Alt Warm";
             // 
@@ -673,7 +690,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(193, 6);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(67, 16);
+            this.label6.Size = new System.Drawing.Size(56, 13);
             this.label6.TabIndex = 4;
             this.label6.Text = "Default Alt";
             // 
@@ -691,7 +708,7 @@
             // 
             this.textBox3.Location = new System.Drawing.Point(193, 25);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(67, 22);
+            this.textBox3.Size = new System.Drawing.Size(67, 20);
             this.textBox3.TabIndex = 5;
             // 
             // checkBox1
@@ -699,7 +716,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(420, 27);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(97, 20);
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
             this.checkBox1.TabIndex = 7;
             this.checkBox1.Text = "Verify Hight";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -714,7 +731,7 @@
             "Terrain"});
             this.comboBox1.Location = new System.Drawing.Point(294, 19);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(103, 28);
+            this.comboBox1.Size = new System.Drawing.Size(103, 25);
             this.comboBox1.TabIndex = 6;
             // 
             // splitter2
@@ -729,18 +746,23 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // webView21
+            // lblHdop
             // 
-            this.webView21.AllowExternalDrop = true;
-            this.webView21.BackColor = System.Drawing.Color.White;
-            this.webView21.CreationProperties = null;
-            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webView21.Location = new System.Drawing.Point(3, 0);
-            this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(950, 606);
-            this.webView21.TabIndex = 10;
-            this.webView21.ZoomFactor = 1D;
+            this.lblHdop.AutoSize = true;
+            this.lblHdop.Location = new System.Drawing.Point(33, 274);
+            this.lblHdop.Name = "lblHdop";
+            this.lblHdop.Size = new System.Drawing.Size(41, 13);
+            this.lblHdop.TabIndex = 10;
+            this.lblHdop.Text = "label10";
+            // 
+            // lblSats
+            // 
+            this.lblSats.AutoSize = true;
+            this.lblSats.Location = new System.Drawing.Point(33, 300);
+            this.lblSats.Name = "lblSats";
+            this.lblSats.Size = new System.Drawing.Size(41, 13);
+            this.lblSats.TabIndex = 11;
+            this.lblSats.Text = "label12";
             // 
             // User_Data
             // 
@@ -757,14 +779,15 @@
             this.panel6.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.pnl_data3d.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -835,5 +858,7 @@
         private System.Windows.Forms.DataGridViewImageColumn dgrDist;
         private System.Windows.Forms.DataGridViewImageColumn dgrAZ;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
+        private System.Windows.Forms.Label lblSats;
+        private System.Windows.Forms.Label lblHdop;
     }
 }

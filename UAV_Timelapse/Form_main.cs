@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using static MAVLink;
 namespace UAV_Timelapse
@@ -27,7 +28,6 @@ namespace UAV_Timelapse
         private void HbTimer_Tick(object sender, EventArgs e) => SendHeartbeat();
 
         private const ushort MAV_CMD_SET_MESSAGE_INTERVAL = 511;
-
         //-------------------------------------
 
         //
@@ -57,10 +57,12 @@ namespace UAV_Timelapse
         User_Install_Firmware user_Install_Firmware = new User_Install_Firmware();
         User_Data user_Data = new User_Data();
         User_Frame_Type user_Frame_Type = new User_Frame_Type();
-        User_Accel_Calibration user_Accel_Calibration = new User_Accel_Calibration();
+        User_Accel_Calibration user_Accel_Calibration;
         User_Compass user_Compass = new User_Compass();
         User_Radio_Calibration user_Radio_Calibration = new User_Radio_Calibration();
         User_Servo_Output user_Servo_Output = new User_Servo_Output();
+
+        User_Full_Parameter_List user_Full_Parameter_List;
         /*------------------------------------------*/
 
         public Form_Main()
@@ -85,7 +87,14 @@ namespace UAV_Timelapse
             RefreshPorts();
 
             //this.fullS
+
+            user_Accel_Calibration = new User_Accel_Calibration(this);
+            user_Full_Parameter_List = new User_Full_Parameter_List(this);
         }
+
+        private bool _isArmed = false;
+        public bool IsArmed => _isArmed;
+        const byte SAFETY_ARMED = 0x80; // 128
         private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -111,8 +120,33 @@ namespace UAV_Timelapse
                             switch ((MAVLink.MAVLINK_MSG_ID)msg.msgid)
                             {
                                 case MAVLink.MAVLINK_MSG_ID.HEARTBEAT:
-                                    heartbeat = (MAVLink.mavlink_heartbeat_t)msg.data;
+                                    //heartbeat = (MAVLink.mavlink_heartbeat_t)msg.data;
+                                    //break;
+
+                                    var hb = (MAVLink.mavlink_heartbeat_t)msg.data;
+                                    heartbeat = hb;
+
+                                    const byte SAFETY_ARMED = 0x80;           // MAV_MODE_FLAG_SAFETY_ARMED
+                                    bool armed = (hb.base_mode & SAFETY_ARMED) != 0;
+
+                                    // đẩy sang User_Data (instance bạn đã tạo: user_Data)
+                                    this.BeginInvoke(new Action(() =>
+                                    {
+                                        user_Data.SetArmed(armed);
+                                        // nếu muốn: khóa/mở nút Calibrate khi đang armed
+                                        btnAccelCalibration.Enabled = !armed;
+
+                                        // lần đầu nhận heartbeat thì detect firmware
+                                        if (string.IsNullOrEmpty(_pdefFileName))
+                                        {
+                                            _pdefFileName = GetPdefFileName(hb);
+
+                                            // nếu muốn show lên UI:
+                                            // lblFirmware.Text = _pdefFileName ?? "Unknown FW";
+                                        }
+                                    }));
                                     break;
+
                                 case MAVLink.MAVLINK_MSG_ID.GLOBAL_POSITION_INT:
                                     globalPos = (MAVLink.mavlink_global_position_int_t)msg.data;
                                     break;
@@ -132,6 +166,28 @@ namespace UAV_Timelapse
                                     rcCh = (MAVLink.mavlink_rc_channels_t)msg.data;
                                     UpdateRcFromChannels(rcCh.Value);
                                     break;
+                                case MAVLink.MAVLINK_MSG_ID.STATUSTEXT:
+                                    {
+                                        var st = (MAVLink.mavlink_statustext_t)msg.data;
+                                        string txt = Encoding.ASCII.GetString(st.text).TrimEnd('\0');
+
+                                        // raise event cho User_Accel_Calibration
+                                        RaiseStatusText(txt);
+                                        break;
+                                    }
+                                case MAVLink.MAVLINK_MSG_ID.COMMAND_ACK:
+                                    {
+                                        var ack = (MAVLink.mavlink_command_ack_t)msg.data;
+                                        RaiseCommandAck(ack.command, ack.result);
+                                        break;
+                                    }
+                                case MAVLink.MAVLINK_MSG_ID.PARAM_VALUE:
+                                    {
+                                        var p = (MAVLink.mavlink_param_value_t)msg.data;
+                                        RaiseParamValue(p);
+                                        break;
+                                    }
+
                             }
                         }
                     }
@@ -176,6 +232,9 @@ namespace UAV_Timelapse
                 TransmissionFrame.Gps_Spd_mps = gr.vel / 100.0;           // cm/s -> m/s
                 TransmissionFrame.Gps_Cog_deg = (gr.cog == 65535) ? -1.0  // unknown
                                              : (gr.cog / 100.0);          // cdeg -> deg
+
+                TransmissionFrame.Gps_HDOP = (gr.eph == ushort.MaxValue) ? double.NaN : gr.eph / 100.0;
+                TransmissionFrame.Gps_VDOP = (gr.epv == ushort.MaxValue) ? double.NaN : gr.epv / 100.0;
             }
 
             // ===== GLOBAL_POSITION_INT + các khối khác chỉ cập nhật khi có =====
@@ -295,17 +354,12 @@ namespace UAV_Timelapse
 
         /*------------------------------------------*/
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
-
         private void btnOptional_Click(object sender, EventArgs e)
         {
             //int tmp = PanelOptional.Height;
-            if(checkBtnOption)
+            if (checkBtnOption)
             {
-                for(int i = 420; i > 0; i-=20)
+                for (int i = 420; i > 0; i -= 20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
@@ -315,22 +369,13 @@ namespace UAV_Timelapse
             else
             {
                 PanelOptional.Visible = true;
-                for (int i = 0; i <= 420; i+=20)
+                for (int i = 0; i <= 420; i += 20)
                 {
                     if (i != 0) PanelOptional.Size = new Size(160, i);
                 }
 
                 checkBtnOption = true;
             }
-        }
-
-        // Helper nhỏ để bật double-buffer cho panel setup (giảm flicker)
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            panelSetup.GetType().GetProperty("DoubleBuffered",
-                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
-                ?.SetValue(panelSetup, true, null);
         }
 
         private void btnData_Click(object sender, EventArgs e)
@@ -509,56 +554,6 @@ namespace UAV_Timelapse
             SendPacketV2(MAVLink.MAVLINK_MSG_ID.HEARTBEAT, hb);
         }
 
-        private void StartHeartbeat()
-        {
-            hbTimer = new System.Windows.Forms.Timer { Interval = 1000 };
-            hbTimer.Tick += (s, e) =>
-            {
-                var hb = new mavlink_heartbeat_t
-                {
-                    type = (byte)MAV_TYPE.GCS,                 // <-- sửa
-                    autopilot = (byte)MAV_AUTOPILOT.INVALID,   // <-- sửa
-                    base_mode = 0,
-                    custom_mode = 0,
-                    system_status = (byte)MAV_STATE.ACTIVE,    // <-- sửa
-                    mavlink_version = 3
-                };
-                SendPacket(MAVLINK_MSG_ID.HEARTBEAT, hb);
-            };
-            hbTimer.Start();
-        }
-        private void StopHeartbeat()
-        {
-            hbTimer?.Stop();
-            hbTimer?.Dispose();
-            hbTimer = null;
-        }
-
-
-        private const ushort CMD_SET_MESSAGE_INTERVAL = 511;  // MAV_CMD_SET_MESSAGE_INTERVAL
-
-        private void RequestStreams()
-        {
-            void SetRate(uint msgId, int hz)
-            {
-                var cmd = new mavlink_command_long_t
-                {
-                    target_system = 1,
-                    target_component = 1,
-                    command = CMD_SET_MESSAGE_INTERVAL,  // dùng hằng số thay vì enum
-                    confirmation = 0,
-                    param1 = msgId,
-                    param2 = hz > 0 ? 1_000_000f / hz : -1f
-                };
-                SendPacket(MAVLINK_MSG_ID.COMMAND_LONG, cmd);
-            }
-
-            SetRate(30, 20);  // ATTITUDE
-            SetRate(74, 10);  // VFR_HUD
-            SetRate(33, 10);  // GLOBAL_POSITION_INT
-            SetRate(105, 5);  // HIGHRES_IMU
-            SetRate(147, 1);  // BATTERY_STATUS
-        }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -601,15 +596,6 @@ namespace UAV_Timelapse
             addUserControl(user_Install_Firmware);
         }
 
-
-
-        private void SendPacket(MAVLINK_MSG_ID id, object payload)
-        {
-            if (!serialPort1.IsOpen) return;
-            // Overload trong MAVLink.dll của bạn: (id, payload, bool sign=false)
-            byte[] pkt = mavlink.GenerateMAVLinkPacket20(id, payload);
-            serialPort1.Write(pkt, 0, pkt.Length);
-        }
         private static ushort ClampUs(int v)
         {
             if (v < 0) return 0;          // 0 = kênh không hợp lệ/không dùng (ArduPilot có thể gửi 0)
@@ -643,5 +629,156 @@ namespace UAV_Timelapse
             TransmissionFrame.Rc_Ch16 = ClampUs(m.chan16_raw);
             TransmissionFrame.Rc_RSSI = m.rssi; // 0..255
         }
+        public const ushort PREFLIGHT_CALIBRATION = 241;    // MAV_CMD_PREFLIGHT_CALIBRATION
+        public const ushort ACCELCAL_VEHICLE_POS = 42429;  // MAV_CMD_ACCELCAL_VEHICLE_POS
+        public enum AccelPose : int
+        {
+            LEVEL = 1,
+            LEFT = 2,
+            RIGHT = 3,
+            NOSEUP = 4,
+            NOSEDOWN = 5,
+            BACK = 6
+        }
+        public event Action<string> OnStatusText;
+        public event Action<ushort, byte> OnCommandAck;
+
+        private void RaiseStatusText(string txt)
+        {
+            if (!IsHandleCreated || IsDisposed) return;
+            BeginInvoke(new Action(() => OnStatusText?.Invoke(txt)));
+        }
+
+        private void RaiseCommandAck(ushort cmd, byte result)
+        {
+            if (!IsHandleCreated || IsDisposed) return;
+            BeginInvoke(new Action(() => OnCommandAck?.Invoke(cmd, result)));
+        }
+
+
+        // Gửi lệnh bắt đầu calib accel (giống MP bấm "Calibrate Accel")
+        public void StartAccelCalibration()
+        {
+            var cmd = new MAVLink.mavlink_command_long_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                command = PREFLIGHT_CALIBRATION,
+                confirmation = 0,
+                // param5 = 1 -> accel calib
+                param1 = 0f,   // gyro
+                param2 = 0f,   // mag
+                param3 = 0f,   // baro
+                param4 = 0f,   // RC
+                param5 = 1f,   // accel
+                param6 = 0f,
+                param7 = 0f
+            };
+
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
+        }
+
+        // Gửi "Click when DONE" cho tư thế hiện tại
+        public void SendAccelCalVehiclePos(AccelPose pose)
+        {
+            var cmd = new MAVLink.mavlink_command_long_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                command = ACCELCAL_VEHICLE_POS,
+                confirmation = 0,
+                param1 = (float)pose
+            };
+
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
+        }
+
+        public event Action<mavlink_param_value_t> OnParamValue;
+
+        private void btnParam_Click(object sender, EventArgs e)
+        {
+            // Chỉ load metadata 1 lần
+            if (!_paramMetaLoaded)
+            {
+                string pdefFolder = Path.Combine(Application.StartupPath, "Pdef");
+
+                // nếu chưa detect được thì mặc định dùng ArduCopter
+                string fileName = _pdefFileName ?? "ArduCopter.apm.pdef.xml";
+                string fullPath = Path.Combine(pdefFolder, fileName);
+
+                ParamMetaStore.LoadFromXml(fullPath);
+                _paramMetaLoaded = true;
+            }
+
+            addUserControl(user_Full_Parameter_List);
+
+            // Sau khi show form thì yêu cầu FCU gửi toàn bộ params
+            RequestAllParams();
+        }
+
+        private void RaiseParamValue(mavlink_param_value_t p)
+        {
+            if (!IsHandleCreated || IsDisposed) return;
+            BeginInvoke(new Action(() => OnParamValue?.Invoke(p)));
+        }
+        public void RequestAllParams()
+        {
+            var req = new mavlink_param_request_list_t
+            {
+                target_system = FcuSysId,   // đã update khi nhận HEARTBEAT
+                target_component = FcuCompId
+            };
+
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.PARAM_REQUEST_LIST, req);
+        }
+        private bool _paramMetaLoaded = false;
+
+        private string _pdefFileName = null;   // sẽ set sau khi nhận HEARTBEAT
+
+        private string GetPdefFileName(MAVLink.mavlink_heartbeat_t hb)
+        {
+            // Chỉ xử lý ArduPilot
+            if (hb.autopilot != (byte)MAVLink.MAV_AUTOPILOT.ARDUPILOTMEGA)
+                return null;
+
+            var type = (MAVLink.MAV_TYPE)hb.type;
+
+            switch (type)
+            {
+                // === Plane ===
+                case MAVLink.MAV_TYPE.FIXED_WING:
+                    return "ArduPlane.apm.pdef.xml";
+
+                // === Rover ===
+                case MAVLink.MAV_TYPE.GROUND_ROVER:
+                case MAVLink.MAV_TYPE.SURFACE_BOAT:
+                    return "Rover.apm.pdef.xml";
+
+                // === Sub ===
+                case MAVLink.MAV_TYPE.SUBMARINE:
+                    return "ArduSub.apm.pdef.xml";
+
+                // === Blimp ===
+                case MAVLink.MAV_TYPE.AIRSHIP:
+                    return "Blimp.apm.pdef.xml";
+
+                // === Antenna Tracker ===
+                case MAVLink.MAV_TYPE.ANTENNA_TRACKER:
+                    return "AntennaTracker.apm.pdef.xml";
+
+                // === Heli ===
+                case MAVLink.MAV_TYPE.HELICOPTER:
+                    return "Heli.apm.pdef.xml";
+
+                // === AP_Periph (board ngoại vi) ===
+                case MAVLink.MAV_TYPE.ONBOARD_CONTROLLER:
+                    return "AP_Periph.apm.pdef.xml";
+
+                // === Còn lại: mặc định coi là Copter (quad, hex, octo, tri, coax, v.v.) ===
+                default:
+                    return "ArduCopter.apm.pdef.xml";
+            }
+        }
+
     }
 }
