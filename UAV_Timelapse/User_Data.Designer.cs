@@ -35,6 +35,7 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.lblSats = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.lblGroundSpeed = new System.Windows.Forms.Label();
             this.lblRoll = new System.Windows.Forms.Label();
@@ -42,10 +43,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.lblPitch = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.lblHdop = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblPitch = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.lblVerticalSpeed = new System.Windows.Forms.Label();
             this.lblAltitude = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -57,44 +59,19 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.splitter3 = new System.Windows.Forms.Splitter();
-            this.panel9 = new System.Windows.Forms.Panel();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.dgrSTT = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrCommand = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.dgrDelay = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrDelay2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrDelay3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrDelay4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrLat = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrLong = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrAlt = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgrFrame = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.dgrDelete = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.dgrUp = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dgrDown = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dgrGrad = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dgrAngle = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dgrDist = new System.Windows.Forms.DataGridViewImageColumn();
-            this.dgrAZ = new System.Windows.Forms.DataGridViewImageColumn();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.lblHdop = new System.Windows.Forms.Label();
-            this.lblSats = new System.Windows.Forms.Label();
+            this.btnRead = new System.Windows.Forms.Button();
+            this.btnWriteWP = new System.Windows.Forms.Button();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -105,9 +82,10 @@
             this.pnl_data3d.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).BeginInit();
-            this.panel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            this.panel8.SuspendLayout();
             this.panel7.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -173,7 +151,6 @@
             // 
             this.panel5.BackColor = System.Drawing.Color.White;
             this.panel5.Controls.Add(this.lblSats);
-            this.panel5.Controls.Add(this.lblHdop);
             this.panel5.Controls.Add(this.label7);
             this.panel5.Controls.Add(this.lblGroundSpeed);
             this.panel5.Controls.Add(this.lblRoll);
@@ -186,23 +163,33 @@
             this.panel5.Size = new System.Drawing.Size(153, 343);
             this.panel5.TabIndex = 3;
             // 
+            // lblSats
+            // 
+            this.lblSats.AutoSize = true;
+            this.lblSats.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSats.Location = new System.Drawing.Point(46, 295);
+            this.lblSats.Name = "lblSats";
+            this.lblSats.Size = new System.Drawing.Size(60, 16);
+            this.lblSats.TabIndex = 11;
+            this.lblSats.Text = "Vệ tinh: 0";
+            // 
             // label7
             // 
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(-2, 13);
+            this.label7.Location = new System.Drawing.Point(-4, 13);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(149, 20);
+            this.label7.Size = new System.Drawing.Size(161, 20);
             this.label7.TabIndex = 6;
-            this.label7.Text = "GroundSpeed (m/s)";
+            this.label7.Text = "Tốc độ mặt đất (m/s)";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblGroundSpeed
             // 
             this.lblGroundSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGroundSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblGroundSpeed.Location = new System.Drawing.Point(27, 33);
+            this.lblGroundSpeed.Location = new System.Drawing.Point(31, 33);
             this.lblGroundSpeed.Name = "lblGroundSpeed";
-            this.lblGroundSpeed.Size = new System.Drawing.Size(91, 58);
+            this.lblGroundSpeed.Size = new System.Drawing.Size(91, 39);
             this.lblGroundSpeed.TabIndex = 7;
             this.lblGroundSpeed.Text = "0.00";
             this.lblGroundSpeed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -211,9 +198,9 @@
             // 
             this.lblRoll.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRoll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.lblRoll.Location = new System.Drawing.Point(27, 219);
+            this.lblRoll.Location = new System.Drawing.Point(31, 233);
             this.lblRoll.Name = "lblRoll";
-            this.lblRoll.Size = new System.Drawing.Size(91, 55);
+            this.lblRoll.Size = new System.Drawing.Size(91, 39);
             this.lblRoll.TabIndex = 3;
             this.lblRoll.Text = "0.00";
             this.lblRoll.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -222,9 +209,9 @@
             // 
             this.lblYaw.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblYaw.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lblYaw.Location = new System.Drawing.Point(27, 124);
+            this.lblYaw.Location = new System.Drawing.Point(31, 130);
             this.lblYaw.Name = "lblYaw";
-            this.lblYaw.Size = new System.Drawing.Size(91, 51);
+            this.lblYaw.Size = new System.Drawing.Size(91, 39);
             this.lblYaw.TabIndex = 9;
             this.lblYaw.Text = "0.00";
             this.lblYaw.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -232,30 +219,31 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(17, 184);
+            this.label3.Location = new System.Drawing.Point(17, 207);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(111, 33);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Roll(deg)";
+            this.label3.Text = "Góc lăn (roll, °)";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label9
             // 
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(32, 91);
+            this.label9.Location = new System.Drawing.Point(3, 110);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(81, 20);
+            this.label9.Size = new System.Drawing.Size(147, 20);
             this.label9.TabIndex = 8;
-            this.label9.Text = "Yaw (deg)";
+            this.label9.Text = "Góc hướng (yaw, °)";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.White;
-            this.panel4.Controls.Add(this.lblPitch);
-            this.panel4.Controls.Add(this.label11);
+            this.panel4.Controls.Add(this.lblHdop);
             this.panel4.Controls.Add(this.label1);
+            this.panel4.Controls.Add(this.lblPitch);
             this.panel4.Controls.Add(this.label5);
+            this.panel4.Controls.Add(this.label11);
             this.panel4.Controls.Add(this.lblVerticalSpeed);
             this.panel4.Controls.Add(this.lblAltitude);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Right;
@@ -264,46 +252,56 @@
             this.panel4.Size = new System.Drawing.Size(163, 343);
             this.panel4.TabIndex = 2;
             // 
-            // lblPitch
+            // lblHdop
             // 
-            this.lblPitch.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.lblPitch.Location = new System.Drawing.Point(37, 219);
-            this.lblPitch.Name = "lblPitch";
-            this.lblPitch.Size = new System.Drawing.Size(91, 55);
-            this.lblPitch.TabIndex = 11;
-            this.lblPitch.Text = "0.00";
-            this.lblPitch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label11
-            // 
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(20, 190);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(125, 27);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "Pitch(deg)";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblHdop.AutoSize = true;
+            this.lblHdop.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHdop.Location = new System.Drawing.Point(47, 295);
+            this.lblHdop.Name = "lblHdop";
+            this.lblHdop.Size = new System.Drawing.Size(69, 16);
+            this.lblHdop.TabIndex = 10;
+            this.lblHdop.Text = "HDOP: 0.0";
             // 
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(37, 13);
+            this.label1.Location = new System.Drawing.Point(36, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 20);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Altitude (m)";
+            this.label1.Text = "Độ cao (m)";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblPitch
+            // 
+            this.lblPitch.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.lblPitch.Location = new System.Drawing.Point(36, 233);
+            this.lblPitch.Name = "lblPitch";
+            this.lblPitch.Size = new System.Drawing.Size(91, 39);
+            this.lblPitch.TabIndex = 11;
+            this.lblPitch.Text = "0.00";
+            this.lblPitch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(20, 91);
+            this.label5.Location = new System.Drawing.Point(-3, 110);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(125, 20);
+            this.label5.Size = new System.Drawing.Size(169, 20);
             this.label5.TabIndex = 4;
-            this.label5.Text = "Vertical Speed (m/s)";
+            this.label5.Text = "Tốc độ lên/xuống (m/s)";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(5, 210);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(152, 27);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Góc chúi (pitch, °)";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblVerticalSpeed
             // 
@@ -311,7 +309,7 @@
             this.lblVerticalSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.lblVerticalSpeed.Location = new System.Drawing.Point(36, 124);
             this.lblVerticalSpeed.Name = "lblVerticalSpeed";
-            this.lblVerticalSpeed.Size = new System.Drawing.Size(91, 51);
+            this.lblVerticalSpeed.Size = new System.Drawing.Size(91, 39);
             this.lblVerticalSpeed.TabIndex = 5;
             this.lblVerticalSpeed.Text = "0.00";
             this.lblVerticalSpeed.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -320,9 +318,9 @@
             // 
             this.lblAltitude.Font = new System.Drawing.Font("Microsoft Sans Serif", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAltitude.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.lblAltitude.Location = new System.Drawing.Point(37, 33);
+            this.lblAltitude.Location = new System.Drawing.Point(36, 33);
             this.lblAltitude.Name = "lblAltitude";
-            this.lblAltitude.Size = new System.Drawing.Size(91, 58);
+            this.lblAltitude.Size = new System.Drawing.Size(91, 39);
             this.lblAltitude.TabIndex = 1;
             this.lblAltitude.Text = "0.00";
             this.lblAltitude.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -391,8 +389,6 @@
             // 
             this.panel2.Controls.Add(this.webView21);
             this.panel2.Controls.Add(this.panel8);
-            this.panel2.Controls.Add(this.splitter3);
-            this.panel2.Controls.Add(this.panel9);
             this.panel2.Controls.Add(this.splitter2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(332, 0);
@@ -410,329 +406,20 @@
             this.webView21.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webView21.Location = new System.Drawing.Point(3, 0);
             this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(950, 606);
+            this.webView21.Size = new System.Drawing.Size(950, 790);
             this.webView21.TabIndex = 10;
             this.webView21.ZoomFactor = 1D;
             // 
             // panel8
             // 
+            this.panel8.Controls.Add(this.groupBox2);
+            this.panel8.Controls.Add(this.groupBox1);
+            this.panel8.Controls.Add(this.panel7);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel8.Location = new System.Drawing.Point(953, 0);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(200, 606);
+            this.panel8.Size = new System.Drawing.Size(200, 790);
             this.panel8.TabIndex = 9;
-            // 
-            // splitter3
-            // 
-            this.splitter3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter3.Location = new System.Drawing.Point(3, 606);
-            this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(1150, 17);
-            this.splitter3.TabIndex = 8;
-            this.splitter3.TabStop = false;
-            // 
-            // panel9
-            // 
-            this.panel9.Controls.Add(this.dataGridView2);
-            this.panel9.Controls.Add(this.panel7);
-            this.panel9.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel9.Location = new System.Drawing.Point(3, 623);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(1150, 167);
-            this.panel9.TabIndex = 6;
-            // 
-            // dataGridView2
-            // 
-            this.dataGridView2.BackgroundColor = System.Drawing.Color.White;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dgrSTT,
-            this.dgrCommand,
-            this.dgrDelay,
-            this.dgrDelay2,
-            this.dgrDelay3,
-            this.dgrDelay4,
-            this.dgrLat,
-            this.dgrLong,
-            this.dgrAlt,
-            this.dgrFrame,
-            this.dgrDelete,
-            this.dgrUp,
-            this.dgrDown,
-            this.dgrGrad,
-            this.dgrAngle,
-            this.dgrDist,
-            this.dgrAZ});
-            this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView2.Location = new System.Drawing.Point(0, 49);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowHeadersWidth = 51;
-            this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(1150, 118);
-            this.dataGridView2.TabIndex = 15;
-            // 
-            // dgrSTT
-            // 
-            this.dgrSTT.HeaderText = "STT";
-            this.dgrSTT.MinimumWidth = 6;
-            this.dgrSTT.Name = "dgrSTT";
-            this.dgrSTT.Width = 50;
-            // 
-            // dgrCommand
-            // 
-            this.dgrCommand.HeaderText = "Command";
-            this.dgrCommand.MinimumWidth = 6;
-            this.dgrCommand.Name = "dgrCommand";
-            this.dgrCommand.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgrCommand.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dgrCommand.Width = 125;
-            // 
-            // dgrDelay
-            // 
-            this.dgrDelay.HeaderText = "Delay";
-            this.dgrDelay.MinimumWidth = 6;
-            this.dgrDelay.Name = "dgrDelay";
-            this.dgrDelay.Width = 50;
-            // 
-            // dgrDelay2
-            // 
-            this.dgrDelay2.HeaderText = "";
-            this.dgrDelay2.MinimumWidth = 6;
-            this.dgrDelay2.Name = "dgrDelay2";
-            this.dgrDelay2.Width = 40;
-            // 
-            // dgrDelay3
-            // 
-            this.dgrDelay3.HeaderText = "";
-            this.dgrDelay3.MinimumWidth = 6;
-            this.dgrDelay3.Name = "dgrDelay3";
-            this.dgrDelay3.Width = 40;
-            // 
-            // dgrDelay4
-            // 
-            this.dgrDelay4.HeaderText = "";
-            this.dgrDelay4.MinimumWidth = 6;
-            this.dgrDelay4.Name = "dgrDelay4";
-            this.dgrDelay4.Width = 40;
-            // 
-            // dgrLat
-            // 
-            this.dgrLat.HeaderText = "Lat";
-            this.dgrLat.MinimumWidth = 6;
-            this.dgrLat.Name = "dgrLat";
-            this.dgrLat.Width = 125;
-            // 
-            // dgrLong
-            // 
-            this.dgrLong.HeaderText = "Long";
-            this.dgrLong.MinimumWidth = 6;
-            this.dgrLong.Name = "dgrLong";
-            this.dgrLong.Width = 125;
-            // 
-            // dgrAlt
-            // 
-            this.dgrAlt.HeaderText = "Alt";
-            this.dgrAlt.MinimumWidth = 6;
-            this.dgrAlt.Name = "dgrAlt";
-            this.dgrAlt.Width = 60;
-            // 
-            // dgrFrame
-            // 
-            this.dgrFrame.HeaderText = "Frame";
-            this.dgrFrame.MinimumWidth = 6;
-            this.dgrFrame.Name = "dgrFrame";
-            this.dgrFrame.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgrFrame.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dgrFrame.Width = 70;
-            // 
-            // dgrDelete
-            // 
-            this.dgrDelete.HeaderText = "Delete";
-            this.dgrDelete.MinimumWidth = 6;
-            this.dgrDelete.Name = "dgrDelete";
-            this.dgrDelete.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgrDelete.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dgrDelete.Width = 60;
-            // 
-            // dgrUp
-            // 
-            this.dgrUp.HeaderText = "Up";
-            this.dgrUp.MinimumWidth = 6;
-            this.dgrUp.Name = "dgrUp";
-            this.dgrUp.Width = 50;
-            // 
-            // dgrDown
-            // 
-            this.dgrDown.HeaderText = "Down";
-            this.dgrDown.MinimumWidth = 6;
-            this.dgrDown.Name = "dgrDown";
-            this.dgrDown.Width = 50;
-            // 
-            // dgrGrad
-            // 
-            this.dgrGrad.HeaderText = "Grad %";
-            this.dgrGrad.MinimumWidth = 6;
-            this.dgrGrad.Name = "dgrGrad";
-            this.dgrGrad.Width = 60;
-            // 
-            // dgrAngle
-            // 
-            this.dgrAngle.HeaderText = "Angle";
-            this.dgrAngle.MinimumWidth = 6;
-            this.dgrAngle.Name = "dgrAngle";
-            this.dgrAngle.Width = 60;
-            // 
-            // dgrDist
-            // 
-            this.dgrDist.HeaderText = "Dist";
-            this.dgrDist.MinimumWidth = 6;
-            this.dgrDist.Name = "dgrDist";
-            this.dgrDist.Width = 60;
-            // 
-            // dgrAZ
-            // 
-            this.dgrAZ.HeaderText = "AZ";
-            this.dgrAZ.MinimumWidth = 6;
-            this.dgrAZ.Name = "dgrAZ";
-            this.dgrAZ.Width = 60;
-            // 
-            // panel7
-            // 
-            this.panel7.Controls.Add(this.textBox1);
-            this.panel7.Controls.Add(this.checkBox3);
-            this.panel7.Controls.Add(this.label2);
-            this.panel7.Controls.Add(this.checkBox2);
-            this.panel7.Controls.Add(this.label4);
-            this.panel7.Controls.Add(this.textBox4);
-            this.panel7.Controls.Add(this.textBox2);
-            this.panel7.Controls.Add(this.label8);
-            this.panel7.Controls.Add(this.label6);
-            this.panel7.Controls.Add(this.button1);
-            this.panel7.Controls.Add(this.textBox3);
-            this.panel7.Controls.Add(this.checkBox1);
-            this.panel7.Controls.Add(this.comboBox1);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel7.Location = new System.Drawing.Point(0, 0);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(1150, 49);
-            this.panel7.TabIndex = 10;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(9, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(67, 20);
-            this.textBox1.TabIndex = 1;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(838, 24);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(69, 17);
-            this.checkBox3.TabIndex = 12;
-            this.checkBox3.Text = "MAVFTP";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 6);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(61, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "WP Radius";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(765, 27);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(55, 17);
-            this.checkBox2.TabIndex = 11;
-            this.checkBox2.Text = "Spline";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(91, 6);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(69, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Loiter Radius";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(681, 23);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(67, 20);
-            this.textBox4.TabIndex = 10;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(101, 25);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(67, 20);
-            this.textBox2.TabIndex = 3;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(687, 4);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(50, 13);
-            this.label8.TabIndex = 9;
-            this.label8.Text = "Alt Warm";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(193, 6);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Default Alt";
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.button1.Location = new System.Drawing.Point(542, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 28);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Add Below";
-            this.button1.UseVisualStyleBackColor = false;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(193, 25);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(67, 20);
-            this.textBox3.TabIndex = 5;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(420, 27);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Verify Hight";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Relative",
-            "Absolute",
-            "Terrain"});
-            this.comboBox1.Location = new System.Drawing.Point(294, 19);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(103, 25);
-            this.comboBox1.TabIndex = 6;
             // 
             // splitter2
             // 
@@ -746,23 +433,122 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // lblHdop
+            // btnRead
             // 
-            this.lblHdop.AutoSize = true;
-            this.lblHdop.Location = new System.Drawing.Point(33, 274);
-            this.lblHdop.Name = "lblHdop";
-            this.lblHdop.Size = new System.Drawing.Size(41, 13);
-            this.lblHdop.TabIndex = 10;
-            this.lblHdop.Text = "label10";
+            this.btnRead.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRead.Location = new System.Drawing.Point(3, 12);
+            this.btnRead.Name = "btnRead";
+            this.btnRead.Size = new System.Drawing.Size(167, 31);
+            this.btnRead.TabIndex = 0;
+            this.btnRead.Text = "Đọc waypoint";
+            this.btnRead.UseVisualStyleBackColor = true;
             // 
-            // lblSats
+            // btnWriteWP
             // 
-            this.lblSats.AutoSize = true;
-            this.lblSats.Location = new System.Drawing.Point(33, 300);
-            this.lblSats.Name = "lblSats";
-            this.lblSats.Size = new System.Drawing.Size(41, 13);
-            this.lblSats.TabIndex = 11;
-            this.lblSats.Text = "label12";
+            this.btnWriteWP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnWriteWP.Location = new System.Drawing.Point(3, 49);
+            this.btnWriteWP.Name = "btnWriteWP";
+            this.btnWriteWP.Size = new System.Drawing.Size(167, 31);
+            this.btnWriteWP.TabIndex = 1;
+            this.btnWriteWP.Text = "Nạp waypoint";
+            this.btnWriteWP.UseVisualStyleBackColor = true;
+            this.btnWriteWP.Click += new System.EventHandler(this.btnWriteWP_Click);
+            // 
+            // panel7
+            // 
+            this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel7.Controls.Add(this.btnWriteWP);
+            this.panel7.Controls.Add(this.btnRead);
+            this.panel7.Location = new System.Drawing.Point(6, 91);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(175, 95);
+            this.panel7.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(7, 18);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 16);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Vĩ độ: 0.0";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(6, 8);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(175, 77);
+            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Toạ độ con trỏ";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(7, 34);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(74, 16);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Kinh độ: 0.0";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(7, 50);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(74, 16);
+            this.label6.TabIndex = 5;
+            this.label6.Text = "Cao độ: 0.0";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(6, 192);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(175, 76);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Toạ độ điểm Home";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(7, 50);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(74, 16);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "Cao độ: 0.0";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(7, 34);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(74, 16);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "Kinh độ: 0.0";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(7, 18);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(63, 16);
+            this.label12.TabIndex = 3;
+            this.label12.Text = "Vĩ độ: 0.0";
             // 
             // User_Data
             // 
@@ -781,13 +567,16 @@
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.pnl_data3d.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
-            this.panel9.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            this.panel8.ResumeLayout(false);
             this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -821,44 +610,21 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.Splitter splitter2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Panel panel8;
-        private System.Windows.Forms.Splitter splitter3;
-        private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrSTT;
-        private System.Windows.Forms.DataGridViewComboBoxColumn dgrCommand;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrDelay;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrDelay2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrDelay3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrDelay4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrLat;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrLong;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgrAlt;
-        private System.Windows.Forms.DataGridViewComboBoxColumn dgrFrame;
-        private System.Windows.Forms.DataGridViewButtonColumn dgrDelete;
-        private System.Windows.Forms.DataGridViewImageColumn dgrUp;
-        private System.Windows.Forms.DataGridViewImageColumn dgrDown;
-        private System.Windows.Forms.DataGridViewImageColumn dgrGrad;
-        private System.Windows.Forms.DataGridViewImageColumn dgrAngle;
-        private System.Windows.Forms.DataGridViewImageColumn dgrDist;
-        private System.Windows.Forms.DataGridViewImageColumn dgrAZ;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private System.Windows.Forms.Label lblSats;
         private System.Windows.Forms.Label lblHdop;
+        private System.Windows.Forms.Button btnWriteWP;
+        private System.Windows.Forms.Button btnRead;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label4;
     }
 }

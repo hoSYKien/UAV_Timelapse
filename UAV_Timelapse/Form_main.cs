@@ -11,6 +11,11 @@ namespace UAV_Timelapse
 {
     public partial class Form_Main : Form
     {
+        // Theo dõi HEARTBEAT
+        private bool _hasHeartbeat = false;
+        private bool _waitingHeartbeat = false;
+        private readonly Timer _connectTimeoutTimer = new Timer { Interval = 5000 }; // 5 giây
+
         // Variable
         bool checkBtnOption = true;
         bool checkBtnData = true;
@@ -68,6 +73,9 @@ namespace UAV_Timelapse
         public Form_Main()
         {
             InitializeComponent();
+
+            _connectTimeoutTimer.Tick += ConnectTimeoutTimer_Tick;
+
             // Khuyến nghị: tắt autoscale mặc định để tránh “double scale”
             this.AutoScaleMode = AutoScaleMode.None;
 
@@ -120,14 +128,20 @@ namespace UAV_Timelapse
                             switch ((MAVLink.MAVLINK_MSG_ID)msg.msgid)
                             {
                                 case MAVLink.MAVLINK_MSG_ID.HEARTBEAT:
-                                    //heartbeat = (MAVLink.mavlink_heartbeat_t)msg.data;
-                                    //break;
+                                    // Nhận hb
+                                    _hasHeartbeat = true;
+                                    _waitingHeartbeat = false;
+                                    if (_connectTimeoutTimer.Enabled)
+                                        _connectTimeoutTimer.Stop();
 
                                     var hb = (MAVLink.mavlink_heartbeat_t)msg.data;
                                     heartbeat = hb;
 
                                     const byte SAFETY_ARMED = 0x80;           // MAV_MODE_FLAG_SAFETY_ARMED
                                     bool armed = (hb.base_mode & SAFETY_ARMED) != 0;
+
+                                    //byte sysId = msg.sysid;
+                                    string typeName = GetVehicleTypeName(hb.type);
 
                                     // đẩy sang User_Data (instance bạn đã tạo: user_Data)
                                     this.BeginInvoke(new Action(() =>
@@ -144,6 +158,9 @@ namespace UAV_Timelapse
                                             // nếu muốn show lên UI:
                                             // lblFirmware.Text = _pdefFileName ?? "Unknown FW";
                                         }
+                                        // Cập nhật tt kết nối
+                                        lblDevID.Text = $"{serialPort1.PortName}-{FcuSysId} {typeName}";
+                                        lblConnect.Text = "Ngắt kết nối";
                                     }));
                                     break;
 
@@ -457,24 +474,75 @@ namespace UAV_Timelapse
         {
             try
             {
+                // Mở kết nối
                 if (!serialPort1.IsOpen)
                 {
+                    if (comboBoxPorts.SelectedItem == null || comboBoxBaudrate.SelectedItem == null)
+                    {
+                        MessageBox.Show("Vui lòng chọn cổng COM và Baudrate trước!");
+                        return;
+                    }
+
                     serialPort1.PortName = comboBoxPorts.SelectedItem.ToString();
                     serialPort1.BaudRate = int.Parse(comboBoxBaudrate.SelectedItem.ToString());
-                    serialPort1.Open();
+
+                    try
+                    {
+                        serialPort1.Open();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            "Không thể mở cổng COM này.\n" +
+                            "Có thể bạn đã chọn sai cổng hoặc cổng đang bị ứng dụng khác sử dụng.\n\n" +
+                            "Chi tiết: " + ex.Message,
+                            "Lỗi cổng COM",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     // 1) Gửi HEARTBEAT và khởi động timer
                     StartHeartbeatLoop();
 
-                    // 2) Yêu cầu stream
-                    //    Dùng 1 trong 2 cách (hoặc cả hai — nhiều firmware vẫn OK):
-                    RequestByMessageIntervals();         // chính xác theo từng message
+                    // 2) Yêu cầu stream telemetry
+                    RequestByMessageIntervals();
 
-                    MessageBox.Show($"Đã kết nối {serialPort1.PortName} thành công!");
+                    // Chờ hb
+                    _hasHeartbeat = false;
+                    _waitingHeartbeat = true;
+                    _connectTimeoutTimer.Start();
+                    lblConnect.Text = "Đang chờ HEARTBEAT...";
+
+                    // Cập nhật UI
+                    btnConnect.Text = "Disconnect";
+                    comboBoxPorts.Enabled = false;
+                    comboBoxBaudrate.Enabled = false;
+
+                    //lblConnect.Text = "Kết nối";
+
+                    //MessageBox.Show($"Đã kết nối {serialPort1.PortName} thành công!");
+
+                    MessageBox.Show($"Đã mở cổng {serialPort1.PortName}, đang chờ HEARTBEAT...");
                 }
+                // Ngắt kết nối
                 else
                 {
+                    // dừng heartbeat
                     hbTimer.Stop();
+                    _connectTimeoutTimer.Stop();
+                    _waitingHeartbeat = false;
+
+                    // nếu có timer/loop khác thì dừng ở đây
+
                     serialPort1.Close();
+
+                    // Cập nhật UI
+                    btnConnect.Text = "Connect";
+                    comboBoxPorts.Enabled = true;
+                    comboBoxBaudrate.Enabled = true;
+
+                    lblConnect.Text = "Kết nối";
+
                     MessageBox.Show("Ngắt kết nối thành công.");
                 }
             }
@@ -483,6 +551,56 @@ namespace UAV_Timelapse
                 MessageBox.Show("Lỗi kết nối: " + ex.Message);
             }
         }
+        private string GetVehicleTypeName(byte mavType)
+        {
+            // Giá trị theo MAVLink common.xml
+            switch (mavType)
+            {
+                case 2: return "QUADROTOR";   // MAV_TYPE_QUADROTOR
+                case 13: return "HEXAROTOR";   // MAV_TYPE_HEXAROTOR
+                case 14: return "OCTOROTOR";   // MAV_TYPE_OCTOROTOR
+                case 1: return "PLANE";       // MAV_TYPE_FIXED_WING
+                case 10: return "ROVER";       // MAV_TYPE_GROUND_ROVER
+                case 11: return "BOAT";        // MAV_TYPE_SURFACE_BOAT
+                case 5: return "ANTENNA";     // MAV_TYPE_ANTENNA_TRACKER
+                case 4: return "HELI";        // MAV_TYPE_HELICOPTER
+                                              // … cần loại gì thì thêm tiếp
+                default: return "UNKNOWN";
+            }
+        }
+
+        private void ConnectTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            _connectTimeoutTimer.Stop();
+
+            // Sau 5 giây mà vẫn chưa thấy HEARTBEAT
+            if (_waitingHeartbeat && !_hasHeartbeat)
+            {
+                try
+                {
+                    hbTimer.Stop();
+                    if (serialPort1.IsOpen)
+                        serialPort1.Close();
+                }
+                catch { }
+
+                // Reset UI
+                btnConnect.Text = "Connect";
+                comboBoxPorts.Enabled = true;
+                comboBoxBaudrate.Enabled = true;
+                lblConnect.Text = "Không thấy HEARTBEAT";
+
+                MessageBox.Show(
+                    "Không nhận được HEARTBEAT từ Flight Controller.\n" +
+                    "Có thể bạn chọn sai cổng COM, sai baudrate, hoặc FCU chưa bật.",
+                    "Không thấy HEARTBEAT",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+
+            _waitingHeartbeat = false;
+        }
+
 
         private void RequestByMessageIntervals()
         {

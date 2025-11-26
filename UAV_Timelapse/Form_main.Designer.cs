@@ -38,11 +38,11 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.lblDevID = new System.Windows.Forms.Label();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lblConnect = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.PictureBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.comboBoxBaudrate = new System.Windows.Forms.ComboBox();
             this.comboBoxPorts = new System.Windows.Forms.ComboBox();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -187,21 +187,30 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.lblDevID);
             this.panel3.Controls.Add(this.btnRefresh);
             this.panel3.Controls.Add(this.panel8);
-            this.panel3.Controls.Add(this.comboBox3);
             this.panel3.Controls.Add(this.comboBoxBaudrate);
             this.panel3.Controls.Add(this.comboBoxPorts);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(722, 0);
+            this.panel3.Location = new System.Drawing.Point(704, 0);
             this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(304, 65);
+            this.panel3.Size = new System.Drawing.Size(322, 65);
             this.panel3.TabIndex = 6;
+            // 
+            // lblDevID
+            // 
+            this.lblDevID.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDevID.Location = new System.Drawing.Point(93, 42);
+            this.lblDevID.Name = "lblDevID";
+            this.lblDevID.Size = new System.Drawing.Size(127, 19);
+            this.lblDevID.TabIndex = 11;
+            this.lblDevID.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(7, 42);
+            this.btnRefresh.Location = new System.Drawing.Point(32, 41);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(2);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(56, 19);
@@ -212,46 +221,39 @@
             // 
             // panel8
             // 
-            this.panel8.Controls.Add(this.label4);
+            this.panel8.BackColor = System.Drawing.Color.LightGray;
+            this.panel8.Controls.Add(this.lblConnect);
             this.panel8.Controls.Add(this.btnConnect);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel8.Location = new System.Drawing.Point(224, 0);
+            this.panel8.Location = new System.Drawing.Point(235, 0);
             this.panel8.Margin = new System.Windows.Forms.Padding(2);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(80, 65);
+            this.panel8.Size = new System.Drawing.Size(87, 65);
             this.panel8.TabIndex = 9;
             // 
-            // label4
+            // lblConnect
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 49);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(68, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Ngắt Kết Nối";
+            this.lblConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblConnect.Location = new System.Drawing.Point(1, 43);
+            this.lblConnect.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblConnect.Name = "lblConnect";
+            this.lblConnect.Size = new System.Drawing.Size(85, 19);
+            this.lblConnect.TabIndex = 6;
+            this.lblConnect.Text = "Kết nối";
+            this.lblConnect.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnConnect
             // 
-            this.btnConnect.BackColor = System.Drawing.Color.White;
+            this.btnConnect.BackColor = System.Drawing.Color.LightGray;
             this.btnConnect.Image = ((System.Drawing.Image)(resources.GetObject("btnConnect.Image")));
-            this.btnConnect.Location = new System.Drawing.Point(17, 2);
+            this.btnConnect.Location = new System.Drawing.Point(26, 3);
             this.btnConnect.Margin = new System.Windows.Forms.Padding(2);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(46, 45);
+            this.btnConnect.Size = new System.Drawing.Size(40, 40);
             this.btnConnect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnConnect.TabIndex = 7;
             this.btnConnect.TabStop = false;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(68, 41);
-            this.comboBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(152, 21);
-            this.comboBox3.TabIndex = 4;
             // 
             // comboBoxBaudrate
             // 
@@ -266,6 +268,7 @@
             this.comboBoxBaudrate.Name = "comboBoxBaudrate";
             this.comboBoxBaudrate.Size = new System.Drawing.Size(92, 21);
             this.comboBoxBaudrate.TabIndex = 3;
+            this.comboBoxBaudrate.Text = "115200";
             // 
             // comboBoxPorts
             // 
@@ -634,7 +637,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnConnect)).EndInit();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
@@ -661,7 +663,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox btnConnect;
-        private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.ComboBox comboBoxBaudrate;
         private System.Windows.Forms.ComboBox comboBoxPorts;
         private System.Windows.Forms.Panel panel2;
@@ -686,7 +687,7 @@
         private System.Windows.Forms.Button btnMotorTest;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
         private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblConnect;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button btnFrameType;
@@ -696,6 +697,7 @@
         private System.Windows.Forms.Button btnRadioCalib;
         private System.Windows.Forms.Button btnServoOutput;
         private System.Windows.Forms.Button btnParam;
+        private System.Windows.Forms.Label lblDevID;
     }
 }
 

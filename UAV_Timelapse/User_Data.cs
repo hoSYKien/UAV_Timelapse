@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Windows.Forms;
-using Microsoft.Web.WebView2.Core;
 
 namespace UAV_Timelapse
 {
@@ -122,60 +121,9 @@ namespace UAV_Timelapse
         //-------------------------------------------------------------------------------------
         private void SetupMissionGrid()
         {
-            var gv = dataGridView2; // dùng lưới sẵn có
-            gv.AutoGenerateColumns = false;
-            gv.AllowUserToAddRows = false;
-            gv.AllowUserToDeleteRows = true;
-            gv.RowHeadersVisible = false;
 
-            // Gán DataPropertyName cho các cột đã tạo trong Designer
-            // (các cột này phải tồn tại dưới dạng field: dgrSTT, dgrCommand, dgrDelay, dgrP2, dgrP3, dgrP4, dgrLat, dgrLong, dgrAlt, dgrFrame)
-            dgrSTT.DataPropertyName = nameof(MissionItem.STT);
-            dgrCommand.DataPropertyName = nameof(MissionItem.Command);
-            dgrDelay.DataPropertyName = nameof(MissionItem.Delay);
-            dgrDelay2.DataPropertyName = nameof(MissionItem.P2);
-            dgrDelay3.DataPropertyName = nameof(MissionItem.P3);
-            dgrDelay4.DataPropertyName = nameof(MissionItem.P4);
-            dgrLat.DataPropertyName = nameof(MissionItem.Lat);
-            dgrLong.DataPropertyName = nameof(MissionItem.Long);
-            dgrAlt.DataPropertyName = nameof(MissionItem.Alt);
-            dgrFrame.DataPropertyName = nameof(MissionItem.Frame);
-
-            // Nạp item cho các ComboBoxColumn nếu có
-            if (dgrCommand is DataGridViewComboBoxColumn cmd)
-            {
-                cmd.FlatStyle = FlatStyle.Flat;
-                cmd.Items.Clear();
-                cmd.Items.AddRange("WAYPOINT", "TAKEOFF", "LAND", "RTL", "LOITER_TIME");
-            }
-            if (dgrFrame is DataGridViewComboBoxColumn fr)
-            {
-                fr.FlatStyle = FlatStyle.Flat;
-                fr.Items.Clear();
-                fr.Items.AddRange("Relative", "Absolute", "Terrain");
-            }
-
-            gv.DataSource = _items;
-
-            // Khi chỉnh lưới -> đẩy ngược lên map
-            gv.CellValueChanged += (s, e) => PushGridToMap();
-            gv.RowsRemoved += (s, e) => RenumberAndPush();
-            gv.UserAddedRow += (s, e) => RenumberAndPush();
-            gv.CurrentCellDirtyStateChanged += (s, e) =>
-            {
-                if (gv.IsCurrentCellDirty)
-                    gv.CommitEdit(DataGridViewDataErrorContexts.Commit);
-            };
-
-            // KHÔNG Add gv vào Controls vì nó đã nằm trong form qua Designer
         }
 
-        private void RenumberAndPush()
-        {
-            for (int i = 0; i < _items.Count; i++) _items[i].STT = i + 1;
-            dataGridView2.Refresh();
-            PushGridToMap();
-        }
 
         private void PushGridToMap()
         {
@@ -237,8 +185,10 @@ namespace UAV_Timelapse
             double hdop = TransmissionFrame.Gps_HDOP;                 // đã = eph/100.0
             int sats = TransmissionFrame.Gps_SatellitesVisible;
 
-            lblHdop.Text = double.IsNaN(hdop) ? "--" : hdop.ToString("0.00");
-            lblSats.Text = sats.ToString();
+            double hdopDisplay = double.IsNaN(hdop) ? 0.0 : hdop;
+
+            lblHdop.Text = $"HDOP: {hdopDisplay:0.00}";
+            lblSats.Text = $"Vệ tinh: {sats}";
 
             if (TransmissionFrame.Sys_Voltage_battery > 0)
             {
@@ -344,7 +294,7 @@ namespace UAV_Timelapse
                             });
                         }
                         _items.RaiseListChangedEvents = true;
-                        dataGridView2.Refresh();
+
                     }
                     else if (type == "GPS_UPDATE")
                     {
@@ -358,6 +308,12 @@ namespace UAV_Timelapse
                 }
             }
             if (InvokeRequired) BeginInvoke((Action)Handle); else Handle();
+        }
+
+        private void btnWriteWP_Click(object sender, EventArgs e)
+        {
+            Form_Uploader form_Uploader = new Form_Uploader();
+            form_Uploader.ShowDialog();
         }
     }
 
