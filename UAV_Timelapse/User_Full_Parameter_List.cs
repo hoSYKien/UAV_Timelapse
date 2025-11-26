@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,6 +22,24 @@ namespace UAV_Timelapse
         // === editor phủ lên cell Value ===
         private ComboBox _editorCombo;
         private NumericUpDown _editorNumeric;
+
+        private int _expectedCount = -1;
+        private bool[] _receivedIndex; //đánh dấu param_index nhận được
+
+        private Timer _retryTimer;
+        private int _retryRound = 0;
+        private const int MAX_RETRY_ROUNDS = 10;
+
+        public bool IsParamSyncDone
+        {
+            get
+            {
+                if (_expectedCount <= 0) return false;
+                if (_receivedIndex == null) return false;
+                int got = _receivedIndex.Count(b => b);
+                return got >= _expectedCount;
+            }
+        }
 
         private struct CellRef
         {
@@ -40,6 +59,8 @@ namespace UAV_Timelapse
             InitializeComponent();
 
             _main = main;
+
+            btnSaveFile.Enabled = false;
 
             // cấu hình grid
             gridParams.AutoGenerateColumns = false;
@@ -135,8 +156,34 @@ namespace UAV_Timelapse
 
             gridParams.CellFormatting += gridParams_CellFormatting;
 
+            // === TIMER RETRY XIN LẠI PARAM THIẾU ===
+            _retryTimer = new Timer();
+            _retryTimer.Interval = 1000;   // 1s/lần, muốn dày hơn thì giảm xuống 500ms
+            _retryTimer.Tick += RetryTimer_Tick;
+
             // đăng ký nhận PARAM_VALUE từ Form_Main
             _main.OnParamValue += HandleParamValue;
+        }
+        private void RetryTimer_Tick(object sender, EventArgs e)
+        {
+            // 1s vừa trôi qua mà KHÔNG có PARAM_VALUE mới => kết thúc một "đợt"
+            _retryTimer.Stop();
+
+            if (IsParamSyncDone)
+                return;
+
+            if (_retryRound >= MAX_RETRY_ROUNDS)
+                return;
+
+            _retryRound++;
+
+            // xin lại các tham số còn thiếu (tối đa 100 index / lần)
+            RequestMissingParams();
+
+            // Sau khi gửi, FC sẽ trả PARAM_VALUE. Mỗi lần nhận được,
+            // HandleParamValue sẽ tự Start lại timer.
+            // Nếu FC không trả gì, 1s nữa timer lại Tick → retry tiếp (tối đa 10 lần).
+            _retryTimer.Start();
         }
 
         private void HandleParamValue(mavlink_param_value_t p)
@@ -149,6 +196,27 @@ namespace UAV_Timelapse
             var type = (MAV_PARAM_TYPE)p.param_type;
             int index = p.param_index;
             int count = p.param_count;
+
+            // ====== LẦN ĐẦU NHẬN ĐƯỢC param_count ======
+            if (_expectedCount < 0 && count > 0)
+            {
+                _expectedCount = count;
+                _receivedIndex = new bool[count];   // mặc định false
+
+                // reset trạng thái đếm & retry
+                _retryRound = 0;
+                btnSaveFile.Enabled = false;
+
+                _retryTimer.Stop();
+                _retryTimer.Start();   // bắt đầu auto retry cho đến khi đủ
+            }
+
+            // Đánh dấu index đã nhận
+            if (_receivedIndex != null &&
+                index >= 0 && index < _expectedCount)
+            {
+                _receivedIndex[index] = true;
+            }
 
             var existing = _allParams.FirstOrDefault(x => x.Name == name);
             if (existing == null)
@@ -203,6 +271,34 @@ namespace UAV_Timelapse
             }
 
             // có thể update progress ở đây
+            // (tuỳ chọn) hiển thị progress lên caption / label
+            if (_expectedCount > 0)
+            {
+                int got = _receivedIndex?.Count(b => b) ?? _allParams.Count;
+                this.BeginInvoke(new Action(() =>
+                {
+                    lblParamProgress.Text = $"Tham số: {got}/{_expectedCount}"; // nếu bạn có label
+                }));
+            }
+            if (IsParamSyncDone)
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    _retryTimer.Stop();
+                    btnSaveFile.Enabled = true;   // đã đủ, bật nút xuất file
+                }));
+            }
+            else
+            {
+                // chưa đủ → reset idle timer.
+                // nếu 1s tới không có param mới thì RetryTimer_Tick sẽ xin thêm.
+                this.BeginInvoke(new Action(() =>
+                {
+                    btnSaveFile.Enabled = false;  // đang sync, khoá nút Save
+                    _retryTimer.Stop();
+                    _retryTimer.Start();
+                }));
+            }
         }
 
 
@@ -435,9 +531,87 @@ namespace UAV_Timelapse
             e.FormattingApplied = true;
         }
 
-        private void gridParams_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnSaveFile_Click(object sender, EventArgs e)
         {
+            if (!IsParamSyncDone)
+            {
+                //btnSaveFile.Enabled = false;
+                //gửi lại yêu cầu tham số
+                RequestMissingParams();
+                return;
+            }
 
+            if (_allParams == null || _allParams.Count == 0)
+            {
+                MessageBox.Show("Chưa có tham số nào để lưu.", "Thông báo");
+                return;
+            }
+
+            using (var dlg = new SaveFileDialog())
+            {
+                dlg.Filter = "ArduPilot param (*.param)|*.param|All files (*.*)|*.*";
+                dlg.FileName = "copter.param";
+
+                if (dlg.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    using (var sw = new StreamWriter(dlg.FileName, false, Encoding.ASCII))
+                    {
+                        // Ghi từng param, sắp xếp theo tên
+                        foreach (var p in _allParams.OrderBy(x => x.Name))
+                        {
+                            string valStr = p.Value.ToString(CultureInfo.InvariantCulture);
+                            sw.WriteLine("{0},{1}", p.Name, valStr);
+                        }
+                    }
+
+                    MessageBox.Show("Đã lưu tham số ra file:\n" + dlg.FileName,
+                                    "Save to file", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi lưu file: " + ex.Message);
+                }
+            }
         }
+        private void RequestMissingParams()
+        {
+            if (_expectedCount <= 0 || _receivedIndex == null)
+            {
+                //MessageBox.Show("Chưa biết tổng số tham số (param_count).", "Thông báo");
+                return;
+            }
+
+            var missing = new List<int>();
+            for (int i = 0; i < _expectedCount; i++)
+            {
+                if (!_receivedIndex[i])
+                    missing.Add(i);
+            }
+
+            if (missing.Count == 0)
+            {
+                //MessageBox.Show("Không còn tham số nào bị thiếu.", "Thông báo");
+                return;
+            }
+
+            // Có thể giới hạn theo batch để khỏi spam FC
+            // ví dụ: chỉ gửi lại tối đa 50 cái một lần
+            const int MAX_PER_BATCH = 100;
+            var batch = missing.Take(MAX_PER_BATCH).ToList();
+
+            foreach (int idx in batch)
+            {
+                _main.RequestParamByIndex((short)idx);
+            }
+
+            //MessageBox.Show($"Đã gửi yêu cầu đọc lại {batch.Count} tham số bị thiếu.\n" +
+            //                "Đợi FC trả về rồi hãy bấm lưu file.",
+            //                "Request missing params");
+        }
+
     }
 }

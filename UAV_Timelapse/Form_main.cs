@@ -103,125 +103,129 @@ namespace UAV_Timelapse
         private bool _isArmed = false;
         public bool IsArmed => _isArmed;
         const byte SAFETY_ARMED = 0x80; // 128
+        private readonly object _mavlock = new object();
         private void SerialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            try
+            lock (_mavlock)
             {
-                int bytesToRead = serialPort1.BytesToRead;
-                byte[] buffer = new byte[bytesToRead];
-                serialPort1.Read(buffer, 0, bytesToRead);
-
-                long bytesConsumed = 0;
-                mavlinkBuffer.AddRange(buffer);
-
-                using (var ms = new MemoryStream(mavlinkBuffer.ToArray()))
+                try
                 {
-                    MAVLink.MAVLinkMessage msg;
-                    try
+                    int bytesToRead = serialPort1.BytesToRead;
+                    byte[] buffer = new byte[bytesToRead];
+                    serialPort1.Read(buffer, 0, bytesToRead);
+
+                    long bytesConsumed = 0;
+                    mavlinkBuffer.AddRange(buffer);
+
+                    using (var ms = new MemoryStream(mavlinkBuffer.ToArray()))
                     {
-                        while ((msg = mavlink.ReadPacket(ms)) != null)
+                        MAVLink.MAVLinkMessage msg;
+                        try
                         {
-                            // Ghi nhận sysid/compid của FCU từ msg
-                            FcuSysId = msg.sysid;
-                            FcuCompId = msg.compid;
-
-                            switch ((MAVLink.MAVLINK_MSG_ID)msg.msgid)
+                            while ((msg = mavlink.ReadPacket(ms)) != null)
                             {
-                                case MAVLink.MAVLINK_MSG_ID.HEARTBEAT:
-                                    // Nhận hb
-                                    _hasHeartbeat = true;
-                                    _waitingHeartbeat = false;
-                                    if (_connectTimeoutTimer.Enabled)
-                                        _connectTimeoutTimer.Stop();
+                                // Ghi nhận sysid/compid của FCU từ msg
+                                FcuSysId = msg.sysid;
+                                FcuCompId = msg.compid;
 
-                                    var hb = (MAVLink.mavlink_heartbeat_t)msg.data;
-                                    heartbeat = hb;
+                                switch ((MAVLink.MAVLINK_MSG_ID)msg.msgid)
+                                {
+                                    case MAVLink.MAVLINK_MSG_ID.HEARTBEAT:
+                                        // Nhận hb
+                                        _hasHeartbeat = true;
+                                        _waitingHeartbeat = false;
+                                        if (_connectTimeoutTimer.Enabled)
+                                            _connectTimeoutTimer.Stop();
 
-                                    const byte SAFETY_ARMED = 0x80;           // MAV_MODE_FLAG_SAFETY_ARMED
-                                    bool armed = (hb.base_mode & SAFETY_ARMED) != 0;
+                                        var hb = (MAVLink.mavlink_heartbeat_t)msg.data;
+                                        heartbeat = hb;
 
-                                    //byte sysId = msg.sysid;
-                                    string typeName = GetVehicleTypeName(hb.type);
+                                        const byte SAFETY_ARMED = 0x80;           // MAV_MODE_FLAG_SAFETY_ARMED
+                                        bool armed = (hb.base_mode & SAFETY_ARMED) != 0;
 
-                                    // đẩy sang User_Data (instance bạn đã tạo: user_Data)
-                                    this.BeginInvoke(new Action(() =>
-                                    {
-                                        user_Data.SetArmed(armed);
-                                        // nếu muốn: khóa/mở nút Calibrate khi đang armed
-                                        btnAccelCalibration.Enabled = !armed;
+                                        //byte sysId = msg.sysid;
+                                        string typeName = GetVehicleTypeName(hb.type);
 
-                                        // lần đầu nhận heartbeat thì detect firmware
-                                        if (string.IsNullOrEmpty(_pdefFileName))
+                                        // đẩy sang User_Data (instance bạn đã tạo: user_Data)
+                                        this.BeginInvoke(new Action(() =>
                                         {
-                                            _pdefFileName = GetPdefFileName(hb);
+                                            user_Data.SetArmed(armed);
+                                            // nếu muốn: khóa/mở nút Calibrate khi đang armed
+                                            btnAccelCalibration.Enabled = !armed;
 
-                                            // nếu muốn show lên UI:
-                                            // lblFirmware.Text = _pdefFileName ?? "Unknown FW";
+                                            // lần đầu nhận heartbeat thì detect firmware
+                                            if (string.IsNullOrEmpty(_pdefFileName))
+                                            {
+                                                _pdefFileName = GetPdefFileName(hb);
+
+                                                // nếu muốn show lên UI:
+                                                // lblFirmware.Text = _pdefFileName ?? "Unknown FW";
+                                            }
+                                            // Cập nhật tt kết nối
+                                            lblDevID.Text = $"{serialPort1.PortName}-{FcuSysId} {typeName}";
+                                            lblConnect.Text = "Ngắt kết nối";
+                                        }));
+                                        break;
+
+                                    case MAVLink.MAVLINK_MSG_ID.GLOBAL_POSITION_INT:
+                                        globalPos = (MAVLink.mavlink_global_position_int_t)msg.data;
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.VFR_HUD:
+                                        hud = (MAVLink.mavlink_vfr_hud_t)msg.data;
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.ATTITUDE:
+                                        attitude = (MAVLink.mavlink_attitude_t)msg.data;
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.HIGHRES_IMU:
+                                        imu = (MAVLink.mavlink_highres_imu_t)msg.data;
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT:
+                                        gpsRaw = (MAVLink.mavlink_gps_raw_int_t)msg.data; // lưu lại để UpdateTelemetryDisplay dùng
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.RC_CHANNELS:           // msg_id = 65
+                                        rcCh = (MAVLink.mavlink_rc_channels_t)msg.data;
+                                        UpdateRcFromChannels(rcCh.Value);
+                                        break;
+                                    case MAVLink.MAVLINK_MSG_ID.STATUSTEXT:
+                                        {
+                                            var st = (MAVLink.mavlink_statustext_t)msg.data;
+                                            string txt = Encoding.ASCII.GetString(st.text).TrimEnd('\0');
+
+                                            // raise event cho User_Accel_Calibration
+                                            RaiseStatusText(txt);
+                                            break;
                                         }
-                                        // Cập nhật tt kết nối
-                                        lblDevID.Text = $"{serialPort1.PortName}-{FcuSysId} {typeName}";
-                                        lblConnect.Text = "Ngắt kết nối";
-                                    }));
-                                    break;
+                                    case MAVLink.MAVLINK_MSG_ID.COMMAND_ACK:
+                                        {
+                                            var ack = (MAVLink.mavlink_command_ack_t)msg.data;
+                                            RaiseCommandAck(ack.command, ack.result);
+                                            break;
+                                        }
+                                    case MAVLink.MAVLINK_MSG_ID.PARAM_VALUE:
+                                        {
+                                            var p = (MAVLink.mavlink_param_value_t)msg.data;
+                                            RaiseParamValue(p);
+                                            break;
+                                        }
 
-                                case MAVLink.MAVLINK_MSG_ID.GLOBAL_POSITION_INT:
-                                    globalPos = (MAVLink.mavlink_global_position_int_t)msg.data;
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.VFR_HUD:
-                                    hud = (MAVLink.mavlink_vfr_hud_t)msg.data;
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.ATTITUDE:
-                                    attitude = (MAVLink.mavlink_attitude_t)msg.data;
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.HIGHRES_IMU:
-                                    imu = (MAVLink.mavlink_highres_imu_t)msg.data;
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT:
-                                    gpsRaw = (MAVLink.mavlink_gps_raw_int_t)msg.data; // lưu lại để UpdateTelemetryDisplay dùng
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.RC_CHANNELS:           // msg_id = 65
-                                    rcCh = (MAVLink.mavlink_rc_channels_t)msg.data;
-                                    UpdateRcFromChannels(rcCh.Value);
-                                    break;
-                                case MAVLink.MAVLINK_MSG_ID.STATUSTEXT:
-                                    {
-                                        var st = (MAVLink.mavlink_statustext_t)msg.data;
-                                        string txt = Encoding.ASCII.GetString(st.text).TrimEnd('\0');
-
-                                        // raise event cho User_Accel_Calibration
-                                        RaiseStatusText(txt);
-                                        break;
-                                    }
-                                case MAVLink.MAVLINK_MSG_ID.COMMAND_ACK:
-                                    {
-                                        var ack = (MAVLink.mavlink_command_ack_t)msg.data;
-                                        RaiseCommandAck(ack.command, ack.result);
-                                        break;
-                                    }
-                                case MAVLink.MAVLINK_MSG_ID.PARAM_VALUE:
-                                    {
-                                        var p = (MAVLink.mavlink_param_value_t)msg.data;
-                                        RaiseParamValue(p);
-                                        break;
-                                    }
-
+                                }
                             }
                         }
-                    }
-                    catch (EndOfStreamException)
-                    {
-                        // Packet chưa đầy, chờ thêm byte
+                        catch (EndOfStreamException)
+                        {
+                            // Packet chưa đầy, chờ thêm byte
+                        }
+
+                        bytesConsumed = ms.Position;
                     }
 
-                    bytesConsumed = ms.Position;
+                    if (bytesConsumed > 0)
+                        mavlinkBuffer = mavlinkBuffer.Skip((int)bytesConsumed).ToList();
+
+                    this.BeginInvoke(new Action(UpdateTelemetryDisplay));
                 }
-
-                if (bytesConsumed > 0)
-                    mavlinkBuffer = mavlinkBuffer.Skip((int)bytesConsumed).ToList();
-
-                this.BeginInvoke(new Action(UpdateTelemetryDisplay));
+                catch { /* tránh crash */ }
             }
-            catch { /* tránh crash */ }
         }
 
         private void UpdateTelemetryDisplay()
@@ -896,6 +900,18 @@ namespace UAV_Timelapse
                 default:
                     return "ArduCopter.apm.pdef.xml";
             }
+        }
+        public void RequestParamByIndex(short index)
+        {
+            var req = new mavlink_param_request_read_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                param_index = index,
+                param_id = new byte[16] // để trống, FC sẽ dùng index
+            };
+
+            SendPacketV2(MAVLINK_MSG_ID.PARAM_REQUEST_READ, req);
         }
 
     }
