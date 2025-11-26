@@ -52,6 +52,7 @@ namespace UAV_Timelapse
         private List<byte> mavlinkBuffer = new List<byte>();
 
         User_RTK_GPS_Inject userRTK = new User_RTK_GPS_Inject();
+        User_RTK_Base userRTKBase = new User_RTK_Base();
         User_CAN_GPS_Order userCan = new User_CAN_GPS_Order();
         User_Joystick user_Joystick = new User_Joystick();
         User_Compass_Motor_Calid userComp = new User_Compass_Motor_Calid();
@@ -424,7 +425,7 @@ namespace UAV_Timelapse
         private void btnRTK_GPS_Click(object sender, EventArgs e)
         {
 
-            addUserControl(userRTK);
+            addUserControl(userRTKBase);
         }
 
         private void btnCAN_GPS_Click(object sender, EventArgs e)

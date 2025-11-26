@@ -211,6 +211,12 @@
     <Compile Include="User_Range_Finder.Designer.cs">
       <DependentUpon>User_Range_Finder.cs</DependentUpon>
     </Compile>
+    <Compile Include="User_RTK_Base.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="User_RTK_Base.Designer.cs">
+      <DependentUpon>User_RTK_Base.cs</DependentUpon>
+    </Compile>
     <Compile Include="User_RTK_GPS_Inject.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -278,6 +284,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="User_Range_Finder.resx">
       <DependentUpon>User_Range_Finder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="User_RTK_Base.resx">
+      <DependentUpon>User_RTK_Base.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="User_RTK_GPS_Inject.resx">
       <DependentUpon>User_RTK_GPS_Inject.cs</DependentUpon>
