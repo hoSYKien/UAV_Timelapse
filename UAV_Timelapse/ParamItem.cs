@@ -20,6 +20,7 @@ namespace UAV_Timelapse
         private string _rangeText;
 
         private float? _min, _max, _step;
+
         public float? Min
         {
             get => _min;
@@ -78,6 +79,15 @@ namespace UAV_Timelapse
                 Modified = true;
                 OnPropertyChanged(nameof(NonDefault));
             }
+        }
+        public void SetFromFc(float v)
+        {
+            if (Math.Abs(_value - v) <= 1e-6f) return;
+
+            _value = v;
+            OnPropertyChanged(nameof(Value));
+            OnPropertyChanged(nameof(NonDefault));
+            // KHÔNG đụng Modified
         }
 
         /// <summary>Giá trị default (lấy từ metadata nếu có, nếu không thì = lần đọc đầu tiên)</summary>

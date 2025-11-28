@@ -40,7 +40,6 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblDevID = new System.Windows.Forms.Label();
             this.btnRefresh = new System.Windows.Forms.Button();
-            this.panel8 = new System.Windows.Forms.Panel();
             this.lblConnect = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.PictureBox();
             this.comboBoxBaudrate = new System.Windows.Forms.ComboBox();
@@ -73,6 +72,7 @@
             this.btnOptional = new System.Windows.Forms.Button();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnInstallFirmware = new System.Windows.Forms.Button();
+            this.pnlbtnConnect = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
@@ -80,7 +80,6 @@
             this.panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel3.SuspendLayout();
-            this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnConnect)).BeginInit();
             this.panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnSetUp)).BeginInit();
@@ -91,6 +90,7 @@
             this.PanelOptional.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
+            this.pnlbtnConnect.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -189,7 +189,7 @@
             // 
             this.panel3.Controls.Add(this.lblDevID);
             this.panel3.Controls.Add(this.btnRefresh);
-            this.panel3.Controls.Add(this.panel8);
+            this.panel3.Controls.Add(this.pnlbtnConnect);
             this.panel3.Controls.Add(this.comboBoxBaudrate);
             this.panel3.Controls.Add(this.comboBoxPorts);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
@@ -218,18 +218,6 @@
             this.btnRefresh.Text = "Làm Mới";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
-            // panel8
-            // 
-            this.panel8.BackColor = System.Drawing.Color.LightGray;
-            this.panel8.Controls.Add(this.lblConnect);
-            this.panel8.Controls.Add(this.btnConnect);
-            this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel8.Location = new System.Drawing.Point(235, 0);
-            this.panel8.Margin = new System.Windows.Forms.Padding(2);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(87, 65);
-            this.panel8.TabIndex = 9;
             // 
             // lblConnect
             // 
@@ -616,6 +604,18 @@
             this.btnInstallFirmware.UseVisualStyleBackColor = false;
             this.btnInstallFirmware.Click += new System.EventHandler(this.btnInstallFirmware_Click);
             // 
+            // pnlbtnConnect
+            // 
+            this.pnlbtnConnect.BackColor = System.Drawing.Color.LightGray;
+            this.pnlbtnConnect.Controls.Add(this.lblConnect);
+            this.pnlbtnConnect.Controls.Add(this.btnConnect);
+            this.pnlbtnConnect.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlbtnConnect.Location = new System.Drawing.Point(235, 0);
+            this.pnlbtnConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.pnlbtnConnect.Name = "pnlbtnConnect";
+            this.pnlbtnConnect.Size = new System.Drawing.Size(87, 65);
+            this.pnlbtnConnect.TabIndex = 9;
+            // 
             // Form_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -636,7 +636,6 @@
             this.panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel3.ResumeLayout(false);
-            this.panel8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.btnConnect)).EndInit();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
@@ -648,6 +647,7 @@
             this.PanelOptional.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel3.ResumeLayout(false);
+            this.pnlbtnConnect.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -668,7 +668,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Panel panel7;
-        private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Button btnInstallFirmware;
@@ -698,6 +697,7 @@
         private System.Windows.Forms.Button btnServoOutput;
         private System.Windows.Forms.Button btnParam;
         private System.Windows.Forms.Label lblDevID;
+        private System.Windows.Forms.Panel pnlbtnConnect;
     }
 }
 

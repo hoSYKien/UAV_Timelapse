@@ -30,6 +30,8 @@ namespace UAV_Timelapse
         private int _retryRound = 0;
         private const int MAX_RETRY_ROUNDS = 10;
 
+        private string _currentGroup = "ALL";
+
         public bool IsParamSyncDone
         {
             get
@@ -61,6 +63,7 @@ namespace UAV_Timelapse
             _main = main;
 
             btnSaveFile.Enabled = false;
+            btnWriteParams.Enabled = false;
 
             // cấu hình grid
             gridParams.AutoGenerateColumns = false;
@@ -188,6 +191,8 @@ namespace UAV_Timelapse
 
         private void HandleParamValue(mavlink_param_value_t p)
         {
+            if (!IsHandleCreated || IsDisposed) return;
+
             string name = Encoding.ASCII
                           .GetString(p.param_id)
                           .TrimEnd('\0');
@@ -244,12 +249,13 @@ namespace UAV_Timelapse
                     RangeText = meta?.RangeText ?? ""
                 };
 
+                item.SetFromFc(value);
                 _allParams.Add(item);
                 AddGroupNodeIfNeeded(item.Group);
             }
             else
             {
-                existing.Value = value;
+                existing.SetFromFc(value);
                 existing.Index = index;
                 existing.Count = count;
 
@@ -275,29 +281,31 @@ namespace UAV_Timelapse
             if (_expectedCount > 0)
             {
                 int got = _receivedIndex?.Count(b => b) ?? _allParams.Count;
-                this.BeginInvoke(new Action(() =>
-                {
+                //this.BeginInvoke(new Action(() =>
+                //{
                     lblParamProgress.Text = $"Tham số: {got}/{_expectedCount}"; // nếu bạn có label
-                }));
+                //}));
             }
             if (IsParamSyncDone)
             {
-                this.BeginInvoke(new Action(() =>
-                {
+                //this.BeginInvoke(new Action(() =>
+                //{
                     _retryTimer.Stop();
                     btnSaveFile.Enabled = true;   // đã đủ, bật nút xuất file
-                }));
+                    UpdateWriteButtonState();
+                //}));
             }
             else
             {
                 // chưa đủ → reset idle timer.
                 // nếu 1s tới không có param mới thì RetryTimer_Tick sẽ xin thêm.
-                this.BeginInvoke(new Action(() =>
-                {
+                //this.BeginInvoke(new Action(() =>
+                //{
                     btnSaveFile.Enabled = false;  // đang sync, khoá nút Save
+                    btnWriteParams.Enabled = false;
                     _retryTimer.Stop();
                     _retryTimer.Start();
-                }));
+                //}));
             }
         }
 
@@ -317,25 +325,8 @@ namespace UAV_Timelapse
 
         private void tvFullParam_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            string group = e.Node.Name;
-
-            if (group == "ALL")
-            {
-                var sortedAll = new BindingList<ParamItem>(
-                    _allParams.OrderBy(p => p.Name).ToList()
-                );
-                _view.DataSource = sortedAll;
-            }
-            else
-            {
-                var filtered = new BindingList<ParamItem>(
-                    _allParams
-                        .Where(p => p.Group == group)
-                        .OrderBy(p => p.Name)            // sắp xếp theo tên
-                        .ToList()
-                );
-                _view.DataSource = filtered;
-            }
+            _currentGroup = e.Node.Name;   // lưu group đang chọn
+            ApplyFilter();                 // áp dụng filter (group + search)
         }
         private void HideEditors()
         {
@@ -464,6 +455,9 @@ namespace UAV_Timelapse
 
             // đánh dấu đã sửa (ParamItem.Modified đã tự set trong setter Value)
             HideEditors();
+
+            //Update tt param
+            UpdateWriteButtonState();
         }
         private void EditorNumeric_Leave(object sender, EventArgs e)
         {
@@ -498,6 +492,9 @@ namespace UAV_Timelapse
             //gridParams[cr.Col, cr.Row].Value = item.Value;
 
             HideEditors();
+
+            //Update tt param
+            UpdateWriteButtonState();
         }
         private int GetDecimalPlaces(decimal step)
         {
@@ -613,5 +610,300 @@ namespace UAV_Timelapse
             //                "Request missing params");
         }
 
+        private void btnLoadFile_Click(object sender, EventArgs e)
+        {
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.Filter = "ArduPilot param (*.param;*.parm)|*.param;*.parm|All files (*.*)|*.*";
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                var lines = File.ReadAllLines(dlg.FileName);
+                int applied = 0;
+
+                foreach (var raw in lines)
+                {
+                    var line = raw.Trim();
+                    if (string.IsNullOrEmpty(line)) continue;
+                    if (line.StartsWith("#") || line.StartsWith(";")) continue;
+
+                    // chấp nhận "NAME,VALUE" hoặc "NAME VALUE"
+                    var parts = line.Split(new[] { ',', ' ', '\t' },
+                                           StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length < 2) continue;
+
+                    string name = parts[0].Trim();
+                    if (!float.TryParse(parts[1], NumberStyles.Any,
+                                        CultureInfo.InvariantCulture, out float val))
+                        continue;
+
+                    var p = _allParams.FirstOrDefault(x => x.Name == name);
+                    if (p == null) continue; // tham số không tồn tại trên FC hiện tại
+
+                    p.Value = val;      // ParamItem setter tự đánh dấu Modified nếu bạn có
+                    applied++;
+                }
+
+                // refresh grid nếu cần
+                gridParams.Refresh();
+
+                //Update tt param
+                UpdateWriteButtonState();
+
+                MessageBox.Show($"Đã nạp {applied} tham số từ file.",
+                                "Load from file");
+            }
+        }
+
+        private void btnWriteParams_Click(object sender, EventArgs e)
+        {
+            // Lọc các tham số đã sửa
+            var changed = _allParams.Where(p => p.Modified).ToList();
+            if (changed.Count == 0)
+            {
+                // Không có gì để ghi
+                btnWriteParams.Enabled = false;
+                return;
+            }
+
+            // Gửi PARAM_SET cho từng param đã sửa
+            foreach (var p in changed)
+            {
+                _main.SendParamSet(p);
+            }
+
+            // Sau khi gửi xong, clear cờ Modified
+            foreach (var p in changed)
+            {
+                p.Modified = false;
+            }
+
+            // refresh hiển thị cột Modified / màu sắc nếu bạn dùng
+            gridParams.Refresh();
+
+            // cập nhật lại trạng thái nút
+            UpdateWriteButtonState();
+
+            MessageBox.Show($"Đã gửi {changed.Count} tham số lên FC.", "Write Params");
+        }
+        private void UpdateWriteButtonState()
+        {
+            // Chỉ bật khi đã sync xong (tuỳ bạn, có thể bỏ điều kiện IsParamSyncDone)
+            bool hasModified = _allParams.Any(p => p.Modified);
+            btnWriteParams.Enabled = hasModified && IsParamSyncDone;
+        }
+
+        private void btnCompareParam_Click(object sender, EventArgs e)
+        {
+            if (_allParams == null || _allParams.Count == 0)
+            {
+                MessageBox.Show("Chưa đọc tham số từ FC.", "Compare Params");
+                return;
+            }
+
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.Filter = "ArduPilot param (*.param;*.parm)|*.param;*.parm|All files (*.*)|*.*";
+                if (dlg.ShowDialog() != DialogResult.OK)
+                    return;
+
+                var fileDict = LoadParamFileToDict(dlg.FileName);
+                if (fileDict.Count == 0)
+                {
+                    MessageBox.Show("File không có tham số hợp lệ.", "Compare Params");
+                    return;
+                }
+
+                var diffs = BuildDiffList(fileDict);
+
+                if (diffs.Count == 0)
+                {
+                    MessageBox.Show("Tất cả tham số giống nhau.", "Compare Params");
+                    return;
+                }
+
+                var form = new Form_ParamCompare(diffs);
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Nếu sau này bạn muốn “áp dụng” các param được tick ApplyFromFile
+                    var toApply = form.Diffs
+                                      .Where(d => d.ApplyFromFile &&
+                                                  d.FileValue.HasValue)
+                                      .ToList();
+
+                    if (toApply.Count > 0)
+                    {
+                        foreach (var d in toApply)
+                        {
+                            var p = _allParams.FirstOrDefault(x =>
+                                x.Name.Equals(d.Name, StringComparison.OrdinalIgnoreCase));
+                            if (p != null)
+                            {
+                                p.Value = d.FileValue.Value;  // đánh dấu Modified luôn
+                            }
+                        }
+
+                        gridParams.Refresh();
+                        UpdateWriteButtonState(); // bật nút Write Params
+                        MessageBox.Show($"Đã áp dụng {toApply.Count} tham số từ file.",
+                                        "Compare Params");
+                    }
+                }
+            }
+        }
+        private BindingList<ParamDiffItem> BuildDiffList(Dictionary<string, float> fileParams)
+        {
+            var diffs = new BindingList<ParamDiffItem>();
+
+            // current = param đang có trong FC
+            var currentDict = _allParams.ToDictionary(p => p.Name,
+                                                      p => p.Value,
+                                                      StringComparer.OrdinalIgnoreCase);
+
+            // 1) Duyệt các param đang có trong FC
+            foreach (var kv in currentDict)
+            {
+                string name = kv.Key;
+                float curVal = kv.Value;
+
+                if (fileParams.TryGetValue(name, out float fileVal))
+                {
+                    // Có cả 2 phía
+                    if (Math.Abs(curVal - fileVal) > 1e-6f)
+                    {
+                        diffs.Add(new ParamDiffItem
+                        {
+                            Name = name,
+                            CurrentValue = curVal,
+                            FileValue = fileVal,
+                            DiffType = ParamDiffType.Different,
+                            ApplyFromFile = true   // mặc định tick để tiện
+                        });
+                    }
+
+                    // Đã xử lý, bỏ khỏi dict file để tí nữa còn lại chỉ là OnlyInFile
+                    fileParams.Remove(name);
+                }
+                else
+                {
+                    // Chỉ có trong FC
+                    diffs.Add(new ParamDiffItem
+                    {
+                        Name = name,
+                        CurrentValue = curVal,
+                        FileValue = null,
+                        DiffType = ParamDiffType.OnlyInFc,
+                        ApplyFromFile = false
+                    });
+                }
+            }
+
+            // 2) Những param chỉ có trong file (fileParams còn lại)
+            foreach (var kv in fileParams)
+            {
+                diffs.Add(new ParamDiffItem
+                {
+                    Name = kv.Key,
+                    CurrentValue = null,
+                    FileValue = kv.Value,
+                    DiffType = ParamDiffType.OnlyInFile,
+                    ApplyFromFile = false
+                });
+            }
+
+            return diffs;
+        }
+
+        private Dictionary<string, float> LoadParamFileToDict(string filePath)
+        {
+            var dict = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase);
+
+            if (!File.Exists(filePath)) return dict;
+
+            var lines = File.ReadAllLines(filePath);
+
+            foreach (var raw in lines)
+            {
+                var line = raw.Trim();
+                if (string.IsNullOrEmpty(line)) continue;
+                if (line.StartsWith("#") || line.StartsWith(";")) continue;
+
+                // chấp nhận "NAME,VALUE" hoặc "NAME VALUE"
+                var parts = line.Split(new[] { ',', ' ', '\t' },
+                                       StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length < 2) continue;
+
+                string name = parts[0].Trim();
+                if (!float.TryParse(parts[1],
+                                    NumberStyles.Any,
+                                    CultureInfo.InvariantCulture,
+                                    out float val))
+                    continue;
+
+                dict[name] = val;
+            }
+
+            return dict;
+        }
+
+        private void btnRefreshParam_Click(object sender, EventArgs e)
+        {
+            _retryTimer.Stop();
+            _retryRound = 0;
+            _expectedCount = -1;
+            _receivedIndex = null;
+
+            //Xoá danh sách tham số hiện có
+            _allParams.Clear();
+            _view.DataSource = _allParams;
+
+            // reset TreeView (giữ node ALL)
+            var root = tvFullParam.Nodes["ALL"];
+            if (root != null)
+                root.Nodes.Clear();
+
+            lblParamProgress.Text = "Tham số: 0/0";
+
+            // khoá các nút Save / Write cho tới khi sync xong
+            btnSaveFile.Enabled = false;
+            btnWriteParams.Enabled = false;
+
+            //Gửi yêu cầu đọc lại toàn bộ param từ FC
+            _main.RequestAllParams();
+        }
+        private void ApplyFilter()
+        {
+            // group hiện tại
+            string group = _currentGroup;
+            // từ khóa đang gõ
+            string keyword = txtSearch.Text.Trim();
+
+            IEnumerable<ParamItem> query = _allParams;
+
+            // lọc theo group (ACRO, AHRS, v.v.)
+            if (group != "ALL")
+                query = query.Where(p => p.Group == group);
+
+            // lọc theo từ khóa (tên hoặc mô tả)
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                string k = keyword.ToUpperInvariant();
+                query = query.Where(p =>
+                    (!string.IsNullOrEmpty(p.Name) &&
+                     p.Name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    ||
+                    (!string.IsNullOrEmpty(p.Desc) &&
+                     p.Desc.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                );
+            }
+
+            // đổ lại vào view
+            var list = new BindingList<ParamItem>(query.OrderBy(p => p.Name).ToList());
+            _view.DataSource = list;
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
     }
 }

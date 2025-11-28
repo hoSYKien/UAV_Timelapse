@@ -109,6 +109,12 @@
     <Compile Include="Form_main.Designer.cs">
       <DependentUpon>Form_main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_ParamCompare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_ParamCompare.Designer.cs">
+      <DependentUpon>Form_ParamCompare.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form_Uploader.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,7 @@
     <Compile Include="HudControl.Designer.cs">
       <DependentUpon>HudControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParamDiffType.cs" />
     <Compile Include="ParamItem.cs" />
     <Compile Include="ParamMeta.cs" />
     <Compile Include="Program.cs" />
@@ -231,6 +238,9 @@
     </Compile>
     <EmbeddedResource Include="Form_main.resx">
       <DependentUpon>Form_main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_ParamCompare.resx">
+      <DependentUpon>Form_ParamCompare.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Uploader.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">

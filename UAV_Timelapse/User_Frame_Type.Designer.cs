@@ -241,7 +241,7 @@
             this.grbFrameType.Size = new System.Drawing.Size(495, 355);
             this.grbFrameType.TabIndex = 1;
             this.grbFrameType.TabStop = false;
-            this.grbFrameType.Text = "Kiểu cấu hình khung";
+            this.grbFrameType.Text = "Dạng khung";
             // 
             // pnlY6B
             // 

@@ -11,6 +11,11 @@ namespace UAV_Timelapse
 {
     public partial class Form_Main : Form
     {
+        //Dạng bay và koại khung
+        public int FrameClass { get; set; } = 1;  // mặc định Quad
+        public int FrameType { get; set; } = 1;  // mặc định X
+
+
         // Theo dõi HEARTBEAT
         private bool _hasHeartbeat = false;
         private bool _waitingHeartbeat = false;
@@ -59,10 +64,10 @@ namespace UAV_Timelapse
         User_Range_Finder user_Range_Finder = new User_Range_Finder();
         User_Optical_Flow_and_OSD user_Optical_Flow_And_OSD = new User_Optical_Flow_and_OSD();
         User_Camera_Gimbal user_Camera_Gimbal = new User_Camera_Gimbal();
-        User_Motor_Test user_Motor_Test = new User_Motor_Test();
+        User_Motor_Test user_Motor_Test;
         User_Install_Firmware user_Install_Firmware = new User_Install_Firmware();
         User_Data user_Data = new User_Data();
-        User_Frame_Type user_Frame_Type = new User_Frame_Type();
+        User_Frame_Type user_Frame_Type;
         User_Accel_Calibration user_Accel_Calibration;
         User_Compass user_Compass = new User_Compass();
         User_Radio_Calibration user_Radio_Calibration = new User_Radio_Calibration();
@@ -99,6 +104,8 @@ namespace UAV_Timelapse
 
             user_Accel_Calibration = new User_Accel_Calibration(this);
             user_Full_Parameter_List = new User_Full_Parameter_List(this);
+            user_Motor_Test = new User_Motor_Test(this);
+            user_Frame_Type = new User_Frame_Type(this);
         }
 
         private bool _isArmed = false;
@@ -466,7 +473,7 @@ namespace UAV_Timelapse
 
         private void btnMotorTest_Click(object sender, EventArgs e)
         {
-
+            user_Motor_Test.ApplyFrame(FrameClass, FrameType);
             addUserControl(user_Motor_Test);
         }
 
@@ -688,6 +695,7 @@ namespace UAV_Timelapse
 
         private void btnFrameType_Click(object sender, EventArgs e)
         {
+            user_Frame_Type.InitializeFromMain();
             addUserControl(user_Frame_Type);
         }
 
@@ -902,6 +910,8 @@ namespace UAV_Timelapse
                     return "ArduCopter.apm.pdef.xml";
             }
         }
+
+
         public void RequestParamByIndex(short index)
         {
             var req = new mavlink_param_request_read_t
@@ -911,6 +921,83 @@ namespace UAV_Timelapse
                 param_index = index,
                 param_id = new byte[16] // để trống, FC sẽ dùng index
             };
+
+            SendPacketV2(MAVLINK_MSG_ID.PARAM_REQUEST_READ, req);
+        }
+        public void SendParamSet(ParamItem p)
+        {
+            var msg = new mavlink_param_set_t();
+
+            // copy name vào param_id (16 byte, padded bằng '\0')
+            byte[] nameBytes = Encoding.ASCII.GetBytes(p.Name ?? "");
+            msg.param_id = new byte[16];
+            Array.Clear(msg.param_id, 0, msg.param_id.Length);
+            Array.Copy(nameBytes, msg.param_id, Math.Min(nameBytes.Length, msg.param_id.Length));
+
+            msg.target_system = FcuSysId;
+            msg.target_component = FcuCompId;
+            msg.param_value = p.Value;
+            msg.param_type = (byte)p.MavType;   // đã lưu type trong ParamItem
+
+            SendPacketV2(MAVLINK_MSG_ID.PARAM_SET, msg);
+        }
+        public const ushort MAV_CMD_DO_MOTOR_TEST = 209;
+        // MAV_CMD_DO_MOTOR_TEST
+        // MotorID: 1=A, 2=B, 3=C, 4=D (theo ArduPilot)
+        // throttlePercent: % ga (5, 10, 15, ...)
+        // durationSeconds: thời gian chạy (s)
+        // numMotors: số motor trong chuỗi (mặc định 1 – test từng cái)
+        public void MotorTest(int MotorID, float throttlePercent, float durationSeconds, int numMotors = 1, int testOrder = 0)
+        {
+            //check cổng COM
+            if (serialPort1 == null || !serialPort1.IsOpen) return;
+
+            var cmd = new MAVLink.mavlink_command_long_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                command = MAV_CMD_DO_MOTOR_TEST,
+                confirmation = 0,
+
+                param1 = MotorID,            // 1 - max
+                param2 = 0,                  // 0 = throttle percent type
+                param3 = throttlePercent,    // 
+                param4 = durationSeconds,    // 
+                param5 = numMotors,                  // Motor Count
+                param6 = testOrder,                  // Test Order = MOTOR_TEST_ORDER_DEFAULT
+                param7 = 0
+            };
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
+        }
+        public void MotorTestStopAll()
+        {
+            if (serialPort1 == null || !serialPort1.IsOpen)
+                return;
+
+            var cmd = new MAVLink.mavlink_command_long_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                command = MAV_CMD_DO_MOTOR_TEST,
+                confirmation = 0,
+                param1 = 0 // stop
+            };
+
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
+        }
+        public void RequestParamByName(string name)
+        {
+            var req = new mavlink_param_request_read_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                param_index = -1,         // -1 -> dùng tên
+                param_id = new byte[16]
+            };
+
+            byte[] bytes = Encoding.ASCII.GetBytes(name);
+            Array.Clear(req.param_id, 0, req.param_id.Length);
+            Array.Copy(bytes, req.param_id, Math.Min(bytes.Length, 16));
 
             SendPacketV2(MAVLINK_MSG_ID.PARAM_REQUEST_READ, req);
         }

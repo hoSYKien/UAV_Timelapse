@@ -13,9 +13,15 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (_main != null)
+                    _main.OnParamValue -= HandleParamValue;
+
+                if (components != null)
+                {
+                    components.Dispose();
+                }
             }
             base.Dispose(disposing);
         }
@@ -33,20 +39,20 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.gridParams = new System.Windows.Forms.DataGridView();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.lblParamProgress = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnWriteParams = new System.Windows.Forms.Button();
+            this.btnCompareParam = new System.Windows.Forms.Button();
+            this.btnRefreshParam = new System.Windows.Forms.Button();
             this.btnSaveFile = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.lblParamProgress = new System.Windows.Forms.Label();
+            this.btnLoadFile = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridParams)).BeginInit();
@@ -94,22 +100,31 @@
             this.panel3.Controls.Add(this.lblParamProgress);
             this.panel3.Controls.Add(this.checkBox2);
             this.panel3.Controls.Add(this.checkBox1);
-            this.panel3.Controls.Add(this.textBox1);
+            this.panel3.Controls.Add(this.txtSearch);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.button7);
             this.panel3.Controls.Add(this.button6);
             this.panel3.Controls.Add(this.comboBox1);
             this.panel3.Controls.Add(this.label1);
-            this.panel3.Controls.Add(this.button5);
-            this.panel3.Controls.Add(this.button4);
-            this.panel3.Controls.Add(this.button3);
+            this.panel3.Controls.Add(this.btnWriteParams);
+            this.panel3.Controls.Add(this.btnCompareParam);
+            this.panel3.Controls.Add(this.btnRefreshParam);
             this.panel3.Controls.Add(this.btnSaveFile);
-            this.panel3.Controls.Add(this.button1);
+            this.panel3.Controls.Add(this.btnLoadFile);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel3.Location = new System.Drawing.Point(614, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(147, 549);
             this.panel3.TabIndex = 2;
+            // 
+            // lblParamProgress
+            // 
+            this.lblParamProgress.AutoSize = true;
+            this.lblParamProgress.Location = new System.Drawing.Point(1, 437);
+            this.lblParamProgress.Name = "lblParamProgress";
+            this.lblParamProgress.Size = new System.Drawing.Size(60, 13);
+            this.lblParamProgress.TabIndex = 13;
+            this.lblParamProgress.Text = "Tham số: 0";
             // 
             // checkBox2
             // 
@@ -131,12 +146,13 @@
             this.checkBox1.Text = "Đã chỉnh sửa";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // txtSearch
             // 
-            this.textBox1.Location = new System.Drawing.Point(4, 337);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(139, 20);
-            this.textBox1.TabIndex = 10;
+            this.txtSearch.Location = new System.Drawing.Point(4, 337);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(139, 20);
+            this.txtSearch.TabIndex = 10;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // label2
             // 
@@ -184,32 +200,35 @@
             this.label1.Text = "Tất cả giá trị dùng đơn vị thô, không scale";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // button5
+            // btnWriteParams
             // 
-            this.button5.Location = new System.Drawing.Point(4, 105);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(140, 25);
-            this.button5.TabIndex = 4;
-            this.button5.Text = "Ghi tham số";
-            this.button5.UseVisualStyleBackColor = true;
+            this.btnWriteParams.Location = new System.Drawing.Point(4, 105);
+            this.btnWriteParams.Name = "btnWriteParams";
+            this.btnWriteParams.Size = new System.Drawing.Size(140, 25);
+            this.btnWriteParams.TabIndex = 4;
+            this.btnWriteParams.Text = "Ghi tham số";
+            this.btnWriteParams.UseVisualStyleBackColor = true;
+            this.btnWriteParams.Click += new System.EventHandler(this.btnWriteParams_Click);
             // 
-            // button4
+            // btnCompareParam
             // 
-            this.button4.Location = new System.Drawing.Point(4, 167);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(140, 25);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "So sánh tham số";
-            this.button4.UseVisualStyleBackColor = true;
+            this.btnCompareParam.Location = new System.Drawing.Point(4, 167);
+            this.btnCompareParam.Name = "btnCompareParam";
+            this.btnCompareParam.Size = new System.Drawing.Size(140, 25);
+            this.btnCompareParam.TabIndex = 3;
+            this.btnCompareParam.Text = "So sánh tham số";
+            this.btnCompareParam.UseVisualStyleBackColor = true;
+            this.btnCompareParam.Click += new System.EventHandler(this.btnCompareParam_Click);
             // 
-            // button3
+            // btnRefreshParam
             // 
-            this.button3.Location = new System.Drawing.Point(4, 136);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(140, 25);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Đọc lại tham số";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnRefreshParam.Location = new System.Drawing.Point(4, 136);
+            this.btnRefreshParam.Name = "btnRefreshParam";
+            this.btnRefreshParam.Size = new System.Drawing.Size(140, 25);
+            this.btnRefreshParam.TabIndex = 2;
+            this.btnRefreshParam.Text = "Làm mới tham số";
+            this.btnRefreshParam.UseVisualStyleBackColor = true;
+            this.btnRefreshParam.Click += new System.EventHandler(this.btnRefreshParam_Click);
             // 
             // btnSaveFile
             // 
@@ -221,23 +240,15 @@
             this.btnSaveFile.UseVisualStyleBackColor = true;
             this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
             // 
-            // button1
+            // btnLoadFile
             // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(140, 25);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Nạp tham số từ file";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // lblParamProgress
-            // 
-            this.lblParamProgress.AutoSize = true;
-            this.lblParamProgress.Location = new System.Drawing.Point(1, 437);
-            this.lblParamProgress.Name = "lblParamProgress";
-            this.lblParamProgress.Size = new System.Drawing.Size(60, 13);
-            this.lblParamProgress.TabIndex = 13;
-            this.lblParamProgress.Text = "Tham số: 0";
+            this.btnLoadFile.Location = new System.Drawing.Point(3, 3);
+            this.btnLoadFile.Name = "btnLoadFile";
+            this.btnLoadFile.Size = new System.Drawing.Size(140, 25);
+            this.btnLoadFile.TabIndex = 0;
+            this.btnLoadFile.Text = "Nạp tham số từ file";
+            this.btnLoadFile.UseVisualStyleBackColor = true;
+            this.btnLoadFile.Click += new System.EventHandler(this.btnLoadFile_Click);
             // 
             // User_Full_Parameter_List
             // 
@@ -265,17 +276,17 @@
         private System.Windows.Forms.TreeView tvFullParam;
         private System.Windows.Forms.DataGridView gridParams;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnWriteParams;
+        private System.Windows.Forms.Button btnCompareParam;
+        private System.Windows.Forms.Button btnRefreshParam;
         private System.Windows.Forms.Button btnSaveFile;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnLoadFile;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblParamProgress;
     }

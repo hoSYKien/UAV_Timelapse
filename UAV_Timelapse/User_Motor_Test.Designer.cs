@@ -29,27 +29,24 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.numThrottle = new System.Windows.Forms.NumericUpDown();
+            this.numDuration = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.lblClass = new System.Windows.Forms.Label();
+            this.lblType = new System.Windows.Forms.Label();
+            this.btnTestSequenceMotor = new System.Windows.Forms.Button();
+            this.btnStopAllMotor = new System.Windows.Forms.Button();
+            this.btnTestAllMotor = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.flowMotors = new System.Windows.Forms.FlowLayoutPanel();
+            ((System.ComponentModel.ISupportInitialize)(this.numThrottle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDuration)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -63,27 +60,27 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Kiểm tra động cơ";
             // 
-            // numericUpDown1
+            // numThrottle
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(53, 48);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(67, 20);
-            this.numericUpDown1.TabIndex = 2;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            5,
+            this.numThrottle.Location = new System.Drawing.Point(53, 48);
+            this.numThrottle.Margin = new System.Windows.Forms.Padding(2);
+            this.numThrottle.Name = "numThrottle";
+            this.numThrottle.Size = new System.Drawing.Size(67, 20);
+            this.numThrottle.TabIndex = 2;
+            this.numThrottle.Value = new decimal(new int[] {
+            15,
             0,
             0,
             0});
             // 
-            // numericUpDown2
+            // numDuration
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(221, 48);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(67, 20);
-            this.numericUpDown2.TabIndex = 3;
-            this.numericUpDown2.Value = new decimal(new int[] {
+            this.numDuration.Location = new System.Drawing.Point(221, 48);
+            this.numDuration.Margin = new System.Windows.Forms.Padding(2);
+            this.numDuration.Name = "numDuration";
+            this.numDuration.Size = new System.Drawing.Size(67, 20);
+            this.numDuration.TabIndex = 3;
+            this.numDuration.Value = new decimal(new int[] {
             2,
             0,
             0,
@@ -109,108 +106,67 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Thời gian (s)";
             // 
-            // label4
+            // lblClass
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(11, 85);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(38, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Class: ";
+            this.lblClass.AutoSize = true;
+            this.lblClass.Location = new System.Drawing.Point(11, 85);
+            this.lblClass.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblClass.Name = "lblClass";
+            this.lblClass.Size = new System.Drawing.Size(36, 13);
+            this.lblClass.TabIndex = 6;
+            this.lblClass.Text = "Dạng:";
             // 
-            // label5
+            // lblType
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(160, 85);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 13);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Loại khung:";
+            this.lblType.AutoSize = true;
+            this.lblType.Location = new System.Drawing.Point(152, 85);
+            this.lblType.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblType.Name = "lblType";
+            this.lblType.Size = new System.Drawing.Size(63, 13);
+            this.lblType.TabIndex = 7;
+            this.lblType.Text = "Loại khung:";
             // 
-            // button1
+            // btnTestSequenceMotor
             // 
-            this.button1.BackColor = System.Drawing.Color.DarkCyan;
-            this.button1.Location = new System.Drawing.Point(11, 114);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(82, 38);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Kiểm tra động cơ A";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnTestSequenceMotor.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnTestSequenceMotor.Location = new System.Drawing.Point(155, 190);
+            this.btnTestSequenceMotor.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTestSequenceMotor.Name = "btnTestSequenceMotor";
+            this.btnTestSequenceMotor.Size = new System.Drawing.Size(82, 38);
+            this.btnTestSequenceMotor.TabIndex = 14;
+            this.btnTestSequenceMotor.Text = "Kiểm tra lần lượt từng động cơ";
+            this.btnTestSequenceMotor.UseVisualStyleBackColor = false;
+            this.btnTestSequenceMotor.Click += new System.EventHandler(this.btnTestSequenceMotor_Click);
             // 
-            // button2
+            // btnStopAllMotor
             // 
-            this.button2.BackColor = System.Drawing.Color.DarkCyan;
-            this.button2.Location = new System.Drawing.Point(11, 156);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(82, 38);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Kiểm tra động cơ B";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnStopAllMotor.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnStopAllMotor.Location = new System.Drawing.Point(155, 148);
+            this.btnStopAllMotor.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStopAllMotor.Name = "btnStopAllMotor";
+            this.btnStopAllMotor.Size = new System.Drawing.Size(82, 38);
+            this.btnStopAllMotor.TabIndex = 13;
+            this.btnStopAllMotor.Text = "Dừng tất cả động cơ";
+            this.btnStopAllMotor.UseVisualStyleBackColor = false;
+            this.btnStopAllMotor.Click += new System.EventHandler(this.btnStopAllMotor_Click);
             // 
-            // button3
+            // btnTestAllMotor
             // 
-            this.button3.BackColor = System.Drawing.Color.DarkCyan;
-            this.button3.Location = new System.Drawing.Point(11, 240);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(82, 38);
-            this.button3.TabIndex = 11;
-            this.button3.Text = "Kiểm tra động cơ D";
-            this.button3.UseVisualStyleBackColor = false;
-            // 
-            // button4
-            // 
-            this.button4.BackColor = System.Drawing.Color.DarkCyan;
-            this.button4.Location = new System.Drawing.Point(11, 198);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(82, 38);
-            this.button4.TabIndex = 10;
-            this.button4.Text = "Kiểm tra động cơ C";
-            this.button4.UseVisualStyleBackColor = false;
-            // 
-            // button6
-            // 
-            this.button6.BackColor = System.Drawing.Color.DarkCyan;
-            this.button6.Location = new System.Drawing.Point(11, 366);
-            this.button6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(82, 38);
-            this.button6.TabIndex = 14;
-            this.button6.Text = "Kiểm tra lần lượt từng động cơ";
-            this.button6.UseVisualStyleBackColor = false;
-            // 
-            // button7
-            // 
-            this.button7.BackColor = System.Drawing.Color.DarkCyan;
-            this.button7.Location = new System.Drawing.Point(11, 324);
-            this.button7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(82, 38);
-            this.button7.TabIndex = 13;
-            this.button7.Text = "Dừng tất cả động cơ";
-            this.button7.UseVisualStyleBackColor = false;
-            // 
-            // button8
-            // 
-            this.button8.BackColor = System.Drawing.Color.DarkCyan;
-            this.button8.Location = new System.Drawing.Point(11, 282);
-            this.button8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(82, 38);
-            this.button8.TabIndex = 12;
-            this.button8.Text = "Kiểm tra tất cả động cơ";
-            this.button8.UseVisualStyleBackColor = false;
+            this.btnTestAllMotor.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnTestAllMotor.Location = new System.Drawing.Point(155, 106);
+            this.btnTestAllMotor.Margin = new System.Windows.Forms.Padding(2);
+            this.btnTestAllMotor.Name = "btnTestAllMotor";
+            this.btnTestAllMotor.Size = new System.Drawing.Size(82, 38);
+            this.btnTestAllMotor.TabIndex = 12;
+            this.btnTestAllMotor.Text = "Kiểm tra tất cả động cơ";
+            this.btnTestAllMotor.UseVisualStyleBackColor = false;
+            this.btnTestAllMotor.Click += new System.EventHandler(this.btnTestAllMotor_Click);
             // 
             // button5
             // 
             this.button5.BackColor = System.Drawing.Color.DarkCyan;
-            this.button5.Location = new System.Drawing.Point(309, 48);
-            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button5.Location = new System.Drawing.Point(310, 48);
+            this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(82, 54);
             this.button5.TabIndex = 15;
@@ -220,8 +176,8 @@
             // button9
             // 
             this.button9.BackColor = System.Drawing.Color.DarkCyan;
-            this.button9.Location = new System.Drawing.Point(309, 106);
-            this.button9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button9.Location = new System.Drawing.Point(310, 106);
+            this.button9.Margin = new System.Windows.Forms.Padding(2);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(82, 51);
             this.button9.TabIndex = 16;
@@ -230,7 +186,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(408, 50);
+            this.label6.Location = new System.Drawing.Point(409, 50);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(132, 48);
@@ -239,7 +195,7 @@
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(408, 114);
+            this.label7.Location = new System.Drawing.Point(409, 114);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(132, 38);
@@ -250,7 +206,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(314, 159);
+            this.label8.Location = new System.Drawing.Point(315, 159);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(248, 17);
@@ -260,7 +216,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(314, 180);
+            this.label9.Location = new System.Drawing.Point(315, 180);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(448, 26);
@@ -269,35 +225,41 @@
     "ộng cơ sẽ được test theo thứ tự xoay chiều kim đồng hồ, bắt đầu từ góc trước bên" +
     " phải";
             // 
+            // flowMotors
+            // 
+            this.flowMotors.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowMotors.Location = new System.Drawing.Point(14, 106);
+            this.flowMotors.Name = "flowMotors";
+            this.flowMotors.Size = new System.Drawing.Size(106, 310);
+            this.flowMotors.TabIndex = 21;
+            this.flowMotors.WrapContents = false;
+            // 
             // User_Motor_Test
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnTestAllMotor);
+            this.Controls.Add(this.flowMotors);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button5);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.btnTestSequenceMotor);
+            this.Controls.Add(this.btnStopAllMotor);
+            this.Controls.Add(this.lblType);
+            this.Controls.Add(this.lblClass);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.numericUpDown2);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numDuration);
+            this.Controls.Add(this.numThrottle);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "User_Motor_Test";
             this.Size = new System.Drawing.Size(931, 436);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThrottle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDuration)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -306,24 +268,21 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown numThrottle;
+        private System.Windows.Forms.NumericUpDown numDuration;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Label lblClass;
+        private System.Windows.Forms.Label lblType;
+        private System.Windows.Forms.Button btnTestSequenceMotor;
+        private System.Windows.Forms.Button btnStopAllMotor;
+        private System.Windows.Forms.Button btnTestAllMotor;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.FlowLayoutPanel flowMotors;
     }
 }
