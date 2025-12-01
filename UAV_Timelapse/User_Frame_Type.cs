@@ -167,7 +167,8 @@ namespace UAV_Timelapse
                 _currentFrameClass = v;
                 _main.FrameClass = v;
 
-                BeginInvoke(new Action(() => SetFrameClassFromValue(v)));
+                SetFrameClassFromValue(v);
+                //BeginInvoke(new Action(() => SetFrameClassFromValue(v)));
             }
             else if (name == "FRAME_TYPE")
             {
@@ -175,7 +176,8 @@ namespace UAV_Timelapse
                 _currentFrameType = v;
                 _main.FrameType = v;
 
-                BeginInvoke(new Action(() => SetFrameTypeFromValue(v)));
+                SetFrameTypeFromValue(v);
+                //BeginInvoke(new Action(() => SetFrameTypeFromValue(v)));
             }
         }
         // ArduCopter FRAME_CLASS: 1=Quad,2=Hexa,3=Octa,4=OctaQuad,5=Y6,7=Heli,8=Tri,...

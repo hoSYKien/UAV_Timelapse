@@ -50,9 +50,9 @@ namespace UAV_Timelapse
         private MAVLink.mavlink_heartbeat_t? heartbeat;
         private MAVLink.mavlink_attitude_t? attitude;
         private MAVLink.mavlink_highres_imu_t? imu;
-        private MAVLink.mavlink_gps_raw_int_t? gpsRaw;  // thêm
+        private MAVLink.mavlink_gps_raw_int_t? gpsRaw;  
         private MAVLink.mavlink_rc_channels_t? rcCh;
-
+        private MAVLink.mavlink_servo_output_raw_t? servoRaw;
         // Buffer toàn cục để xử lý packet chưa đầy
         private List<byte> mavlinkBuffer = new List<byte>();
 
@@ -71,7 +71,7 @@ namespace UAV_Timelapse
         User_Accel_Calibration user_Accel_Calibration;
         User_Compass user_Compass = new User_Compass();
         User_Radio_Calibration user_Radio_Calibration = new User_Radio_Calibration();
-        User_Servo_Output user_Servo_Output = new User_Servo_Output();
+        User_Servo_Output user_Servo_Output;
 
         User_Full_Parameter_List user_Full_Parameter_List;
         /*------------------------------------------*/
@@ -106,6 +106,7 @@ namespace UAV_Timelapse
             user_Full_Parameter_List = new User_Full_Parameter_List(this);
             user_Motor_Test = new User_Motor_Test(this);
             user_Frame_Type = new User_Frame_Type(this);
+            user_Servo_Output = new User_Servo_Output(this);
         }
 
         private bool _isArmed = false;
@@ -215,6 +216,10 @@ namespace UAV_Timelapse
                                             RaiseParamValue(p);
                                             break;
                                         }
+                                    case MAVLink.MAVLINK_MSG_ID.SERVO_OUTPUT_RAW:
+                                        servoRaw = (MAVLink.mavlink_servo_output_raw_t)msg.data;
+                                        UpdateServoOutput(servoRaw.Value);
+                                        break;
 
                                 }
                             }
@@ -624,6 +629,7 @@ namespace UAV_Timelapse
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS_RAW_INT, 10); // ID 24
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.GPS2_RAW, 10);    // ID 124
             SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.RC_CHANNELS, 20); // 20 Hz
+            SetMessageInterval((uint)MAVLink.MAVLINK_MSG_ID.SERVO_OUTPUT_RAW, 20);   // 20 Hz
 
         }
 
@@ -738,6 +744,15 @@ namespace UAV_Timelapse
         private void btnServoOutput_Click(object sender, EventArgs e)
         {
             addUserControl(user_Servo_Output);
+            // Yêu cầu FC gửi về trạng thái SERVOx_FUNCTION hiện tại
+            for (int i = 1; i <= 16; i++)
+            {
+                RequestParamByName($"SERVO{i}_FUNCTION");
+                RequestParamByName($"SERVO{i}_REVERSED");
+                RequestParamByName($"SERVO{i}_MIN");
+                RequestParamByName($"SERVO{i}_TRIM");
+                RequestParamByName($"SERVO{i}_MAX");
+            }
         }
 
         private void UpdateRcFromChannels(MAVLink.mavlink_rc_channels_t m)
@@ -846,7 +861,17 @@ namespace UAV_Timelapse
             // Sau khi show form thì yêu cầu FCU gửi toàn bộ params
             RequestAllParams();
         }
+        public void EnsureParamMetaLoaded()
+        {
+            if (_paramMetaLoaded) return;
 
+            string pdefFolder = Path.Combine(Application.StartupPath, "Pdef");
+            string fileName = _pdefFileName ?? "ArduCopter.apm.pdef.xml";
+            string fullPath = Path.Combine(pdefFolder, fileName);
+
+            ParamMetaStore.LoadFromXml(fullPath);
+            _paramMetaLoaded = true;
+        }
         private void RaiseParamValue(mavlink_param_value_t p)
         {
             if (!IsHandleCreated || IsDisposed) return;
@@ -1000,6 +1025,53 @@ namespace UAV_Timelapse
             Array.Copy(bytes, req.param_id, Math.Min(bytes.Length, 16));
 
             SendPacketV2(MAVLINK_MSG_ID.PARAM_REQUEST_READ, req);
+        }
+        private void UpdateServoOutput(MAVLink.mavlink_servo_output_raw_t s)
+        {
+            // map sang mảng 16 kênh
+            ushort[] pwm = new ushort[16];
+            pwm[0] = ClampUs(s.servo1_raw);
+            pwm[1] = ClampUs(s.servo2_raw);
+            pwm[2] = ClampUs(s.servo3_raw);
+            pwm[3] = ClampUs(s.servo4_raw);
+            pwm[4] = ClampUs(s.servo5_raw);
+            pwm[5] = ClampUs(s.servo6_raw);
+            pwm[6] = ClampUs(s.servo7_raw);
+            pwm[7] = ClampUs(s.servo8_raw);
+            pwm[8]  = ClampUs(s.servo9_raw);
+            pwm[9] = ClampUs(s.servo10_raw);
+            pwm[10] = ClampUs(s.servo11_raw);
+            pwm[11] = ClampUs(s.servo12_raw);
+            pwm[12] = ClampUs(s.servo13_raw);
+            pwm[13] = ClampUs(s.servo14_raw);
+            pwm[14] = ClampUs(s.servo15_raw);
+            pwm[15] = ClampUs(s.servo16_raw);
+
+            // Đẩy sang UserControl hiển thị
+            if (user_Servo_Output != null)
+                user_Servo_Output.UpdateServoPwm(pwm);
+        }
+        public void SendServoParam(string name, float value)
+        {
+            // chưa connect thì thôi
+            if (serialPort1 == null || !serialPort1.IsOpen)
+                return;
+
+            var msg = new mavlink_param_set_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                param_value = value,
+                param_type = (byte)MAV_PARAM_TYPE.REAL32, // gửi dạng float cho chắc
+                param_id = new byte[16]
+            };
+
+            // copy tên param vào param_id (tối đa 16 byte, pad bằng '\0')
+            byte[] nameBytes = Encoding.ASCII.GetBytes(name ?? "");
+            Array.Clear(msg.param_id, 0, msg.param_id.Length);
+            Array.Copy(nameBytes, msg.param_id, Math.Min(nameBytes.Length, msg.param_id.Length));
+
+            SendPacketV2(MAVLINK_MSG_ID.PARAM_SET, msg);
         }
 
     }
