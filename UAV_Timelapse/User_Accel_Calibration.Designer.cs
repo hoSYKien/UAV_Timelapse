@@ -16,6 +16,11 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                if (_main != null)
+                {
+                    _main.OnStatustext -= Main_OnStatustext;
+                    _main.OnCommandLong -= Main_OnCommandLong;
+                }
             }
             base.Dispose(disposing);
         }
@@ -33,10 +38,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnCalibLevel = new System.Windows.Forms.Button();
+            this.btnSimpleAccelCal = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.rtxtDataRespond = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -89,23 +93,25 @@
             this.label4.Text = "Hiệu chuẩn gia tốc kế";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // button2
+            // btnCalibLevel
             // 
-            this.button2.Location = new System.Drawing.Point(112, 187);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 43);
-            this.button2.TabIndex = 26;
-            this.button2.Text = "Hiệu chuẩn cân bằng";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnCalibLevel.Location = new System.Drawing.Point(112, 187);
+            this.btnCalibLevel.Name = "btnCalibLevel";
+            this.btnCalibLevel.Size = new System.Drawing.Size(102, 43);
+            this.btnCalibLevel.TabIndex = 26;
+            this.btnCalibLevel.Text = "Hiệu chuẩn cân bằng";
+            this.btnCalibLevel.UseVisualStyleBackColor = true;
+            this.btnCalibLevel.Click += new System.EventHandler(this.btnCalibLevel_Click);
             // 
-            // button3
+            // btnSimpleAccelCal
             // 
-            this.button3.Location = new System.Drawing.Point(112, 294);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 43);
-            this.button3.TabIndex = 27;
-            this.button3.Text = "Hiệu chuẩn gia tốc đơn giản";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnSimpleAccelCal.Location = new System.Drawing.Point(112, 294);
+            this.btnSimpleAccelCal.Name = "btnSimpleAccelCal";
+            this.btnSimpleAccelCal.Size = new System.Drawing.Size(102, 43);
+            this.btnSimpleAccelCal.TabIndex = 27;
+            this.btnSimpleAccelCal.Text = "Hiệu chuẩn gia tốc đơn giản";
+            this.btnSimpleAccelCal.UseVisualStyleBackColor = true;
+            this.btnSimpleAccelCal.Click += new System.EventHandler(this.btnSimpleAccelCal_Click);
             // 
             // lblStatus
             // 
@@ -115,25 +121,14 @@
             this.lblStatus.Size = new System.Drawing.Size(24, 13);
             this.lblStatus.TabIndex = 28;
             this.lblStatus.Text = "test";
-            this.lblStatus.Visible = false;
-            // 
-            // rtxtDataRespond
-            // 
-            this.rtxtDataRespond.Location = new System.Drawing.Point(348, 26);
-            this.rtxtDataRespond.Name = "rtxtDataRespond";
-            this.rtxtDataRespond.Size = new System.Drawing.Size(397, 120);
-            this.rtxtDataRespond.TabIndex = 29;
-            this.rtxtDataRespond.Text = "";
-            this.rtxtDataRespond.Visible = false;
             // 
             // User_Accel_Calibration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.rtxtDataRespond);
             this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btnSimpleAccelCal);
+            this.Controls.Add(this.btnCalibLevel);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -153,9 +148,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnCalibLevel;
+        private System.Windows.Forms.Button btnSimpleAccelCal;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.RichTextBox rtxtDataRespond;
     }
 }

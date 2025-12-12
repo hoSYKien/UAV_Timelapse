@@ -7,175 +7,162 @@ namespace UAV_Timelapse
     public partial class User_Accel_Calibration : UserControl
     {
         private readonly Form_Main _main;
+        private bool _incalibrate = false;
+        private byte _count = 0;
 
-        // Thứ tự tư thế giống ArduPilot / Mission Planner
-        private readonly Form_Main.AccelPose[] PoseOrder =
-        {
-            Form_Main.AccelPose.LEVEL,
-            Form_Main.AccelPose.LEFT,
-            Form_Main.AccelPose.RIGHT,
-            Form_Main.AccelPose.NOSEUP,
-            Form_Main.AccelPose.NOSEDOWN,
-            Form_Main.AccelPose.BACK
-        };
-
-        private int _currentPoseIndex = -1;   // -1 = chưa vào step nào
-        private bool _running = false;
-
-        // timeout mỗi step (giống MP tầm 20 s)
-        private readonly Timer _stepTimeout = new Timer { Interval = 20000 };
-
+        // FC gửi yêu cầu tư thế qua COMMAND_LONG.ACCELCAL_VEHICLE_POS, pos nằm ở param1
+        private float _pos = 0;
         public User_Accel_Calibration(Form_Main main)
         {
             InitializeComponent();
-            _main = main;
+            _main = main ?? throw new ArgumentNullException(nameof(main));
 
-            // đăng ký event từ Form_Main
-            _main.OnStatusText += HandleStatusText;
-            _main.OnCommandAck += HandleCommandAck;
+            // nhận message từ Form_Main (thay cho SubscribeToPacketType của MissionPlanner)
+            _main.OnStatustext += Main_OnStatustext;
+            _main.OnCommandLong += Main_OnCommandLong;
 
-            _stepTimeout.Tick += StepTimeout_Tick;
-
-            lblStatus.Text = "Nhấn \"Calibrate Accel\" để bắt đầu.";
+            ResetUi();
         }
+
+
+        private void ResetUi()
+        {
+            _incalibrate = false;
+            _count = 0;
+            _pos = 0;
+
+            btnCalibAccel.Text = "Calibrate Accel";
+            btnCalibAccel.Enabled = true;
+
+            btnCalibLevel.Text = "Calibrate Level";
+            btnSimpleAccelCal.Text = "Simple Accel Cal";
+
+            // đổi tên label nếu bạn đặt khác
+            lblStatus.Text = "";
+        }
+
 
         private void btnCalibAccel_Click(object sender, EventArgs e)
         {
-            // TRẠNG THÁI 1: chưa chạy calib -> gửi PREFLIGHT_CALIBRATION
-            if (!_running)
+            //if (!_main.IsConnected)
+            //{
+            //    MessageBox.Show("Chưa kết nối FCU (COM chưa mở).");
+            //    return;
+            //}
+            if (!_main.IsConnected)
             {
-                if (_main.IsArmed)
-                {
-                    MessageBox.Show("Vui lòng DISARM trước khi calib accelerometer.");
-                    return;
-                }
-
-                _running = true;
-                _currentPoseIndex = -1;
-                rtxtDataRespond.Clear();
-
-                lblStatus.Text = "Gửi lệnh PREFLIGHT_CALIBRATION (accel)...";
-                btnCalibAccel.Text = "Click when DONE";
-
-                _main.StartAccelCalibration();
+                MessageBox.Show("Chưa kết nối FCU.\n" + _main.GetConnDebug());
                 return;
             }
 
-            // TRẠNG THÁI 2: đang calib -> nút đóng vai trò "Click when DONE"
-            if (_currentPoseIndex < 0 || _currentPoseIndex >= PoseOrder.Length)
+            // Giống MP: nếu đang calib thì mỗi click gửi ACCELCAL_VEHICLE_POS với param1=pos
+            if (_incalibrate)
             {
-                MessageBox.Show("Chưa nhận tư thế từ FC.");
+                _count++;
+
+                _main.SendCommandLong(Form_Main.ACCELCAL_VEHICLE_POS, p1: _pos);
+
                 return;
             }
 
-            var pose = PoseOrder[_currentPoseIndex];
-            lblStatus.Text = $"Gửi kết thúc tư thế: {pose}...";
-            _main.SendAccelCalVehiclePos(pose);
+            // Bắt đầu accel calibration: PREFLIGHT_CALIBRATION với param5=1
+            _count = 0;
+
+            _main.SendCommandLong(Form_Main.PREFLIGHT_CALIBRATION,
+                p1: 0, p2: 0, p3: 0, p4: 0,
+                p5: 1,   // accel calib start
+                p6: 0, p7: 0);
+
+            _incalibrate = true;
+            btnCalibAccel.Text = "Click when Done";
+            lblStatus.Text = "Đang bắt đầu Accel Calibration... chờ FCU hướng dẫn đặt tư thế.";
         }
-        private void HandleCommandAck(ushort command, byte result)
+
+        private void btnCalibLevel_Click(object sender, EventArgs e)
         {
-            if (InvokeRequired)
+            if (!_main.IsConnected)
             {
-                BeginInvoke(new Action(() => HandleCommandAck(command, result)));
+                MessageBox.Show("Chưa kết nối FCU (COM chưa mở).");
                 return;
             }
 
-            rtxtDataRespond.AppendText(
-                $"ACK cmd={command} result={(MAV_RESULT)result}\r\n");
+            // MP: PREFLIGHT_CALIBRATION param5=2
+            _main.SendCommandLong(Form_Main.PREFLIGHT_CALIBRATION,
+                p1: 0, p2: 0, p3: 0, p4: 0,
+                p5: 2,
+                p6: 0, p7: 0);
 
-            if (!_running) return;
-
-            if (command == Form_Main.PREFLIGHT_CALIBRATION)
-            {
-                if (result == (byte)MAV_RESULT.ACCEPTED ||
-                    result == (byte)MAV_RESULT.IN_PROGRESS)
-                {
-                    lblStatus.Text = "Đã nhận ACK calib. Đang chờ FC yêu cầu tư thế đầu tiên...";
-                    // chờ STATUSTEXT first pose
-                }
-                else
-                {
-                    lblStatus.Text = $"FC từ chối calib (result={(MAV_RESULT)result}).";
-                    _running = false;
-                }
-            }
-            else if (command == Form_Main.ACCELCAL_VEHICLE_POS)
-            {
-                if (result == (byte)MAV_RESULT.ACCEPTED)
-                {
-                    // đã xong tư thế hiện tại, đợi STATUSTEXT thông báo tư thế tiếp theo
-                    _stepTimeout.Stop();
-                    _stepTimeout.Start();
-                }
-            }
+            btnCalibLevel.Text = "Completed";
         }
 
-        private void HandleStatusText(string text)
+        private void btnSimpleAccelCal_Click(object sender, EventArgs e)
         {
-            if (InvokeRequired)
+            if (!_main.IsConnected)
             {
-                BeginInvoke(new Action(() => HandleStatusText(text)));
+                MessageBox.Show("Chưa kết nối FCU (COM chưa mở).");
                 return;
             }
 
-            rtxtDataRespond.AppendText("STATUSTEXT: " + text + "\r\n");
+            // MP: PREFLIGHT_CALIBRATION param5=4
+            _main.SendCommandLong(Form_Main.PREFLIGHT_CALIBRATION,
+                p1: 0, p2: 0, p3: 0, p4: 0,
+                p5: 4,
+                p6: 0, p7: 0);
 
-            if (!_running) return;
-
-            string lower = text.ToLowerInvariant();
-
-            // thông báo thành công / lỗi
-            if (lower.Contains("calibration successful"))
-            {
-                lblStatus.Text = "Calib accelerometer thành công.";
-                _running = false;
-                _currentPoseIndex = -1;
-                _stepTimeout.Stop();
-                return;
-            }
-            if (lower.Contains("failed"))
-            {
-                lblStatus.Text = "Calib accelerometer FAILED, xem lại tư thế hoặc reboot FC.";
-                _running = false;
-                _stepTimeout.Stop();
-                return;
-            }
-
-            // parse text để xem FC đang yêu cầu tư thế nào
-            if (lower.Contains("level"))
-                SetPose(Form_Main.AccelPose.LEVEL);
-            else if (lower.Contains("left"))
-                SetPose(Form_Main.AccelPose.LEFT);
-            else if (lower.Contains("right"))
-                SetPose(Form_Main.AccelPose.RIGHT);
-            else if (lower.Contains("nose up") || lower.Contains("nose-up"))
-                SetPose(Form_Main.AccelPose.NOSEUP);
-            else if (lower.Contains("nose down") || lower.Contains("nose-down"))
-                SetPose(Form_Main.AccelPose.NOSEDOWN);
-            else if (lower.Contains("back"))
-                SetPose(Form_Main.AccelPose.BACK);
+            btnSimpleAccelCal.Text = "Completed";
         }
-
-        private void SetPose(Form_Main.AccelPose pose)
+        private void Main_OnCommandLong(MAVLink.mavlink_command_long_t cl)
         {
-            _currentPoseIndex = Array.IndexOf(PoseOrder, pose);
-            if (_currentPoseIndex < 0) return;
+            if (cl.command != Form_Main.ACCELCAL_VEHICLE_POS) return;
 
-            lblStatus.Text = $"Đặt máy ở tư thế: {pose} rồi nhấn \"Click when DONE\".";
-            _stepTimeout.Stop();
-            _stepTimeout.Start();
+            int p = (int)Math.Round(cl.param1);
+
+            // Lọc rác: ArduPilot thường dùng 1..6 cho 6 mặt
+            if (p < 1 || p > 6) return;   // sẽ chặn 16777215
+
+            _pos = p;
+            lblStatus.Text = "Please place vehicle " + PosToText(p);
         }
 
-        private void StepTimeout_Tick(object sender, EventArgs e)
+        private void Main_OnStatustext(string msg)
         {
-            _stepTimeout.Stop();
-            if (!_running) return;
+            if (!this.Visible) return;
+            if (string.IsNullOrWhiteSpace(msg)) return;
 
-            MessageBox.Show("Hết thời gian cho bước này (20s). Kiểm tra kết nối hoặc xem FC có treo không.");
+            string m = msg.Trim();
+            string low = m.ToLowerInvariant();
 
-            _running = false;
-            _currentPoseIndex = -1;
-            btnCalibAccel.Text = "Calibrate Accel";
+            // MP chỉ update label nếu có "place vehicle" hoặc "calibration"
+            if (low.Contains("place vehicle") || low.Contains("calibration"))
+            {
+                lblStatus.Text = m;
+            }
+
+            // kết thúc
+            if (low.Contains("calibration successful") || low.Contains("calibration failed"))
+            {
+                _incalibrate = false;
+                btnCalibAccel.Text = "Done";
+                btnCalibAccel.Enabled = false;
+                lblStatus.Text = "Calibration successful";
+            }
         }
+
+        private static string PosToText(float pos)
+        {
+            int p = (int)Math.Round(pos);
+
+            switch (p)
+            {
+                case 1: return "LEVEL (đặt phẳng)";
+                case 2: return "LEFT (nghiêng trái)";
+                case 3: return "RIGHT (nghiêng phải)";
+                case 4: return "NOSE DOWN (cắm đầu xuống)";
+                case 5: return "NOSE UP (ngửa đầu lên)";
+                case 6: return "BACK/UPSIDE DOWN (lật ngửa)";
+                default: return p.ToString();
+            }
+        }
+
     }
 }

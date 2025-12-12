@@ -15,7 +15,6 @@ namespace UAV_Timelapse
         public int FrameClass { get; set; } = 1;  // mặc định Quad
         public int FrameType { get; set; } = 1;  // mặc định X
 
-
         // Theo dõi HEARTBEAT
         private bool _hasHeartbeat = false;
         private bool _waitingHeartbeat = false;
@@ -195,21 +194,6 @@ namespace UAV_Timelapse
                                         rcCh = (MAVLink.mavlink_rc_channels_t)msg.data;
                                         UpdateRcFromChannels(rcCh.Value);
                                         break;
-                                    case MAVLink.MAVLINK_MSG_ID.STATUSTEXT:
-                                        {
-                                            var st = (MAVLink.mavlink_statustext_t)msg.data;
-                                            string txt = Encoding.ASCII.GetString(st.text).TrimEnd('\0');
-
-                                            // raise event cho User_Accel_Calibration
-                                            RaiseStatusText(txt);
-                                            break;
-                                        }
-                                    case MAVLink.MAVLINK_MSG_ID.COMMAND_ACK:
-                                        {
-                                            var ack = (MAVLink.mavlink_command_ack_t)msg.data;
-                                            RaiseCommandAck(ack.command, ack.result);
-                                            break;
-                                        }
                                     case MAVLink.MAVLINK_MSG_ID.PARAM_VALUE:
                                         {
                                             var p = (MAVLink.mavlink_param_value_t)msg.data;
@@ -220,6 +204,22 @@ namespace UAV_Timelapse
                                         servoRaw = (MAVLink.mavlink_servo_output_raw_t)msg.data;
                                         UpdateServoOutput(servoRaw.Value);
                                         break;
+                                    case MAVLink.MAVLINK_MSG_ID.STATUSTEXT:
+                                        {
+                                            var st = (MAVLink.mavlink_statustext_t)msg.data;
+                                            string txt = Encoding.ASCII.GetString(st.text).TrimEnd('\0');
+
+                                            // đẩy lên UI thread
+                                            this.BeginInvoke(new Action(() => OnStatustext?.Invoke(txt)));
+                                            break;
+                                        }
+
+                                    case MAVLink.MAVLINK_MSG_ID.COMMAND_LONG:
+                                        {
+                                            var cl = (MAVLink.mavlink_command_long_t)msg.data;
+                                            this.BeginInvoke(new Action(() => OnCommandLong?.Invoke(cl)));
+                                            break;
+                                        }
 
                                 }
                             }
@@ -775,69 +775,6 @@ namespace UAV_Timelapse
             TransmissionFrame.Rc_Ch16 = ClampUs(m.chan16_raw);
             TransmissionFrame.Rc_RSSI = m.rssi; // 0..255
         }
-        public const ushort PREFLIGHT_CALIBRATION = 241;    // MAV_CMD_PREFLIGHT_CALIBRATION
-        public const ushort ACCELCAL_VEHICLE_POS = 42429;  // MAV_CMD_ACCELCAL_VEHICLE_POS
-        public enum AccelPose : int
-        {
-            LEVEL = 1,
-            LEFT = 2,
-            RIGHT = 3,
-            NOSEUP = 4,
-            NOSEDOWN = 5,
-            BACK = 6
-        }
-        public event Action<string> OnStatusText;
-        public event Action<ushort, byte> OnCommandAck;
-
-        private void RaiseStatusText(string txt)
-        {
-            if (!IsHandleCreated || IsDisposed) return;
-            BeginInvoke(new Action(() => OnStatusText?.Invoke(txt)));
-        }
-
-        private void RaiseCommandAck(ushort cmd, byte result)
-        {
-            if (!IsHandleCreated || IsDisposed) return;
-            BeginInvoke(new Action(() => OnCommandAck?.Invoke(cmd, result)));
-        }
-
-
-        // Gửi lệnh bắt đầu calib accel (giống MP bấm "Calibrate Accel")
-        public void StartAccelCalibration()
-        {
-            var cmd = new MAVLink.mavlink_command_long_t
-            {
-                target_system = FcuSysId,
-                target_component = FcuCompId,
-                command = PREFLIGHT_CALIBRATION,
-                confirmation = 0,
-                // param5 = 1 -> accel calib
-                param1 = 0f,   // gyro
-                param2 = 0f,   // mag
-                param3 = 0f,   // baro
-                param4 = 0f,   // RC
-                param5 = 1f,   // accel
-                param6 = 0f,
-                param7 = 0f
-            };
-
-            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
-        }
-
-        // Gửi "Click when DONE" cho tư thế hiện tại
-        public void SendAccelCalVehiclePos(AccelPose pose)
-        {
-            var cmd = new MAVLink.mavlink_command_long_t
-            {
-                target_system = FcuSysId,
-                target_component = FcuCompId,
-                command = ACCELCAL_VEHICLE_POS,
-                confirmation = 0,
-                param1 = (float)pose
-            };
-
-            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
-        }
 
         public event Action<mavlink_param_value_t> OnParamValue;
 
@@ -1074,5 +1011,37 @@ namespace UAV_Timelapse
             SendPacketV2(MAVLINK_MSG_ID.PARAM_SET, msg);
         }
 
+        //calib
+        public event Action<string> OnStatustext;
+        public event Action<MAVLink.mavlink_command_long_t> OnCommandLong;
+        public const ushort PREFLIGHT_CALIBRATION = 241;    // MAV_CMD_PREFLIGHT_CALIBRATION
+        public const ushort ACCELCAL_VEHICLE_POS = 42429;  // MAV_CMD_ACCELCAL_VEHICLE_POS
+        public bool IsConnected => serialPort1 != null && serialPort1.IsOpen;
+
+        public void SendCommandLong(ushort command, float p1 = 0, float p2 = 0, float p3 = 0, float p4 = 0, float p5 = 0, float p6 = 0, float p7 = 0)
+        {
+            if (!IsConnected) return;
+
+            var cmd = new MAVLink.mavlink_command_long_t
+            {
+                target_system = FcuSysId,
+                target_component = FcuCompId,
+                command = command,
+                confirmation = 0,
+                param1 = p1,
+                param2 = p2,
+                param3 = p3,
+                param4 = p4,
+                param5 = p5,
+                param6 = p6,
+                param7 = p7
+            };
+
+            SendPacketV2(MAVLink.MAVLINK_MSG_ID.COMMAND_LONG, cmd);
+        }
+        public string GetConnDebug()
+        {
+            return $"IsOpen={serialPort1?.IsOpen} Port={serialPort1?.PortName} hasHB={_hasHeartbeat} waitingHB={_waitingHeartbeat}";
+        }
     }
 }
